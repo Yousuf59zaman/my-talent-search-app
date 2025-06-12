@@ -10,9 +10,9 @@ export class NavbarService {
 
   constructor(private http: HttpClient) { }
 
-  getNavbarData(payload: { companyId: string, userId: string }): Observable<NavResponse> {
+  getNavbarData(payload:{companyId:string, userId:string}): Observable<NavResponse> {
     const baseUrl = 'https://recruiter.bdjobs.com/authentication/api/services';
-    return this.http.post<NavResponse>(baseUrl, payload)
+    return this.http.post<NavResponse>(baseUrl,payload)
       .pipe(
         map((response: NavResponse) => {
           return {

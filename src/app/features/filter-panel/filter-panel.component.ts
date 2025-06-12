@@ -771,6 +771,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     if (!this.filtersFromDashboard()) {
       this.syncFilterFormWithDashboardFilters();
     }
+    if (!this.isCorporateUser()) {
+      this.activeFilterSection.set('experienceFilters');
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
