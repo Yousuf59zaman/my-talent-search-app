@@ -1,0 +1,103 @@
+<div class="flex items-center gap-6">
+  <div>
+    @if (label()) {
+      <label class="control-label text-sm font-semibold text-gray-900">{{label()}}</label>
+    } 
+    @if (inline()) {
+    <owl-date-time-inline
+      class="min-w-fit"
+      [pickerType]="pickerType()"
+      [hour12Timer]="true"
+      #dt2
+    >
+    </owl-date-time-inline>
+    } @else {
+    <div class="flex items-center relative" [owlDateTimeTrigger]="dt1">
+      <input
+        [readOnly]="true"
+        [owlDateTime]="dt1"
+        placeholder="{{ placeholder() }}"
+        [min]="minDate()"
+        [max]="maxDate"  
+        (dateTimeChange)="onDateTimeChange($event)"
+        [(ngModel)]="date"
+        [ngModelOptions]="{ standalone: true }"
+        class="py-1.5 px-3 pe-11 block min-w-fit border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+        onkeypress="return false;"
+      />
+      <button
+        type="button"
+        class="absolute right-0 top-0 bottom-0 z-10 py-2 px-3"
+      >
+        <span class="icon-calendar" (click)="closeDatePicker()"></span>
+      </button>
+     
+    </div>
+    <owl-date-time
+      class="min-w-fit"
+      #dt1
+      [pickerType]="pickerType()"
+      [hour12Timer]="hour12Timer()"
+    >
+    </owl-date-time>
+    }
+  </div>
+  @if(seperateTimer()) {
+  <div class="flex-1">
+    <label for="hour-picker" class="block text-sm font-semibold text-gray-900"
+      >Time * (hh:mm: am/pm)</label
+    >
+    <div class="flex items-center relative">
+      <input
+        [ngModel]="+hour()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="onHourChange($event)"
+        type="number"
+        min="1"
+        max="12"
+        onkeypress="return false;"
+        onpaste="return false;"
+        oncopy="return false"
+        maxlength="2"
+        id="hour-picker"
+        name="hour-picker"
+        class="me-1 flex-1 p-2 min-w-24 border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+        placeholder="Hour"
+      />
+      :
+      <input
+        [ngModel]="+miniute()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="onMiniuteChange($event)"
+        type="number"
+        min="0"
+        max="59"
+        onkeypress="return false;"
+        onpaste="return false;"
+        oncopy="return false"
+        maxlength="2"
+        id="hour-miniute "
+        name="hour-miniute "
+        class="ms-1 flex-1 p-2 min-w-24 border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+        placeholder="Miniute"
+      />
+
+      <div class="flex-2 relative mx-2">
+        <select
+          [ngModel]="amPm()"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="onAmPmChange($event)"
+          id="am-pm-picker"
+          class="peer !p-2 block min-w-fit border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+        >
+          <option selected="">Select</option>
+          <option>AM</option>
+          <option>PM</option>
+        </select>
+      </div>
+
+      <span class="flex-1">(BST)</span>
+    </div>
+  </div>
+  }
+</div>

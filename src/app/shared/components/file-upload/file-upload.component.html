@@ -1,0 +1,61 @@
+<div class="upload-form max-w-96 mx-auto rounded-lg shadow-lg !border border-gray-300/70">
+  <h4 class="text-lg">{{uploadTitle()}}</h4>
+  @if(!isPreview()) {
+    <label for="file" (dragover)="handleDragOver($event)" (drop)="handleDrop($event)" class="p-4">
+      <i class="ph ph-upload"></i>
+      <img src="images/img-upload.png" alt="">
+      <span class="text-lg font-semibold">
+        Drag & drop or
+        <span>browse</span>
+        your files
+      </span>
+    </label>
+  
+    <input id="file" type="file" name="file" (change)="onFileSelected($event, null)" [accept]="fileTypesToLimit()"/>
+
+    <div class="result mb-5" [style.display]="outputBoxVisible ? 'flex' : 'none'">
+      <div class="file-details ">
+        <span class="file-name">{{ fileName }}</span>
+        <span class="file-name">{{ progress() }}</span>
+        @if (uploadStatus() === 200 || uploadStatus() === 201 || uploadStatus() === undefined) {
+        <div class="progress-bar">
+          <div class="progress" [style.width]="progress()"></div>
+        </div>
+        <span class="file-size">{{ fileSize }}</span>
+        }
+      </div>
+  
+      <div class="upload-result" [style.display]="uploadStatus() ? 'flex' : 'none'">
+        <span>{{ uploadResult }}</span>
+        @if (uploadStatus() === 200 || uploadStatus() === 201 || uploadStatus() === undefined) {
+          <i class="icon-check text-xs bg-[#008a22] rounded-full text-[#fff] p-1"></i>
+        } @else {
+          <i class="icon-times bg-[#E71313] rounded-full p-2.5 text-[#fff] text-xs"></i>
+        }
+      </div>
+    </div>
+  
+    @if (notes) {
+      <div>
+        <p class="text-xs mt-2 text-gray-400 italic">{{notes}}</p>
+      </div>
+    }
+  }
+
+  @if (isPreview()) {
+    <div class="flex flex-col items-center gap-4 my-3 ">
+      <div class=" max-w-lg mx-auto object-cover">
+        <img #preview alt="" style="max-width: 150px; object-fit: cover;">
+      </div>
+      <div class="flex items-center gap-4 ">
+        <button (click)="cancel()" type="button" style="height: 40px;margin-top: 20px;" class="btn-cancel">
+          Cancel
+        </button>
+        <button (click)="upload()" type="button" style="height: 40px;margin-top: 20px;" class="btn-success">
+          Upload
+        </button>
+    
+      </div>
+    </div>
+    }
+</div>

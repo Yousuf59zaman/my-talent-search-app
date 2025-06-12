@@ -1,0 +1,531 @@
+<div class="p-4 bg-[#F6F8FC] rounded-xl shadow border border-gray-200 relative">
+    <!-- Modified header section with proper border styling -->
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-xs xl:text-lg lg:text-xs  font-semibold">Advanced Search</h3>
+      <button class="flex items-center text-sm text-[#008A22] font-medium" 
+              (click)="saveFilterpopup()">
+        <img src="images/saveFilter2.svg" alt="" class="mr-2">
+        <span class="text-xs xl:text-sm lg:text-xs">Save this filter</span>
+      </button>
+      @if (isSaveFilterPopoverVisible()) {
+        <div class="absolute right-2 top-11 z-50 bg-white rounded-md shadow-lg w-72 p-4 border border-gray-200">
+          <button (click)="closeSaveFilterPopover()" 
+                  class="absolute -top-3 -right-3 bg-white text-gray-500 hover:text-gray-700 rounded-full w-6 h-6 flex items-center justify-center shadow border border-gray-200">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          
+          <input 
+            type="text" 
+            placeholder="Write Filter name" 
+            class="w-full border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            (input)="updateFilterName($event)"
+            [value]="filterNameInput()">
+          
+            @if(false){
+              <div class="flex items-center mb-2">
+                <input 
+                  type="checkbox" 
+                  id="saveAsNew" 
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  [checked]="saveAsNewFilter()"
+                  (change)="toggleSaveAsNew()">
+                <label for="saveAsNew" class="ml-2 block text-sm text-gray-700">Save as New Filter</label>
+              </div>
+            }
+          
+          <button 
+            class="w-full bg-[#0E73A9] hover:bg-[#0A5980] text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            (click)="saveFilter()"
+            >
+            Save Filter
+          </button>
+
+        </div>
+      }
+    </div>
+    
+    <!-- Added separate border div that spans full width -->
+    <div class="border-b border-gray-300 -mx-4 mb-4"></div>
+
+    <div class="mb-1">
+      <app-input-with-search
+        [label]="''"
+        [placeholder]="'SEARCH BY KEYWORDS OR NAME'"
+        [control]="keywordControl()"
+        [searchleft]="true"
+      ></app-input-with-search>
+    </div>
+
+    <div class="mb-4 -mx-[18px] flex items-center justify-between">
+      <!-- <img src="images/leftArrow.svg" alt="Previous" class="w-5 h-5 cursor-pointer">
+       -->
+      <div class="flex flex-1 justify-center gap-2">
+        <app-checkbox
+          [label]="'Experience'"
+          [allowLabelClick]="(filterForm.get('keyword')?.value) ? true : false"
+          [labelCss]="'!text-[11px]'"
+          [control]="isExperienceControl()">
+        </app-checkbox>
+        <app-checkbox
+          [label]="'Skills'"
+          [allowLabelClick]="(filterForm.get('keyword')?.value) ? true : false"
+          [labelCss]="'!text-[11px]'"
+          [control]="isSkillsControl()">
+        </app-checkbox>
+        <app-checkbox
+          [label]="'Education'"
+          [allowLabelClick]="(filterForm.get('keyword')?.value) ? true : false"
+          [labelCss]="'!text-[11px]'"
+          [control]="isEducationControl()">
+        </app-checkbox>
+      </div>
+      
+      <!-- <img src="images/rightArrow.svg" alt="Next" class="w-5 h-5 cursor-pointer"> -->
+    </div>
+
+    @if (isCorporateUser()) {
+      <div class="mb-4 border-t border-l border-r border-b rounded-t-md rounded-b-md border-gray-200 bg-white"> 
+        <div class="flex justify-between items-center p-3 rounded-t-md cursor-pointer"
+          (click)="toggleSection('quickFilters')"> 
+          <div class="flex items-center">
+            <img src="images/Thunder.svg" alt="" class="-mt-0.5">
+            <span class="ml-1 font-semibold text-[#0E73A9]">Quick Filters</span>
+          </div>
+      
+          <button type="button" class="text-[#0E73A9]">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                   class="h-5 w-5 transform transition-transform duration-200 text-white bg-[#0E73A9] rounded-full p-1"
+                   [class.rotate-180]="!isQuickFiltersOpen()"
+                   fill="none" 
+                   viewBox="0 0 24 24" 
+                   stroke="currentColor" 
+                   stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+              </svg>
+          </button>
+        </div>
+  
+        @if(isQuickFiltersOpen()) {
+          <div @expandCollapse class="px-3 pb-3 pt-1 bg-white border-b border-gray-200 rounded-b-md"> 
+            <div class="mb-3">
+              <app-select
+                [label]="'Last updated within'"
+                [control]="lastUpdatedControl()"
+                [placeholder]="'Select job type'"
+                [options]="lastUpdatedOptions"
+                [falseOption]="true"
+              >
+              </app-select>
+            </div>
+            <div class="mb-4">
+              <app-range-slider
+                [label]="'Age Range'"
+                [isTouched]="isTouchedAgeControl()"
+                [customInputClass]="'w-[60px]'"
+                [control]="ageControl()"
+                [isShowInput]="true"
+                [options]="ageRangeConfig"
+                ></app-range-slider>
+            </div>
+            <hr class="my-3 border-gray-200">
+  
+            <div class="mb-4">
+              <app-range-slider
+                [label]="'Year of Experience'"
+                [isTouched]="isTouchedExpControl()"
+                [customInputClass]="'w-[50px]'"
+                [isShowInput]="true"
+                [control]="experienceControl()"
+                [options]="expRangeConfig"
+                ></app-range-slider>
+            </div>
+            <hr class="my-3 border-gray-200">
+  
+            <div class="mb-4">
+              <app-range-slider
+                [label]="'Expected Salary'"
+                [isTouched]="isTouchedSalaryControl()"
+                [customInputClass]="'w-[80px]'"
+                [control]="salaryControl()"
+                [isShowInput]="true"
+                [options]="salaryRangeConfig"
+                ></app-range-slider>
+            </div>
+            <hr class="my-3 border-gray-200">
+              
+            <div class="mb-3 flex items-center">
+              <span class="font-medium text-sm mr-4">Gender</span> 
+              <app-radio
+                [radioItems]="genders"
+                [control]="genderControl()"
+                [isHorizontalOption]="true"
+              ></app-radio>
+            </div>
+            <div class="flex justify-between items-center pb-1">
+              <div class="flex items-center">
+                <span class="text-sm text-gray-900">Immediate Available</span>
+                <span class="text-xs text-gray-900 ml-1"></span>
+              </div>
+              <label class="relative cursor-pointer">
+                <input type="checkbox" 
+                       class="sr-only peer" 
+                       [formControl]="immediateAvailableControl()">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer 
+                     peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white 
+                     after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 
+                     after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                     peer-checked:bg-[#0E73A9]"></div>
+              </label>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!isCorporateUser()) {
+      <div class="mb-4">
+        <app-range-slider
+          [label]="'Year of experience'"
+          [customInputClass]="'w-[50px]'"
+          [isShowInput]="true"
+          [isTouched]="isTouchedExpControl()"
+          [control]="experienceControl()"
+          [options]="expRangeConfig"
+          ></app-range-slider>
+      </div>
+      <!-- <hr class="my-3 border-gray-200"> -->
+    }
+
+    <div class="mb-4">
+      <div class="flex items-center mb-1">
+        <img src="images/skills2.svg" alt="" class="w-5 h-5 mr-1">
+        <label class="block text-base font-bold text-[#0E73A9]">Skills</label>
+      </div>
+      <app-multi-select
+        [overLayVisibleOnlyOnFocus]="false"
+        [isBindSelectedItemsOnly]="true"
+        [isShowSelectedItemsAsChip]="true"
+        [isFullWidth]="true"
+        [control]="skillsControl()"
+        [multiplSelection]="false"
+        [maxSelection]="7"
+        [resetOnSelection]="true"
+        [placeholderText]="'Write skills'"
+        [checkBoxVisible]="false"
+        [overLayVisibleOnlyOnSuggestions]="true"
+        [suggestions]="filteredSkillSuggestions()"
+        (searchQuery)="onSkillQueryInput($event)"
+        (onSelect)="getUpdatedItem($event, multiSelectType.SkillsformField)"
+      ></app-multi-select>
+    </div>
+
+    <div class="mb-4">
+      <div class="flex items-center mb-1">
+        <img src="images/industry.svg" alt="" class="w-5 h-5 mr-1">
+        <label class="text-base font-bold text-[#0E73A9]">Industry/Organization</label>
+      </div><app-multi-select
+        [overLayVisibleOnlyOnFocus]="false"
+        [isBindSelectedItemsOnly]="true"
+        [isShowSelectedItemsAsChip]="true"
+        [isFullWidth]="true"
+        [control]="industriesControl()"
+        [multiplSelection]="false"
+        [maxSelection]="5"
+        [resetOnSelection]="true"
+        [placeholderText]="'Select industries'"
+        [checkBoxVisible]="false"
+        [overLayVisibleOnlyOnSuggestions]="true"
+        [suggestions]="filteredIndustrySuggestions()"
+        (searchQuery)="onIndustryQueryInput($event)"
+        (onSelect)="getUpdatedItem($event, multiSelectType.IndustryFormField)"
+      ></app-multi-select>
+    </div>
+
+    <div class="mb-4">
+      <div class="flex items-center mb-1">
+        <span class="icon-briefcase mr-2 text-[#0E73A9]"></span>
+        <label class="text-base font-bold text-[#0E73A9]">Expertise(Work Experience)</label>
+      </div> 
+      <app-multi-select
+        [overLayVisibleOnlyOnFocus]="false"
+        [isBindSelectedItemsOnly]="true"
+        [isShowSelectedItemsAsChip]="true"
+        [chipLabelCharacterCount]="25"
+        [isFullWidth]="true"
+        [control]="expertiseInputControl()"
+        [multiplSelection]="false"
+        [maxSelection]="3"
+        [resetOnSelection]="true"
+        [placeholderText]="'Write Expertise'"
+        [checkBoxVisible]="false"
+        [overLayVisibleOnlyOnSuggestions]="true"
+        [suggestions]="filteredExpertiseSuggestions()"
+        [isExtraParamInChip]="true"
+        (searchQuery)="onExpertiseQueryInput($event)"
+        (onSelect)="getUpdatedItem($event, multiSelectType.SkillsformField)"
+    ></app-multi-select>
+    </div> 
+
+  <div class="mb-4 bg-white rounded-md border border-gray-200"> 
+    <div class="flex justify-between items-center p-3 cursor-pointer"
+      (click)="toggleSection('academicFilters')"> 
+      <div class="flex items-center">
+        <span class="icon-graduation-cap mr-2 text-[#0E73A9]"></span>
+        <span class="font-semibold text-[#0E73A9]">Academic Filters</span>
+      </div>
+
+      <button type="button" class="text-[#0E73A9]">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             class="h-5 w-5 transform transition-transform duration-200 text-white bg-[#0E73A9] rounded-full p-1"
+             [class.rotate-180]="!isAcademicFiltersOpen()"
+             fill="none" 
+             viewBox="0 0 24 24" 
+             stroke="currentColor" 
+             stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+    </div>
+
+    @if(isAcademicFiltersOpen()) { 
+    <div @expandCollapse class="px-3 pt-3 bg-white rounded-b-md mb-4">
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700">Institute Name</label>
+        <app-multi-select
+          [overLayVisibleOnlyOnFocus]="false"
+          [isBindSelectedItemsOnly]="true"
+          [isShowSelectedItemsAsChip]="true"
+          [isFullWidth]="true"
+          [control]="institutesControl()" 
+          [multiplSelection]="false"
+          [maxSelection]="5"
+          [resetOnSelection]="true"
+          [placeholderText]="'Select institute'"
+          [checkBoxVisible]="false"
+          [overLayVisibleOnlyOnSuggestions]="true"
+          [suggestions]="filteredInstituteSuggestions()"
+          (searchQuery)="onInstituteQueryInput($event)"
+          (onSelect)="getUpdatedItem($event, multiSelectType.InstitutesFormField)"
+        ></app-multi-select>
+      </div> 
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700">Course/Major Subject</label>
+        <app-multi-select
+          [overLayVisibleOnlyOnFocus]="false"
+          [isBindSelectedItemsOnly]="true"
+          [isFullWidth]="true"
+          [isRenderSelectedItem]="false"
+          [isRadioAsSelectionType]="true"
+          [suggestions]="filteredCoursesSuggestions()"
+          [control]="coursesControl()"
+          [multiplSelection]="false"
+          [placeholderText]="'Search a course/major subject'"
+          (searchQuery)="filterCoursesLocally($event)">
+        </app-multi-select>
+      </div>
+      <hr class="my-2 border-gray-200">
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700 mb-2">Level of Education</label>
+        <div class="border border-gray-200 rounded-md max-h-48 overflow-y-auto p-3 space-y-3">
+          @for (eduLevel of suggestionsWithCounts()?.eduLevels; track eduLevel.value) {
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center">
+                <input 
+                  [id]="'edu-' + eduLevel.value" 
+                  name="education-level" 
+                  type="radio" 
+                  [value]="eduLevel.value"
+                  class="focus:ring-[#0E73A9] h-4 w-4 text-[#0E73A9] border-gray-300"
+                  [formControl]="educationControl()">
+                <label [for]="'edu-' + eduLevel.value" class="ml-3 block text-gray-700">{{eduLevel.label}}</label>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Wrap the checkbox in a div with pointer-events handling -->
+        <div [class.pointer-events-none]="!educationControl().value" class="mb-4">
+          <div [class.opacity-60]="!educationControl().value">
+            <app-checkbox
+              [label]="'Select this level as Highest Degree'"
+              [allowLabelClick]="!!educationControl().value"
+              [control]="isHighestDegreeControl()" 
+              [name]="'highest-degree'">
+            </app-checkbox>
+          </div>
+        </div>
+    </div>
+    }
+  </div>
+
+  <div class="mb-4 bg-white rounded-md border border-gray-200">
+    <div class="flex justify-between items-center py-3 pl-2 pr-3 cursor-pointer"
+     (click)="toggleSection('othersFilters')"> 
+      <div class="flex items-center">
+        <img src="images/others.svg" alt="" class="w-5 h-5 mr-1.5 ml-0.5">
+        <span class="font-semibold text-[#0E73A9]">Others Filters</span>
+      </div>
+
+      <button type="button" class="text-[#0E73A9]">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             class="h-5 w-5 transform transition-transform duration-200 text-white bg-[#0E73A9] rounded-full p-1"
+             [class.rotate-180]="!isOthersFiltersOpen()"
+             fill="none" 
+             viewBox="0 0 24 24" 
+             stroke="currentColor" 
+             stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+    </div>
+
+    @if(isOthersFiltersOpen()) { 
+      <div @expandCollapse class="px-3 pt-3 bg-white border-gray-200 rounded-b-md mb-4">
+        <div class="mb-3">
+          <label class="block text-sm font-bold text-gray-700">Location</label>
+          <app-multi-select
+            [overLayVisibleOnlyOnFocus]="false"
+            [isBindSelectedItemsOnly]="true"
+            [isShowSelectedItemsAsChip]="true"
+            [isFullWidth]="true"
+            [control]="locationControl()"
+            [multiplSelection]="false"
+            [maxSelection]="5"
+            [resetOnSelection]="true"
+            [placeholderText]="'Select a location'"
+            [checkBoxVisible]="false"
+            [overLayVisibleOnlyOnSuggestions]="true"
+            [suggestions]="filteredLocationSuggestions()"
+            (searchQuery)="onLocationQueryInput($event)"
+            (onSelect)="getUpdatedItem($event, multiSelectType.LocationFormField)"
+          ></app-multi-select>
+        </div>
+
+        <div class="mb-2">
+          <div class="flex flex-wrap gap-1">
+            <app-checkbox 
+              [label]="'Current'" 
+              [control]="isCurrentLocationControl()"
+              [labelCss]="'!text-[11px]'"
+              [name]="'currentLocation'">
+            </app-checkbox>
+            <app-checkbox 
+              [label]="'Permanent'" 
+              [control]="isPermanentLocationControl()"
+              [labelCss]="'!text-[11px]'"
+              [name]="'permanentLocation'">
+            </app-checkbox>
+            <app-checkbox 
+              [label]="'Preferred'" 
+              [control]="isPreferredLocationControl()"
+              [labelCss]="'!text-[11px]'"
+              [name]="'preferredLocation'">
+            </app-checkbox>
+          </div>
+        </div>
+
+        <div class="flex mb-4 border border-gray-200 rounded-md overflow-hidden">
+          <button
+              type="button"
+              class="flex-1 py-2 px-4 text-center text-sm font-medium focus:outline-none transition duration-150 ease-in-out"
+              [ngClass]="{
+                  'bg-[#1A5EA1] text-white': activeFilterType() === 'category',
+                  'bg-white text-gray-800': activeFilterType() !== 'category'
+              }"
+              (click)="setActiveFilterType('category')"
+          >
+              Category
+          </button>
+          <button
+              type="button"
+              class="flex-1 py-2 px-4 text-center text-sm font-medium focus:outline-none transition duration-150 ease-in-out border-l border-gray-200" [ngClass]="{
+                  'bg-[#1A5EA1] text-white': activeFilterType() === 'industry',
+                  'bg-white text-gray-800 ': activeFilterType() !== 'industry'
+              }"
+              (click)="setActiveFilterType('industry')"
+          >
+              Industry
+          </button>
+        </div>
+
+        @if(activeFilterType() === 'category') {
+          <div class="mb-4">
+            <!-- <label class="block text-sm font-bold text-gray-700">Category</label> -->
+            <app-multi-select
+            [isBindSelectedItemsOnly]="true"
+            [overLayVisibleOnlyOnFocus]="false"
+            [isFullWidth]="true"
+            [multiplSelection]="false"
+            [isRenderSelectedItem]="false"
+            [suggestions]="filteredCategorySuggestions()"
+            [control]="categoryControl()"
+            [isRadioAsSelectionType]="true"
+            [placeholderText]="'Select categories'"
+            (searchQuery)="filterCategoriesLocally($event)">
+          </app-multi-select>
+          </div>
+        }
+        @if(activeFilterType() === 'industry') {
+          <div class="mb-4">
+            <!-- <label class="block text-sm font-medium text-gray-700">Industry</label> -->
+            <app-multi-select
+              [isBindSelectedItemsOnly]="true"
+              [overLayVisibleOnlyOnFocus]="false"
+              [isFullWidth]="true"
+              [multiplSelection]="false"
+              [isRenderSelectedItem]="false"
+              [maxSelection]="1"
+              [suggestions]="filteredIndustryTypeSuggestions()"
+              [control]="industryTypeControl()"
+              [isRadioAsSelectionType]="true"
+              [placeholderText]="'Select industry'"
+              (searchQuery)="filterIndustryTypeLocally($event)">
+            </app-multi-select>
+          </div>
+        }
+
+        <!-- ToDo ==> Add a range slider for current salary when its done from back end -->
+        <!-- <div class="mb-4">
+          <app-range-slider
+            [label]="'Current Salary'"
+            [customInputClass]="'w-[80px]'"
+            [control]="currentSalaryControl()"
+            [isShowInput]="true"
+            [options]="salaryRangeConfig"
+            ></app-range-slider>
+        </div> -->
+
+        <hr class="my-2 border-gray-200">
+        <div class="mb-2">
+          <label class="block text-sm font-bold text-gray-700">Level of Position</label>
+          <div class="flex flex-wrap">
+            <app-checkbox [label]="'Entry Level (457k+)'" [control]="isEntryControl()" [labelCss]="'!text-[11px]'" [name]="'entry'"></app-checkbox>
+            <app-checkbox [label]="'Mid Level (324k+)'" [control]="isMidControl()" [labelCss]="'!text-[11px]'" [name]="'mid'"></app-checkbox>
+            <app-checkbox [label]="'Top Level (324k+)'" [control]="isTopControl()" [labelCss]="'!text-[11px]'" [name]="'top'"></app-checkbox>
+          </div>
+        </div>
+        @if (isCorporateUser()) {
+          <hr class="my-2 border-gray-200">
+          <div class="mb-4">
+            <!-- <app-checkbox [label]="'Video CV'" [control]="videoCVControl()"></app-checkbox> -->
+            <app-checkbox
+              [label]="'Retired army Person'"
+              [control]="isRetiredArmyControl()" [name]="'retiredArmy'">
+            </app-checkbox>
+            <app-checkbox
+              [label]="'Show Star Candidates'"
+              [control]="showStarCandidatesControl()">
+            </app-checkbox>
+            <app-checkbox
+              [label]="'Persons with Disabilities'"
+              [control]="personsWithDisabilitiesControl()">
+            </app-checkbox>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

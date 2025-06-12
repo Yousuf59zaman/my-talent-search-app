@@ -1,0 +1,78 @@
+<div class="rounded-lg border-[#DAE5EC] bg-white border max-w-[636px] p-3">
+    <div class="flex justify-between items-center mb-4">
+        <div>
+          <div class="flex flex-col gap-2">
+            @if (isPurchasedListEdit()) {
+                <div #editInput class="w-[400px]">
+                    <app-input
+                        [type]="'text'"
+                        [isNumericOnly]="false"
+                        [isDecimalAllowed]="true"
+                        [isRequired]="true"
+                        [placeholder]="'Please enter a title.'"
+                        [control]="purchasedTitleControl">
+                    </app-input>
+                        <app-input
+                        [type]="'text'"
+                        [isNumericOnly]="false"
+                        [isDecimalAllowed]="true"
+                        [classes]="'h-20'"
+                        [placeholder]="'Please enter a description.'"
+                        [control]="purchasedDetailsControl">
+                    </app-input> 
+                </div>
+            }@else {
+            <p class="text-base font-semibold text-[#212121]">{{purchasedTitle()}}</p>
+            <div class=" flex flex-wrap text-[13px] w-[400px]">
+             <p class="font-normal w-full break-words">{{purchasedDetails()}}</p>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="flex gap-3 justify-center items-center">
+            @if (isPurchasedListEdit()) {
+                <button class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]"
+                [disabled]="this.purchasedTitleControl.invalid"
+                (click)="toggleShortlistedCvEditButton()"
+                (click)="editPurchasedListSubmit()">
+                </button>
+            }@else{
+                <button (click)="toggleShortlistedCvEditButton()" class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center icon-edit text-[#008A22] text-sm">
+                </button>
+            }
+            <button class="w-10 h-10 bg-[#FDF2F2] rounded-full flex justify-center items-center" (click)="purchasedListCvDelete()">
+            <span class="icon-trash text-[#E02424]"></span>
+            </button>
+        </div>
+        
+    </div>
+    <div class="flex justify-between gap-4">
+        <div class="flex justify-between gap-1 bg-[#F3FEF6] border border-[#008A22] rounded-3xl py-2 px-2 w-[298px]">
+            <div class="flex items-center gap-1">
+                <span class="icon-purchased text-[#008A22]"></span>
+                <p class="text-sm">Already Purchased:@if(card().purchased !== 0){
+                     <a [href]="'https://corporate3.bdjobs.com/cv_search_PurchasedList.asp?hidListId='+card().listId" class="text-[#008A22] font-semibold underline">{{card().purchased}}</a>
+                    }
+                    @else {
+                        <span class="text-[#008A22] font-semibold">{{card().purchased}}</span>
+                    }
+                </p>
+            </div>
+        </div>
+        <div class="flex justify-between bg-[#E4EFFB] border border-[#0E73A9] rounded-3xl py-2 px-2 w-[298px]">
+            <div class="flex items-center gap-1">
+                <span class="icon-purchase-plus text-[#0E73A9]"></span> 
+                <p class="text-sm">Wish to Purchase: @if(card().wishlist !== 0){
+                    <a [href]="'https://corporate3.bdjobs.com/cv_search_wishtopurchaselist.asp?hidWishListId='+card().listId" class="text-[#0E73A9] font-semibold underline">{{card().wishlist}}</a>
+                } @else {
+                    <span class="text-[#0E73A9] font-semibold">{{card().wishlist}}</span>
+                }</p>
+            </div>
+            @if(card().wishlist !== 0){
+                <div>
+                    <button (click)="onClickBuyAll()" class="bg-[#0E73A9] text-white rounded-3xl text-xs w-16 h-6 ">Buy All</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="max-w-[418px] border border-[#0E73A9] rounded-lg cursor-pointer" (click)="getCategoryCountById(categoryData().id.toString())">
+    <div  class="flex justify-between p-4">
+        <div class="flex gap-3">
+            <div class="w-14 h-14 bg-[#0E73A9] flex justify-center items-center rounded-lg">
+                    @if(categoryData().id){
+                     <img  src="images/icon-{{ categoryData().id }}.svg" alt="" />
+                    }
+            </div>
+            <div class="text-[#212121]">
+                <p class="text-base">
+                  {{categoryData().categoryName}}
+                </p>
+                <p class="text-2xl font-semibold">
+                 {{categoryData().value | commaNumber}}
+                </p>
+            </div>
+        </div>
+        @if (isExpand()) {
+            <div>
+                <a (click)="redirectToCVBank('category', categoryData())" class="icon-right-arrow-big text-[#0E73A9]"></a> 
+            </div>
+        }
+        
+    </div>
+        @if(isExpand()){
+            <div  @expandCollapse class="grid grid-cols-3 p-4 gap-4 border-t border-[#DAE5EC]">
+                <a (click)="redirectToCVBank('recent', categoryData())"  class="flex flex-col items-center gap-2 p-1">
+                    <div class="w-10 h-10 flex justify-center items-center bg-[#E4EFFB] rounded-full">
+                        <img src="images/file.svg" alt="">
+                    </div>
+                    @let countLastUpdated = categoryById()?.lastUpdated?.lastUpdated ?? 0;
+                    <div class="text-[#000] text-center">
+                        @if (countLastUpdated === 0) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">0 CV</span>
+                        </p>
+                        } @else if (countLastUpdated === 1) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">1 CV</span>
+                        </p>
+                        } @else {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">{{ countLastUpdated | commaNumber }}</span> CVs
+                        </p>
+                        }
+                        <p class="text-sm">
+                            Recently Updated
+                        </p>
+                    </div>
+                </a>
+                <a (click)="redirectToCVBank('immediate', categoryData())" class="flex flex-col items-center gap-2  border-l border-r border-[#DAE5EC] p-1">
+                    <div class="w-10 h-10 flex justify-center items-center bg-[#E4EFFB] rounded-full">
+                        <img src="images/clock.svg" alt="">
+                    </div>
+                    @let countImmediate = categoryById()?.ImmediatelyAvailable?.ImmediatelyAvailable ?? 0;
+                    <div class="text-[#000] text-center">
+                        @if (countImmediate === 0) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">0 CV</span>
+                        </p>
+                        } @else if (countImmediate === 1) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">1 CV</span>
+                        </p>
+                        } @else {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">{{ countImmediate | commaNumber }}</span> CVs
+                        </p>
+                        }
+                        <p class="text-sm">
+                            Immediately Available
+                        </p>
+                    </div>
+                </a>
+                <a (click)="redirectToCVBank('star', categoryData())"  class="flex flex-col items-center justify-center gap-2 p-1">
+                    <div class="w-10 h-10 flex justify-center items-center bg-[#E4EFFB] rounded-full">
+                        <img src="images/manWithStar.svg" alt="">
+                    </div>
+                    @let countStar = categoryById()?.StarCandidate?.StarCandidate ?? 0;
+                    <div class="text-[#000] text-center">
+                        @if (countStar === 0) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">0 CV</span>
+                        </p>
+                        } @else if (countStar === 1) {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">1 CV</span>
+                        </p>
+                        } @else {
+                        <p class="text-[#0E73A9]">
+                            <span class="font-semibold">{{ countStar | commaNumber }}</span> CVs
+                        </p>
+                        }
+                        <p class="text-sm">
+                            Star Candidates
+                        </p>
+                    </div>
+                </a>
+            </div>
+        }
+    <button class="bg-[#E4EFFB] w-full border border-[#DAE5EC] rounded-bl-lg rounded-br-lg">
+        <span class="text-[#0E73A9] " [ngClass]="isExpand()? 'icon-angle-top':'icon-angle-bottom' "></span>
+    </button>
+</div>

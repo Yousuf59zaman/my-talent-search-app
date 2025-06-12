@@ -1,0 +1,22 @@
+<div class="p-4" >
+        <div class="w-full bg-[#EEF0F2] border rounded-full p-1 flex justify-between max-w-lg">
+                @for (tab of tabs; track tab.name) {
+                  <button
+                    class="flex-1 py-2 text-center text-[#595959] rounded-full transition font-medium text-sm"
+                    [class.bg-[#0E73A9]]="activeTab().name === tab.name"
+                    [class.text-white]="activeTab().name === tab.name"
+                    (click)="setActiveTab(tab)"
+                  >
+                    {{ tab.name }}
+                    <!-- (click)="activeTab.set(tab)" -->
+                  </button>
+                }
+        </div>
+        
+        <!-- Content -->
+
+            <div>
+                <ng-container *ngComponentOutlet="activeTab().component"></ng-container>
+            </div>
+
+</div>

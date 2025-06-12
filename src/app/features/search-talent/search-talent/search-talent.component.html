@@ -1,0 +1,529 @@
+<div class="p-4">
+  @if (IsCorporateUser()) {
+    <h1 class="text-[#212121] text-2xl font-medium text-center mb-6">
+      Search Among <span class="text-[#0E73A9] font-bold text-2xl">5M+</span> Talents
+    </h1>
+    <form class="max-w-7xl mx-auto"  [formGroup]="searchTalentForm">
+          <div class="relative max-w-5xl mx-auto mb-4">
+            <span class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 icon-search">
+            </span>
+            <input
+              #searchInput
+              type="text"
+              placeholder="Search Talents by keywords or name"
+              class="w-full h-14 pl-12 pr-6 focus:outline-none focus:ring-0 focus:border-[#DAE5EC]"
+              [ngClass] = "showHistory() ? ' border-[#DAE5EC] rounded-t-3xl': 'border-[#DAE5EC] rounded-full' "
+              (focus)="showHistory.set(searchHistory().length > 0)"
+              (input)="onTyping()"
+              [formControl] = "controlKeyWords()"
+            />
+    
+            @if (showHistory()) {
+              <div  class="absolute w-full bg-white border border-[#DAE5EC] rounded-b-3xl z-10 pb-5">
+                @for (history of searchHistory(); track $index) {
+                  <div (click)="applySearchHistory($index)" class="flex justify-between items-center px-6 py-3 hover:bg-gray-100 cursor-pointer">
+                    <div class="text-sm flex items-center gap-3 text-[#595959]">
+                      <span class="icon-clock"></span>
+                      <p [hidden]="!history.keywords" class="font-medium"><strong>Keywords:</strong> {{ history.keywords }}</p>
+                      <p [hidden]="!history.filters">
+                        <strong>Filters:</strong> {{ history.filters }}
+                      </p>
+                    </div>
+                    <button (click)="clearHistory($index); $event.stopPropagation()" class="text-[#595959]">
+                      ✖
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>  
+         <!-- Search box End--> 
+         <!-- Filter Search -->
+          <div class="flex items-center justify-center gap-5 max-w-7xl mb-6">
+            <div #age class="relative">
+              @if (isAgePopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('age')" >
+                    <span class="icon-account-outline text-xl"></span>
+                    <span class="font-medium">Age</span>
+                    <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top" >      
+                    </span>
+                  </button>
+                </div>
+                <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg p-4 rounded-lg w-64">
+                  <p class="font-semibold mb-1 ml-1">Age Range</p>
+                  <app-range-slider
+                    [isShowInput]="true"
+                    [isTouched]="true"
+                    [control]="controlAgeRange()"
+                    [options]="ageRangeOptions()"
+                  ></app-range-slider>
+                </div>
+              } @else {
+                @let isSelectedAge = triggeredBy().includes('Age') && (controlAgeRange().value[0] != defaultAge[0] || controlAgeRange().value[1] != defaultAge[1]);
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="isSelectedAge ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="isSelectedAge ? 'text-[#0F6DDB]':'text-[#212121]'">
+                    <span (click)="this.togglePopover('age')" class="icon-account-outline text-xl"></span>
+                    <span (click)="this.togglePopover('age')" class="font-medium">{{isSelectedAge ? controlAgeRange().value[0] + 'y - ' + controlAgeRange().value[1] + 'y' : 'Age'}}</span>
+                    @if (isSelectedAge) {
+                      <span (click)="clearSelectedFilter('Age')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;  
+                      </span>
+                    } @else {
+                      <span (click)="isAgePopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                      </span>
+                    }
+                  </button>
+                </div>
+              }
+            </div>
+            <div #experience class="relative">
+              @if (isExperiencePopoverOpen()) {
+              <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('experience')">
+                    <span class="icon-briefcase-account-outline"></span>
+                    <span class="font-medium">Experience</span>
+                    <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
+                    </span>
+                </button>
+              </div>
+              <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg p-4 rounded-lg w-64">
+                <p class="font-semibold mb-1 ml-1">Year of Experience</p>
+                <app-range-slider
+                  [isShowInput]="true"
+                  [isTouched]="true"
+                  [control]="controlExpRange()"
+                  [options]="expRangeOptions()"
+                ></app-range-slider>
+              </div>
+              }@else {
+                @let isSelectedExp = triggeredBy().includes('Experience') && (controlExpRange().value[0] != defaultExpRange[0] || controlExpRange().value[1] != defaultExpRange[1]);
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="isSelectedExp ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="isSelectedExp ? 'text-[#0F6DDB]':'text-[#212121]'">
+                    <span (click)="this.togglePopover('experience')" class="icon-briefcase-account-outline"></span>
+                    <span (click)="this.togglePopover('experience')" class="font-medium">{{isSelectedExp ? controlExpRange().value[0] + 'y - ' + controlExpRange().value[1]+'y' : 'Experience'}}</span>
+                    @if (isSelectedExp) {
+                      <span (click)="clearSelectedFilter('Experience')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;   
+                      </span>
+                    } @else {
+                      <span (click)="isExperiencePopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                      </span>
+                    }
+                  </button>
+                </div>
+              }
+            </div>
+            <div #industryType class="relative">
+              @if (isIndustryTypePopoverOpen()) {
+              <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('industryType')">
+                    <span class="icon-domain"></span>
+                    <span class="font-medium">Industry</span>
+                    <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
+                    </span>
+                </button>
+              </div>
+              <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64">
+                <p class="font-semibold my-1 ml-1">Industry Type/Business Organization</p>
+                <app-multi-select
+                  [placeholderText]="'Search Industry'" 
+                  [isFullWidth]="true"
+                  [overLayVisibleOnlyOnSuggestions]="true" 
+                  [checkBoxVisible]="false" 
+                  [multiplSelection]="false"
+                  [resetOnSelection]="false"
+                  [overLayVisibleOnlyOnFocus]="false"
+                  [isRenderSelectedItem]="true"
+                  [isBindSelectedItemsOnly]="true"
+                  [suggestions]="industryTypeSuggestions" 
+                  (searchQuery)="onIndustryTypeQueryInput($event)"
+                  (onSelect)="onIndustryTypeSelect($event)"
+                  [control]="controlIndustryType()">
+                </app-multi-select>
+              </div>
+              } @else {
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="triggeredBy().includes('IndustryType') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('IndustryType') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                      <span (click)="this.togglePopover('industryType');" class="icon-domain"></span>
+                  @let industryType = controlIndustryType() && controlIndustryType().value ? controlIndustryType().value : [];
+                  @let industryLabel = industryType && industryType.length ? industryType[0].value : 'Industry';
+                      <span (click)="this.togglePopover('industryType');" class="font-medium">{{triggeredBy().includes('IndustryType')? (industryLabel | truncate:10 ) :'Industry'}}</span>
+                      @if (triggeredBy().includes('IndustryType')) {
+                        <span (click)="clearSelectedFilter('IndustryType')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;      
+                        </span>
+                      } @else {
+                        <span (click)="isIndustryTypePopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                        </span>
+                      }
+                  </button>
+                </div>
+              }
+            </div>
+            <div #eduInstitute class="relative">
+              @if (isEduInstitutePopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduInstitute')">
+                      <span class="icon-school-outline"></span>
+                      <span class="font-medium">Institute</span>
+                      <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
+                      </span>
+                  </button>
+                </div>
+                <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64">
+                  <p class="font-semibold my-1 ml-1">Educational Institute</p>
+                  <app-multi-select
+                    [overLayVisibleOnlyOnFocus]="false"
+                    [isBindSelectedItemsOnly]="true"
+                    [isShowSelectedItemsAsChip]="false"
+                    [isFullWidth]="true"
+                    [control]="controlEduInstitute()" 
+                    [multiplSelection]="false"
+                    [isRenderSelectedItem]="false"
+                    [isBindSelectedItemsOnly]="true"
+                    [resetOnSelection]="true"
+                    [placeholderText]="'Search Institute'"
+                    [checkBoxVisible]="false"
+                    [overLayVisibleOnlyOnSuggestions]="true"
+                    [suggestions]="filteredInstituteSuggestions()"
+                    (searchQuery)="onInstituteQueryInput($event)"
+                    (onSelect)="onEducationInstituteSelect($event)"
+                  ></app-multi-select>
+                </div>
+              } @else {
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="triggeredBy().includes('EduInstitute') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('EduInstitute') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                      <span (click)="this.togglePopover('eduInstitute');" class="icon-school-outline"></span>
+                  @let eduInstitute = controlEduInstitute() && controlEduInstitute().value ? controlEduInstitute().value : [];
+                  @let instituteLabel = eduInstitute && eduInstitute.length ? eduInstitute[0].label : 'Institute';
+                      <span (click)="this.togglePopover('eduInstitute');" class="font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Institute'}}</span>
+                      @if (triggeredBy().includes('EduInstitute')) {
+                        <span (click)="clearSelectedFilter('EduInstitute')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;      
+                        </span>
+                      } @else {
+                        <span (click)="isEduInstitutePopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                        </span>
+                      }
+                  </button>
+                </div>
+              }
+            </div>
+            <div #eduSubject class="relative">
+              @if (isEduSubjectPopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduSubject')">
+                    <span class="icon-subject"></span>
+                    <span class="font-medium">Subject</span>
+                    <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
+                    </span>
+                  </button>
+                </div>
+                <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64">
+                  <p class="font-semibold my-1 ml-1">Educational Subject</p>
+                  <app-multi-select
+                  [placeholderText]="'Search Subject'" 
+                  [isFullWidth]="true"
+                  [overLayVisibleOnlyOnSuggestions]="true" 
+                  [checkBoxVisible]="false" 
+                  [multiplSelection]="false"
+                  [resetOnSelection]="false"
+                  [overLayVisibleOnlyOnFocus]="false"
+                  [isRenderSelectedItem]="true"
+                  [isBindSelectedItemsOnly]="true"
+                  [suggestions]="eduSubjectSuggestions" 
+                  (searchQuery)="onEduSubjectQueryInput($event)"
+                  (onSelect)="onEducationSubjectSelect($event)"
+                  [control]="controlEduSubject()">
+                  </app-multi-select>
+                </div>
+              }  @else {
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="triggeredBy().includes('EduSubject') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('EduSubject') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                      <span (click)="this.togglePopover('eduSubject');" class="icon-subject"></span>
+                  @let eduSubject = controlEduSubject() && controlEduSubject().value ? controlEduSubject().value : [];
+                  @let eduSubjectLabel = eduSubject && eduSubject.length ? eduSubject[0].value : 'Subject';
+                      <span (click)="this.togglePopover('eduSubject');" class="font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Subject'}}</span>
+                      @if (triggeredBy().includes('EduSubject')) {
+                        <span (click)="clearSelectedFilter('EduSubject')" class="w-5 h-5 rounded-full bg-white font-semibold text-base flex justify-center items-center  text-red-400">&times;      
+                        </span>
+                      } @else {
+                        <span (click)="isEduSubjectPopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                        </span>
+                      }
+                  </button>
+                </div>
+              }
+            </div>
+            <div #salary class="relative">
+              @if (isSalaryPopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('salary')">
+                    <span class="icon-cash text-sm"></span>
+                    <span class="font-medium">Salary</span>
+                    <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
+                    </span>
+                  </button>
+                </div>
+                <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg p-4 rounded-lg w-64">
+                  <p class="font-semibold mb-1 ml-1">Expected Salary (BDT)</p>
+                  <app-range-slider
+                  [isShowInput]="true"
+                  [isTouched]="true"
+                  [control]="controlSalaryRange()"
+                  [options]="salaryRangeOptions()"
+                  ></app-range-slider>
+                </div>
+              }@else {
+                @let isSelectedSalary = triggeredBy().includes('Salary') && (controlSalaryRange().value[0] != defaultSalary[0] || controlSalaryRange().value[1] != defaultSalary[1]);
+                <div class="w-fit p-1 rounded-3xl" [ngClass]="isSelectedSalary ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                  <button class="flex items-center justify-center gap-2" [ngClass]="isSelectedSalary ? 'text-[#0F6DDB]':'text-[#212121]'">
+                    <span (click)="this.togglePopover('salary')" class="icon-cash text-sm"></span>
+                    <span (click)="this.togglePopover('salary')" class="font-medium">{{isSelectedSalary ? ((controlSalaryRange().value[0])| commaNumber)  + ' - ' + ((controlSalaryRange().value[1])|commaNumber) : 'Salary'}}</span>
+                    @if (isSelectedSalary) {
+                      <span (click)="clearSelectedFilter('Salary')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;      
+                      </span>
+                    } @else {
+                      <span (click)="isSalaryPopoverOpen.set(true)" class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-bottom">      
+                      </span>
+                    }
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+            <div class="flex justify-center items-center">
+              <button (click)=" submitForm($event)" class="flex justify-center items-center  bg-[#008A22] text-white rounded-full w-[191px] h-[56px] "><span class="font-bold text-lg mr-1">{{ formatDisplayNumber(displayCount()) }}</span>Talents 
+                @if(isCrunching() !== true){
+                <span class="ml-6 flex justify-center items-center icon-right-arrow-big w-7 h-7 bg-white rounded-full text-[#008A22]"></span>
+              }
+              </button>
+            </div>
+    </form>
+  }@else {
+    <form class="max-w-3xl mx-auto"  [formGroup]="searchTalentForm">
+          <div class="relative max-w-2xl mx-auto mb-4">
+            <span class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 icon-search">
+            </span>
+            <input
+              #searchInput
+              type="text"
+              placeholder="Search Talents by keywords or name"
+              class="w-full h-14 pl-12 pr-6 focus:outline-none focus:ring-0 focus:border-[#DAE5EC]"
+              [ngClass] = "showHistory() ? ' border-[#DAE5EC] rounded-t-3xl': 'border-[#DAE5EC] rounded-full' "
+              (focus)="showHistory.set(searchHistory().length > 0)"
+              (input)="onTyping()"
+              [formControl] = "controlKeyWords()"
+            />
+    
+            @if (showHistory()) {
+              <div  class="absolute w-full bg-white border border-[#DAE5EC] rounded-b-3xl z-10 pb-5">
+                @for (history of searchHistory(); track $index) {
+                  <div (click)="applySearchHistory($index)" class="flex justify-between items-center px-6 py-3 hover:bg-gray-100 cursor-pointer">
+                    <div class="text-sm flex items-center gap-3 text-[#595959]">
+                      <span class="icon-clock"></span>
+                      <p [hidden]="!history.keywords" class="font-medium"><strong>Keywords:</strong> {{ history.keywords }}</p>
+                      <p [hidden]="!history.filters">
+                        <strong>Filters:</strong> {{ history.filters }}
+                      </p>
+                    </div>
+                    <button (click)="clearHistory($index); $event.stopPropagation()" class="text-[#595959]">
+                      ✖
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>  
+         <!-- Search box End--> 
+         <!-- Filter Search -->
+          <div class="flex flex-col justify-center gap-5 md:flex-row my-4">
+            <div class="flex justify-center md:flex-row gap-2">
+              <div #experience class="relative">
+                @if (isExperiencePopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('experience')">
+                      <span class="text-xs md:text-base icon-briefcase-account-outline"></span>
+                      <span class="text-xs md:text-base font-medium">Experience</span>
+                      <span class="text-xs flex justify-center items-center icon-angle-top">      
+                      </span>
+                  </button>
+                </div>
+                <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg p-4 rounded-lg w-64 z-20">
+                  <p class="font-semibold mb-1 ml-1">Year of Experience</p>
+                  <app-range-slider
+                    [isShowInput]="true"
+                    [isTouched]="true"
+                    [control]="controlExpRange()"
+                    [options]="expRangeOptions()"
+                  ></app-range-slider>
+                </div>
+                }@else {
+                  @let isSelectedExp = triggeredBy().includes('Experience') && (controlExpRange().value[0] != defaultExpRange[0] || controlExpRange().value[1] != defaultExpRange[1]);
+                  <div class="w-fit px-3 py-1 rounded-3xl" [ngClass]="isSelectedExp ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                    <button class="text-xs md:text-base flex items-center justify-center gap-2" [ngClass]="isSelectedExp ? 'text-[#0F6DDB]':'text-[#212121]'">
+                      <span (click)="this.togglePopover('experience')" class="icon-briefcase-account-outline"></span>
+                      <span (click)="this.togglePopover('experience')" class="text-xs md:text-base font-medium">{{isSelectedExp ? controlExpRange().value[0] + 'y - ' + controlExpRange().value[1]+'y' : 'Experience'}}</span>
+                      @if (isSelectedExp) {
+                        <span (click)="clearSelectedFilter('Experience')" class="font-bold text-base flex justify-center items-center  text-red-400">&times;   
+                        </span>
+                      } @else {
+                        <span (click)="isExperiencePopoverOpen.set(true)" class="text-xs flex justify-center items-center icon-angle-bottom">      
+                        </span>
+                      }
+                    </button>
+                  </div>
+                }
+              </div>
+              <div #industryType class="relative">
+                @if (isIndustryTypePopoverOpen()) {
+                <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
+                  <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('industryType')">
+                      <span class="text-xs md:text-base icon-domain"></span>
+                      <span class="text-xs md:text-base font-medium">Industry</span>
+                      <span class="text-xs flex justify-center items-center icon-angle-top">      
+                      </span>
+                  </button>
+                </div>
+                <div class="absolute -left-32 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64 z-20">
+                  <p class="font-semibold my-1 ml-1">Industry Type/Business Organization</p>
+                  <app-multi-select
+                    [placeholderText]="'Search Industry'" 
+                    [isFullWidth]="true"
+                    [overLayVisibleOnlyOnSuggestions]="true" 
+                    [checkBoxVisible]="false" 
+                    [multiplSelection]="false"
+                    [resetOnSelection]="false"
+                    [overLayVisibleOnlyOnFocus]="false"
+                    [isRenderSelectedItem]="true"
+                    [isBindSelectedItemsOnly]="true"
+                    [suggestions]="industryTypeSuggestions" 
+                    (searchQuery)="onIndustryTypeQueryInput($event)"
+                    (onSelect)="onIndustryTypeSelect($event)"
+                    [control]="controlIndustryType()">
+                  </app-multi-select>
+                </div>
+                } @else {
+                  <div class="w-fit px-3 py-1 rounded-3xl" [ngClass]="triggeredBy().includes('IndustryType') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                    <button class="text-xs md:text-base flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('IndustryType') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                        <span (click)="this.togglePopover('industryType');" class="icon-domain"></span>
+                    @let industryType = controlIndustryType() && controlIndustryType().value ? controlIndustryType().value : [];
+                    @let industryLabel = industryType && industryType.length ? industryType[0].value : 'Industry';
+                        <span (click)="this.togglePopover('industryType');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('IndustryType')? (industryLabel | truncate:10 ) :'Industry'}}</span>
+                        @if (triggeredBy().includes('IndustryType')) {
+                          <span (click)="clearSelectedFilter('IndustryType')" class="font-bold text-base flex justify-center items-center  text-red-400">&times;      
+                          </span>
+                        } @else {
+                          <span (click)="isIndustryTypePopoverOpen.set(true)" class="text-xs flex justify-center items-center icon-angle-bottom">      
+                          </span>
+                        }
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="flex justify-center md:flex-row gap-2">
+              <div #eduInstitute class="relative">
+                @if (isEduInstitutePopoverOpen()) {
+                  <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
+                    <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduInstitute')">
+                        <span class="text-xs md:text-base icon-school-outline"></span>
+                        <span class="text-xs md:text-base font-medium">Institute</span>
+                        <span class="text-xs flex justify-center items-center icon-angle-top">      
+                        </span>
+                    </button>
+                  </div>
+                  <div class="absolute left-0 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64">
+                    <p class="font-semibold my-1 ml-1">Educational Institute</p>
+                    <app-multi-select
+                      [overLayVisibleOnlyOnFocus]="false"
+                      [isBindSelectedItemsOnly]="true"
+                      [isShowSelectedItemsAsChip]="false"
+                      [isFullWidth]="true"
+                      [control]="controlEduInstitute()" 
+                      [multiplSelection]="false"
+                      [isRenderSelectedItem]="false"
+                      [isBindSelectedItemsOnly]="true"
+                      [resetOnSelection]="true"
+                      [placeholderText]="'Search Institute'"
+                      [checkBoxVisible]="false"
+                      [overLayVisibleOnlyOnSuggestions]="true"
+                      [suggestions]="filteredInstituteSuggestions()"
+                      (searchQuery)="onInstituteQueryInput($event)"
+                      (onSelect)="onEducationInstituteSelect($event)"
+                    ></app-multi-select>
+                  </div>
+                } @else {
+                  <div class="w-fit px-3 py-1 rounded-3xl" [ngClass]="triggeredBy().includes('EduInstitute') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                    <button class="text-xs md:text-base flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('EduInstitute') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                        <span (click)="this.togglePopover('eduInstitute');" class="icon-school-outline"></span>
+                    @let eduInstitute = controlEduInstitute() && controlEduInstitute().value ? controlEduInstitute().value : [];
+                    @let instituteLabel = eduInstitute && eduInstitute.length ? eduInstitute[0].label : 'Institute';
+                        <span (click)="this.togglePopover('eduInstitute');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Institute'}}</span>
+                        @if (triggeredBy().includes('EduInstitute')) {
+                          <span (click)="clearSelectedFilter('EduInstitute')" class="font-bold text-base flex justify-center items-center  text-red-400">&times;      
+                          </span>
+                        } @else {
+                          <span (click)="isEduInstitutePopoverOpen.set(true)" class="text-xs flex justify-center items-center icon-angle-bottom">      
+                          </span>
+                        }
+                    </button>
+                  </div>
+                }
+              </div>
+              <div #eduSubject class="relative">
+                @if (isEduSubjectPopoverOpen()) {
+                  <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
+                    <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduSubject')">
+                      <span class="text-xs md:text-base icon-subject"></span>
+                      <span class="text-xs md:text-base font-medium">Subject</span>
+                      <span class="text-xs flex justify-center items-center icon-angle-top">      
+                      </span>
+                    </button>
+                  </div>
+                  <div class="absolute -left-32 mt-2 bg-[#FFF] border border-[#DDD] shadow-lg px-2 pb-2 rounded-lg w-64 z-20">
+                    <p class="font-semibold my-1 ml-1">Educational Subject</p>
+                    <app-multi-select
+                    [placeholderText]="'Search Subject'" 
+                    [isFullWidth]="true"
+                    [overLayVisibleOnlyOnSuggestions]="true" 
+                    [checkBoxVisible]="false" 
+                    [multiplSelection]="false"
+                    [resetOnSelection]="false"
+                    [overLayVisibleOnlyOnFocus]="false"
+                    [isRenderSelectedItem]="true"
+                    [isBindSelectedItemsOnly]="true"
+                    [suggestions]="eduSubjectSuggestions" 
+                    (searchQuery)="onEduSubjectQueryInput($event)"
+                    (onSelect)="onEducationSubjectSelect($event)"
+                    [control]="controlEduSubject()">
+                    </app-multi-select>
+                  </div>
+                }  @else {
+                  <div class="w-fit px-3 py-1 rounded-3xl" [ngClass]="triggeredBy().includes('EduSubject') ? 'bg-[#E4EFFB]':'bg-[#E5E7EB]'">
+                    <button class="text-xs md:text-base flex items-center justify-center gap-2" [ngClass]="triggeredBy().includes('EduSubject') ? 'text-[#0F6DDB]':'text-[#212121]'" >
+                        <span (click)="this.togglePopover('eduSubject');" class="icon-subject"></span>
+                    @let eduSubject = controlEduSubject() && controlEduSubject().value ? controlEduSubject().value : [];
+                    @let eduSubjectLabel = eduSubject && eduSubject.length ? eduSubject[0].value : 'Subject';
+                        <span (click)="this.togglePopover('eduSubject');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Subject'}}</span>
+                        @if (triggeredBy().includes('EduSubject')) {
+                          <span (click)="clearSelectedFilter('EduSubject')" class="font-semibold text-base flex justify-center items-center  text-red-400">&times;      
+                          </span>
+                        } @else {
+                          <span (click)="isEduSubjectPopoverOpen.set(true)" class="text-xs flex justify-center items-center icon-angle-bottom">      
+                          </span>
+                        }
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+            <div class="flex justify-center items-center">
+              <button (click)=" submitForm($event)" class="flex justify-center items-center  bg-[#0E73A9] text-white rounded-full w-[191px] h-[56px] "><span class="font-bold text-lg mr-1">{{ formatDisplayNumber(displayCount()) }}</span>Talents 
+                @if(isCrunching() !== true){
+                <span class="ml-6 flex justify-center items-center icon-right-arrow-big w-7 h-7 bg-white rounded-full text-[#0E73A9]"></span>
+              }
+              </button>
+            </div>
+    </form>
+  }
+ 
+</div>

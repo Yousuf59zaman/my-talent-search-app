@@ -1,0 +1,39 @@
+<app-nav
+  (navbarDataLoaded)="onNavbarDataLoaded($event)">
+</app-nav>
+
+@if (!isContentLoad()) {
+  <div class="px-2 md:px-0 max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-2 2xl:mx-auto  2xl:pe-4">
+    <app-home-skeleton-loader />
+  </div>
+} @else {
+  <router-outlet />
+}
+
+@if(navbarData?.salesPersonContact){
+  <app-avatar [salesPerson]="navbarData"></app-avatar>
+  }
+<app-footer #footer></app-footer>
+
+<app-confirmation-modal
+  [class.hidden]="!isEnableConfirmation()"
+  [isOpen]="isOpen()"
+  (closeModal)="toggleModal($event)"
+  (saveAction)="saveChanges($event)"
+>
+</app-confirmation-modal>
+
+<div
+  class="fixed inset-0 flex items-center justify-center z-[99999] bg-opacity-5 bg-[#f9f9f9] backdrop-blur-[2px]"
+  [class.hidden]="!isLoading()"
+>
+  <div class="loader"></div>
+</div>
+
+<app-modal-container
+  [componentRef]="selectedComponent()"
+  [attributes]="modalAttributes()"
+  [inputs]="inputs()"
+  [isClose]="isClose()"
+  (onClose)="onCloseEvent($event)"
+></app-modal-container>

@@ -1,0 +1,805 @@
+@if (IsCorporateUser()) {
+  <div>
+    <div class="bg-[#e8eff3] py-[10px]">
+      <div
+        class="max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-2 2xl:mx-auto  2xl:pe-4">
+        <div class="flex items-center justify-between pl-[14px]">
+          <div class="">
+            <a class="" href="https://recruiter.bdjobs.com">
+              <img src="https://Corporate3.bdjobs.com/images/bdjobs-recruiter-logo.svg" class="w-[256px]" />
+            </a>
+          </div>
+
+          <div>
+            <a href="https://corporate3.bdjobs.com/services.asp?from=recruiter"
+              class="py-3 px-[18px] inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-[#0F6DDB] text-white disabled:opacity-50 disabled:pointer-events-none">Service
+              Packages
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- main navigation -->
+
+    <header
+      class="w-full bg-white border-b border-gray-300 shadow-sm text-sm py-2">
+      <nav class="2xl:max-w-[82rem] mx-auto 2xl:px-4 xl:px-[66px] w-full sm:flex sm:items-center sm:justify-between">
+        <div class="flex items-center justify-between gap-4">
+          <a class="font-bold text-base text-[#263238] whitespace-nowrap 
+              hover:underline hover:decoration-[2px] hover:underline-offset-[21px] hover:text-[#0e73a9]"
+            href="https://recruiter.bdjobs.com/dashboard" aria-current="page">
+            Job Dashboard
+          </a>
+          <div class="relative w-32 h-8">
+            <img [routerLink]="['/']" class="w-full h-full" src="images/Talent Search Logo-02.svg" alt="">
+            <div class="absolute top-[41.5px] w-32 h-0.5 bg-[#0E73A9]"></div>
+          </div>
+    
+          <div class="block md:hidden">
+            <button (click)="this.isCorporeteMenuOpen.set(!this.isCorporeteMenuOpen())" class="p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm">
+              @if(isCorporeteMenuOpen()){
+              <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+              }@else {
+              <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" x2="21" y1="6" y2="6" />
+                <line x1="3" x2="21" y1="12" y2="12" />
+                <line x1="3" x2="21" y1="18" y2="18" />
+              </svg>
+              }
+            </button>
+          </div>
+        </div>
+        <div class="hidden md:flex flex-row items-center gap-4">
+          @if(!loadingJobPostingService()){
+          <!-- Job posting Access -->
+          <div #jobPostingDropdown class="relative">
+            <button (click)="this.isCorporetJobPostingDropdownOpen.set(!this.isCorporetJobPostingDropdownOpen())"
+              class="flex items-center w-full text-gray-600 font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#0e73a9]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                          100 - (jobPostingAccessPercentage|| 0)
+                                              "></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#0e73a9]">{{jobPostingAccessPercentage}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate"> Job Posting Access </span>
+              <svg class="ms-1 flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            @if(isCorporetJobPostingDropdownOpen()){
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-14 left-5 border">
+              <div>
+                <div class="flex items-start gap-1">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#0e73a9]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                          100 - (jobPostingAccessPercentage || 0)
+                                                        "></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#0e73a9]">{{jobPostingAccessPercentage}}%</span>
+                    </div>
+                  </div>
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Basic</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm mb-2">{{jobPostingService.basicListLimit}}/{{jobPostingService.maxJob}}</span>
+                    <span class="font-semibold text-xs">Stand-out</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm">{{jobPostingService.standoutLimit}}/{{jobPostingService.maxStandout}}</span>
+        
+                    <span class="font-semibold text-xs">Stand-out-Premium</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm">{{jobPostingService.standoutPremiumLimit}}/{{jobPostingService.maxStandoutPremium}}</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="flex items-center justify-center py-2">
+                  <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp?from=recruiter" target="_blank"
+                    class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg text-gray-800 hover:text-blue-600 disabled:opacity-50 disabled:pointer-events-none">View
+                    Packages <span class="icon-right-arrow-big"></span></a>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(navData?.smsPackage){
+          <!-- sms dropdown -->
+          <div #smsDropdown class="relative">
+            <button (click)="this.isCorporetSmsDropdownOpen.set(!this.isCorporetSmsDropdownOpen())"
+              class="flex items-center w-full text-gray-600  font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="100 -smsPercent"></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#A65108]">{{smsPercent}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate"> SMS </span>
+              <div class="ml-1 inline-flex items-center justify-center text-gray-700">
+                <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+              </div>
+            </button>
+            @if(isCorporetSmsDropdownOpen()){
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-14 left-5 border">
+              <div>
+                <div class="flex items-start gap-1">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]=" 100 -smsPercent"></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#A65108]">{{smsPercent}}%</span>
+                    </div>
+                  </div>
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Available SMS</span>
+                    <span class="text-[#0e73a9] font-bold text-sm mb-2">{{navData.smsRemaining}}/{{navData.smsPurchased}}</span>
+                    <span class="font-semibold text-xs">Send SMS</span>
+                    <span class="text-[#0e73a9] font-bold text-sm">{{navData.smsSend}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(!loadingCvSearchService()){
+          <!-- cv bank dropdown -->
+          <div #talentSearchDropdown class="relative">
+            <button (click)="this.isCorporetTalentSearchDropdownOpen.set(!this.isCorporetTalentSearchDropdownOpen())"
+              class="flex items-center w-full text-gray-600 font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                          100 - (cvBankPercentage|| 0)
+                                              "></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#A65108]">{{cvBankPercentage}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate">Talent Search</span>
+              <svg class="ms-1 flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            @if(isCorporetTalentSearchDropdownOpen()){
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-14 left-5 border">
+              <div>
+                <div class="flex items-start gap-1">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                          100 - (cvBankPercentage || 0)
+                                                        "></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#A65108]">{{cvBankPercentage}}%</span>
+                    </div>
+                  </div>
+        
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Available CVs</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm mb-2">{{cvSearchService.available}}/{{cvSearchService.limit}}</span>
+                    <span class="font-semibold text-xs">Viewed CVs</span>
+                    <span class="text-[#0e73a9] font-bold text-sm">{{cvSearchService.viewed}}</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="flex items-center justify-center py-2">
+                  <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp?from=recruiter" target="_blank"
+                    class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg text-gray-800 hover:text-blue-600 disabled:opacity-50 disabled:pointer-events-none">View
+                    Packages <span class="icon-right-arrow-big"></span></a>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(!loadingCreditSystem()){
+          <!-- credit system dropdown -->
+          <div #creditDropdown class="h-[38px] flex items-center border-l-2 border-[#0e73a9] ps-4 relative">
+            <button (click)="this.isCorporetCreditDropdownOpen.set(!this.isCorporetCreditDropdownOpen())"
+              class="flex items-center w-full h-full text-gray-600 font-medium">
+              <img src="https://recruiter.bdjobs.com/assets/images/credit-system.svg" alt="" class="h-[26px]" />
+              <span class="ps-2 max-w-36 truncate">
+                Credit:
+                <span class="px-1">
+                  {{ creditSystem.validityDate < currentDate ? 0 : creditSystem.remainingCredit }} </span>
+                </span>
+                <div class="inline-flex items-center justify-center text-gray-700">
+                  <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+                </div>
+            </button>
+            @if(isCorporetCreditDropdownOpen()){
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-[51px] -left-3 border">
+              <div class="p-1">
+                @if (creditSystem.totalCredit === 0) {
+                <div class="flex flex-col items-center justify-center text-center">
+                  <img class="h-[36px]" src="https://corporate3.bdjobs.com/images/credit-empty.svg" alt="" />
+                  <span class="my-2">You have no credit</span>
+                  <hr class="my-2 w-full" />
+                  <button type="button" class="bg-[#286090] p-2 text-white rounded-md" (click)="openAddCreditModal()">
+                    Add Credit
+                  </button>
+                </div>
+                } @else if(creditSystem.haveTokenAccess){
+                <div class="flex items-center gap-2">
+                  <img class="h-[36px]" src="https://recruiter.bdjobs.com/assets/images/credit-system.svg" alt="" />
+                  <div class="flex flex-col font-semibold text-xs gap-1 text-[#333]">
+                    <div>
+                      <h3>Available Credit</h3>
+                      <p class="text-[#0E73A9] font-bold">
+                        {{ creditSystem.remainingCredit }}/{{ creditSystem.totalCredit }}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 class="crdtitle">Validity</h3>
+                      <p [ngClass]="{'text-[#b71c1c]': creditSystem.validityDate < currentDate}">
+                        {{ creditSystem.validityDate < currentDate ? 'Expired' : (creditSystem.validityDate |
+                          date:'dd-MMM-yyyy') }} </p>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-2" />
+                <div class="text-center">
+                  <a href="https://recruiter.bdjobs.com/credit-system"
+                    class="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-[#0c6290ea] text-white hover:bg-[#0C6290] disabled:opacity-50 disabled:pointer-events-none">
+                    Credit Overview
+                    <span class="icon-right-arrow-big iright"></span>
+                  </a>
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          }
+          <!-- profile dropdown -->
+          <div #profileDropdown class="border-l-2 border-[#0e73a9] ps-4 relative">
+            <button (click)="this.isCorporetProfileDropdownOpen.set(!this.isCorporetProfileDropdownOpen())"
+              class="flex items-center w-full text-gray-600  font-medium">
+              <img class="inline-block w-[38px] h-[38px] border-2 border-[#DDF2FD] rounded-full" [src]="companyLogoURL()"
+                alt="Image Description" />
+              <span class="ps-2 max-w-36 truncate">
+                {{companyName()}}</span>
+              <div class="ml-1 inline-flex items-center justify-center text-gray-700">
+                <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+              </div>
+            </button>
+            @if(isCorporetProfileDropdownOpen()){
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-[51px] border">
+              <a href="https://Corporate3.bdjobs.com/Billings.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-taka itaka"></span>
+                <span class="icolor">Billings</span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-service-list"></span>
+                <span class="icolor">Subscribed Services</span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/corporate_editaccount.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-edit"></span>
+                <span class="icolor">Edit Account</span></a>
+        
+              <a href="https://recruiter.bdjobs.com/communication"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-com"></span>
+                <span class="icolor">Communication</span></a>
+              <a href="https://Corporate3.bdjobs.com/support.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-help"></span>
+                <span class="icolor">Support </span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/CompanyUserManagementSetting.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-cog"></span>
+                <span class="icolor">Settings </span></a>
+              <a href="https://corporate3.bdjobs.com/Analytics/default.asp?from=recruiter"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span><img
+                    class="w-4 h-4" src="images/analytics-up.svg" alt=""> </span>
+                <span class="icolor">Analytics</span></a>
+              <hr class="my-2" />
+              @if(isAdminUser){
+              <a href="https://Corporate3.bdjobs.com/loginInfo.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-lock-reset"></span>
+                <span class="icolor">Change Password </span></a>
+              <a href="https://recruiter.bdjobs.com/usermanagement/"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-user-cog"></span>
+                <span class="icolor">User Management </span></a>
+              } @else {
+              <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"
+                href="https://recruiter.bdjobs.com/usermanagement/"><span class="icon-user-cog"></span>User Settings</a>
+              }
+        
+              <hr class="my-2" />
+              <a href="https://Corporate3.bdjobs.com/logout.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-sign-off"></span>
+                <span class="icolor">Sign Out</span></a>
+            </div>
+            }
+          </div>
+        </div>
+        @if(isCorporeteMenuOpen()){
+        <div class="flex flex-col gap-4 px-3 w-full bg-white border-b border-gray-300 shadow-sm absolute z-50 py-2 top-[135px] md:hidden">
+          @if(!loadingJobPostingService()){
+          <!-- Job posting Access -->
+          <div #jobPostingResDropdown>
+            <button (click)="this.isCorporetJobPostingResDropdownOpen.set(!this.isCorporetJobPostingResDropdownOpen())"
+              class="flex items-center w-full text-gray-600 font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#0e73a9]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                  100 - (jobPostingAccessPercentage|| 0)
+                                                      "></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#0e73a9]">{{jobPostingAccessPercentage}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate"> Job Posting Access </span>
+              <svg class="ms-1 flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            @if(isCorporetJobPostingResDropdownOpen()){
+            <div class="w-full bg-white p-2 border-y mt-1">
+              <div>
+                <div class="flex items-center gap-2">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#0e73a9]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                                  100 - (jobPostingAccessPercentage || 0)
+                                                                "></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#0e73a9]">{{jobPostingAccessPercentage}}%</span>
+                    </div>
+                  </div>
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Basic</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm mb-2">{{jobPostingService.basicListLimit}}/{{jobPostingService.maxJob}}</span>
+                    <span class="font-semibold text-xs">Stand-out</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm">{{jobPostingService.standoutLimit}}/{{jobPostingService.maxStandout}}</span>
+        
+                    <span class="font-semibold text-xs">Stand-out-Premium</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm">{{jobPostingService.standoutPremiumLimit}}/{{jobPostingService.maxStandoutPremium}}</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="flex items-center justify-center py-2">
+                  <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp?from=recruiter" target="_blank"
+                    class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg text-gray-800 hover:text-blue-600 disabled:opacity-50 disabled:pointer-events-none">View
+                    Packages <span class="icon-right-arrow-big"></span></a>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(navData?.smsPackage){
+          <!-- sms dropdown -->
+          <div #smsResDropdown>
+            <button (click)="this.isCorporetSmsResDropdownOpen.set(!this.isCorporetSmsResDropdownOpen())"
+              class="flex items-center w-full text-gray-600  font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="100 -smsPercent"></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#A65108]">{{smsPercent}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate"> SMS </span>
+              <div class="ml-1 inline-flex items-center justify-center text-gray-700">
+                <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+              </div>
+            </button>
+            @if(isCorporetSmsResDropdownOpen()){
+            <div class="w-full bg-white p-2 border-y mt-1">
+              <div>
+                <div class="flex items-center gap-2">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]=" 100 -smsPercent"></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#A65108]">{{smsPercent}}%</span>
+                    </div>
+                  </div>
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Available SMS</span>
+                    <span class="text-[#0e73a9] font-bold text-sm mb-2">{{navData.smsRemaining}}/{{navData.smsPurchased}}</span>
+                    <span class="font-semibold text-xs">Send SMS</span>
+                    <span class="text-[#0e73a9] font-bold text-sm">{{navData.smsSend}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(!loadingCvSearchService()){
+          <!-- cv bank dropdown -->
+          <div #talentSearchResDropdown>
+            <button (click)="this.isCorporetTalentSearchResDropdownOpen.set(!this.isCorporetTalentSearchResDropdownOpen())"
+              class="flex items-center w-full text-gray-600 font-medium">
+              <!--============= cirlce start ==============-->
+              <div class="relative size-12">
+                <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background Circle -->
+                  <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                  </circle>
+                  <!-- Progress Circle inside a group with rotation -->
+                  <g class="origin-center -rotate-90 transform">
+                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                      stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                  100 - (cvBankPercentage|| 0)
+                                                      "></circle>
+                  </g>
+                </svg>
+                <!-- Percentage Text -->
+                <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                  <span class="text-center text-xs font-bold text-[#A65108]">{{cvBankPercentage}}%</span>
+                </div>
+              </div>
+              <!--============= cirlce end ==============-->
+              <span class="ps-2 max-w-36 truncate">Talent Search</span>
+              <svg class="ms-1 flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            @if(isCorporetTalentSearchResDropdownOpen()){
+            <div class="w-full bg-white p-2 border-y mt-1">
+              <div>
+                <div class="flex items-center gap-2">
+                  <div class="relative size-12">
+                    <svg class="size-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Background Circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="2">
+                      </circle>
+                      <!-- Progress Circle inside a group with rotation -->
+                      <g class="origin-center -rotate-90 transform">
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-[#A65108]" stroke-width="2"
+                          stroke-dasharray="101" stroke-dashoffset="75" [attr.stroke-dashoffset]="
+                                                                  100 - (cvBankPercentage || 0)
+                                                                "></circle>
+                      </g>
+                    </svg>
+                    <!-- Percentage Text -->
+                    <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                      <span class="text-center text-xs font-bold text-[#A65108]">{{cvBankPercentage}}%</span>
+                    </div>
+                  </div>
+        
+        
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-xs">Available CVs</span>
+                    <span
+                      class="text-[#0e73a9] font-bold text-sm mb-2">{{cvSearchService.available}}/{{cvSearchService.limit}}</span>
+                    <span class="font-semibold text-xs">Viewed CVs</span>
+                    <span class="text-[#0e73a9] font-bold text-sm">{{cvSearchService.viewed}}</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="flex items-center justify-center py-2">
+                  <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp?from=recruiter" target="_blank"
+                    class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg text-gray-800 hover:text-blue-600 disabled:opacity-50 disabled:pointer-events-none">View
+                    Packages <span class="icon-right-arrow-big"></span></a>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          @if(!loadingCreditSystem()){
+          <!-- credit system dropdown -->
+          <div #creditResDropdown class="pl-2">
+            <button (click)="this.isCorporetCreditResDropdownOpen.set(!this.isCorporetCreditResDropdownOpen())"
+              class="flex items-center w-full h-full text-gray-600 font-medium">
+              <img src="https://recruiter.bdjobs.com/assets/images/credit-system.svg" alt="" class="h-[26px]" />
+              <span class="ps-2 max-w-36 truncate">
+                Credit:
+                <span class="px-1">
+                  {{ creditSystem.validityDate < currentDate ? 0 : creditSystem.remainingCredit }} </span>
+                </span>
+                <div class="inline-flex items-center justify-center text-gray-700">
+                  <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+                </div>
+            </button>
+            @if(isCorporetCreditResDropdownOpen()){
+            <div class="w-full bg-white p-2 border-y mt-1">
+              <div class="p-1">
+                @if (creditSystem.totalCredit === 0) {
+                <div class="flex flex-col items-center justify-center text-center">
+                  <img class="h-[36px]" src="https://corporate3.bdjobs.com/images/credit-empty.svg" alt="" />
+                  <span class="my-2">You have no credit</span>
+                  <hr class="my-2 w-full" />
+                  <button type="button" class="bg-[#286090] p-2 text-white rounded-md" (click)="openAddCreditModal()">
+                    Add Credit
+                  </button>
+                </div>
+                } @else if(creditSystem.haveTokenAccess){
+                <div class="flex items-center gap-2">
+                  <img class="h-[36px]" src="https://recruiter.bdjobs.com/assets/images/credit-system.svg" alt="" />
+                  <div class="flex flex-col font-semibold text-xs gap-1 text-[#333]">
+                    <div>
+                      <h3>Available Credit</h3>
+                      <p class="text-[#0E73A9] font-bold">
+                        {{ creditSystem.remainingCredit }}/{{ creditSystem.totalCredit }}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 class="crdtitle">Validity</h3>
+                      <p [ngClass]="{'text-[#b71c1c]': creditSystem.validityDate < currentDate}">
+                        {{ creditSystem.validityDate < currentDate ? 'Expired' : (creditSystem.validityDate |
+                          date:'dd-MMM-yyyy') }} </p>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-2" />
+                <div class="text-center">
+                  <a href="https://recruiter.bdjobs.com/credit-system"
+                    class="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-[#0c6290ea] text-white hover:bg-[#0C6290] disabled:opacity-50 disabled:pointer-events-none">
+                    Credit Overview
+                    <span class="icon-right-arrow-big iright"></span>
+                  </a>
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          }
+          <!-- profile dropdown -->
+          <div #profileResDropdown>
+            <button (click)="this.isCorporetProfileResDropdownOpen.set(!this.isCorporetProfileResDropdownOpen())"
+              class="flex items-center w-full text-gray-600  font-medium">
+              <img class="inline-block w-[38px] h-[38px] border-2 border-[#DDF2FD] rounded-full" [src]="companyLogoURL()"
+                alt="Image Description" />
+              <span class="ps-2 max-w-36 truncate">
+                {{companyName()}}</span>
+              <div class="ml-1 inline-flex items-center justify-center text-gray-700">
+                <span class="icon-sort-down" style="transform: scale(0.6);"></span>
+              </div>
+            </button>
+            @if(isCorporetProfileResDropdownOpen()){
+            <div class="w-full bg-white p-2">
+              <a href="https://Corporate3.bdjobs.com/Billings.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-taka itaka"></span>
+                <span class="icolor">Billings</span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/ServiceHistory.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-service-list"></span>
+                <span class="icolor">Subscribed Services</span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/corporate_editaccount.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-edit"></span>
+                <span class="icolor">Edit Account</span></a>
+        
+              <a href="https://recruiter.bdjobs.com/communication"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-com"></span>
+                <span class="icolor">Communication</span></a>
+              <a href="https://Corporate3.bdjobs.com/support.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-help"></span>
+                <span class="icolor">Support </span></a>
+        
+              <a href="https://Corporate3.bdjobs.com/CompanyUserManagementSetting.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-cog"></span>
+                <span class="icolor">Settings </span></a>
+              <a href="https://corporate3.bdjobs.com/Analytics/default.asp?from=recruiter"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span><img
+                    class="w-4 h-4" src="images/analytics-up.svg" alt=""> </span>
+                <span class="icolor">Analytics</span></a>
+              <hr class="my-2" />
+              @if(isAdminUser){
+              <a href="https://Corporate3.bdjobs.com/loginInfo.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-lock-reset"></span>
+                <span class="icolor">Change Password </span></a>
+              <a href="https://recruiter.bdjobs.com/usermanagement/"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-user-cog"></span>
+                <span class="icolor">User Management </span></a>
+              } @else {
+              <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"
+                href="https://recruiter.bdjobs.com/usermanagement/"><span class="icon-user-cog"></span>User Settings</a>
+              }
+        
+              <hr class="my-2" />
+              <a href="https://Corporate3.bdjobs.com/logout.asp"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
+                  class="icon-sign-off"></span>
+                <span class="icolor">Sign Out</span></a>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </nav>
+    </header>
+  </div>
+}@else {
+  <div class="bg-[#F9FAFB] py-4">
+    <div
+      class="px-2 md:px-0 max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-2 2xl:mx-auto  2xl:pe-4">
+      <div class="flex items-center justify-between">
+        <div class="w-full md:w-[213px] flex items-center justify-between">
+          <img class="w-40 md:w-[213px] h-8" src="images/Talent Search Logo-02.svg" alt="BDJobs Logo" />
+          <div>
+            <button class="md:hidden block" (click)="this.isMenuOpen.set(!this.isMenuOpen())">
+              <span [ngClass]="isMenuOpen()? 'icon-times':'icon-list'"></span>
+            </button>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center gap-5 text-sm">
+          <div class=" border-r-2 pr-3">
+            <a href="https://mybdjobs.bdjobs.com/mybdjobs/welcome.asp"><img src="images/mybdjobs.svg" /></a>
+          </div>
+          <div class="border-r-2 pr-3">
+            <a href="https://jobs.bdjobs.com/jobsearch.asp" class="text-[#475467] text-base font-medium">Jobs</a>
+          </div>
+          <a href="https://mybdjobs.bdjobs.com/bdjobs-pro/bdjobs-pro-package-pricing"><img
+              src="images/bdjobs-pro.svg" /></a>
+        </div>
+        <div>
+          <a href="https://mybdjobs.bdjobs.com/mybdjobs/masterview.asp" class="hidden md:flex items-center gap-2">
+            <img class="w-10 h-10 rounded-full" [src]="companyLogoURL()" alt="">
+            <p class="text-[#101828] hover:text-[#0E73A9] text-base font-medium">{{companyName()}}</p>
+          </a>
+        </div>
+      </div>
+      @if (isMenuOpen()) {
+      <div
+        class="absolute top-16 left-0 w-full bg-white shadow-2xl z-10 flex flex-col gap-4 py-4 px-4 rounded-bl-lg rounded-br-lg md:hidden">
+        <div>
+          <a href="https://mybdjobs.bdjobs.com/mybdjobs/welcome.asp"><img class="w-20 h-4"
+              src="images/mybdjobs.svg" /></a>
+        </div>
+        <div>
+          <a href="https://jobs.bdjobs.com/jobsearch.asp" class="text-[#344054] text-sm font-normal">Jobs</a>
+        </div>
+        <a href="https://mybdjobs.bdjobs.com/bdjobs-pro/bdjobs-pro-package-pricing"><img src="images/bdjobs-pro.svg"
+            class="w-24 h-4" /></a>
+        <div>
+          <a class="flex items-center gap-2" href="https://mybdjobs.bdjobs.com/mybdjobs/masterview.asp">
+            <img class="w-6 h-6 rounded-full" [src]="companyLogoURL()" alt="">
+            <p class="text-[#101828] text-sm font-normal">{{companyName()}}</p>
+          </a>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+}

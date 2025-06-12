@@ -1,0 +1,32 @@
+<div class="mx-auto py-2 flex" [ngClass]="isHorizontalOption() === false ? 'flex-col': ''">
+    @for (item of radioItems(); track $index) {
+        <div class="flex items-center" style="margin-right: 12px;">
+            <div class="bg-white  rounded-full w-4 h-4 flex flex-shrink-0 justify-center items-center relative">
+                <input 
+                    type="radio"
+                    data-radioid="gender"
+                    [name]="item.name"
+                    [required]="isRequired()"
+                    [readOnly]="isDisabled()"
+                    [formControl]="control()"
+                    [value]="item.id"
+                    [id]="generateId(item)"
+                    class="checkbox appearance-none focus:outline-none border rounded-full border-gray-400 absolute cursor-pointer w-full h-full checked:border-none" />
+                <div class="check-icon hidden border-4 border-indigo-700 rounded-full w-full h-full z-1"></div>
+            </div>
+            @if (isHtmlLabel()) {
+                <label 
+                    [htmlFor]="generateId(item)" 
+                    class="text-base text-gray-600 font-semibold ms-2" 
+                    [innerHtml]="item.label">
+                </label>
+            } @else {
+                <label 
+                    class="ml-2 text-xs leading-4 font-normal text-gray-800" 
+                    [for]="generateId(item)">{{item.label}}
+                </label>
+            }
+        </div>
+    }
+</div>
+

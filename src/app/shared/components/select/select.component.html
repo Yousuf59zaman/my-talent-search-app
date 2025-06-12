@@ -1,0 +1,29 @@
+<div class="relative w-full">
+  @if (label()) {
+  <label [for]="name()" class="block text-xs font-medium leading-6 text-gray-900">
+    {{ label() }}
+  </label>
+  }
+
+  <select
+    [name]="name()"
+    [id]="name()"
+    [required]="isRequired()"
+    [formControl]="control()"
+    class="my-1 relative py-2 px-3 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-blue-500 focus:ring-blue-500 before:absolute before:inset-0 before:z-[1]"
+  >
+    @if (falseOption()) {
+      <option [value]="null" disabled>Please select an option</option>
+    } @else {
+      <option value="" disabled selected hidden >
+        {{ placeholder() }}
+      </option>
+    }
+
+    @for (option of options(); track $index) {
+      <option [selected]="option.isSelected" [value]="option.value">
+        {{ option.label ? option.label : "" }}
+      </option>
+    }
+  </select>
+</div>

@@ -1,0 +1,21 @@
+<div class="flex justify-center z-50">
+  @if(noVideo()){
+      <span class="text-black text-lg my-20 bg-gray-200 px-2 rounded-md">The video CV has been removed or made private by the candidate.</span>
+  }@else {
+      @if(videoEnded){
+          <div class="flex justify-center my-20">
+              <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" (click)="openVideoCVDetails()"> 
+              See more
+              </button>
+          </div>
+      }@else {
+      <app-video-player class="w-2/3"
+          [videoSource]="selectedVideo()?.url || ''" 
+          [playerSize]="selectedVideo()?.size || 'small'"
+          [shouldPlay]="selectedVideo()?.shouldPlay || false"
+          [position]="selectedVideo()?.position || 'right'">
+      </app-video-player>
+      }
+
+  }
+</div>

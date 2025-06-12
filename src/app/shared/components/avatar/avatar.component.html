@@ -1,0 +1,32 @@
+<div class="bg-[#f0f2f5] my-2" id="avatarhide">
+  <div class="container max-w-[80rem] w-full mx-auto p-5">
+    <div class="flex items-center justify-between">
+      <div class="flex flex-[.5] items-center">
+        <h2 class="text-xl font-bold text-gray-800">
+          Need Assistance?<br />
+          Reach out to our sales person.
+        </h2>
+      </div>
+      <div class="flex flex-[.5] items-center">
+        <img
+          class="inline-block flex-shrink-0 size-[100px] p-1 bg-white border-2 border-[#263238]/30 rounded-full"
+          [src]="imageUrl"
+          alt="{{ name }}"
+        />
+        <div class="ms-3">
+          <h3 class="mb-2 text-base font-bold text-gray-600">
+            Sales Contact Person
+          </h3>
+          <p class="text-base font-medium text-gray-600 capitalize">
+            {{ name }}
+          </p>
+          <p class="text-base font-medium text-gray-600">
+            {{ designation }}
+          </p>
+          <p class="text-base font-medium text-gray-600">{{ phone }}</p>
+          <p class="text-base font-medium text-gray-600">{{ email }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

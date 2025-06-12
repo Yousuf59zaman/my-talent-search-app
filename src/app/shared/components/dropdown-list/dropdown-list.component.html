@@ -1,0 +1,9 @@
+@if (isOpen()) {
+    <ul >
+      @for (option of options(); track $index) {
+      <li class="p-2 hover:bg-gray-100 cursor-pointer"  (click)="getSelected(option)">
+        {{ option.label ? option.label : "" }}
+      </li>
+    }
+  </ul>
+  }

@@ -1,0 +1,54 @@
+@if (label()) {
+<p class="text-[12px] font-semibold text-gray-700 mb-1">{{label()}}</p>
+}
+
+@if (isShowInput() && isTouched()) {
+  <div class="flex items-center justify-between gap-4">
+    <input
+      type="number"
+      [max]="options().ceil"
+      [min]="options().floor"
+      appNumericOnly
+      [isForInputEvent]="true"
+      [isDecimalAllowed]="false"
+      [isNumericOnly]="true"
+      [showMinValueForValidation]="options().floor || 1"
+      [minDigitTobeChecked]="options().floor?.toString()?.length || 1"
+      [maxValue]="options().ceil || 100"
+      [minValue]="options().floor || 0"
+      maxlength="2"
+      class="border border-gray-300 rounded px-2 py-1 text-xs"
+      [ngClass]="customInputClass()"
+      [value]="control().value && control().value.length ? control().value[0] : options().floor"
+      (input)="onMinInputChange($event)"
+    />
+  
+    <input
+      type="number"
+      [max]="options().ceil"
+      [min]="options().floor"
+      class="border border-gray-300 rounded px-2 py-1 text-xs"
+      [ngClass]="customInputClass()"
+      appNumericOnly
+      [isForInputEvent]="true"
+      [isDecimalAllowed]="false"
+      [isNumericOnly]="true"
+      [showMinValueForValidation]="options().ceil || 1"
+      [minDigitTobeChecked]="options().ceil?.toString()?.length || 1"
+      [maxValue]="options().ceil || 100"
+      [minValue]="options().floor || 0"
+      maxlength="2"
+      [value]="control().value && control().value.length ? control().value[1] : options().ceil"
+      (input)="onMaxInputChange($event)"
+    />
+  </div>
+}
+
+<div class="bdjobs-slider flex-1" [ngClass]="{ 'selected': isSelected }">
+  <ngx-slider
+    [options]="options()"
+    [formControl]="control()"
+    (userChangeEnd)="onSliderChange()"
+  >
+  </ngx-slider>
+</div>

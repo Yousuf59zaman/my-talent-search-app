@@ -1,0 +1,52 @@
+@defer {
+      <div class="flex justify-between p-3">
+      
+        <div class="flex justify-between w-3/3">
+          @if (contentType() === 'video-cv-details') {
+            <button class="bg-white text-[#b32d7d] py-2 px-4 rounded-md flex items-center text-sm" (click)="switchCvMode('cv-details')">
+              <span class="icon-bdjapp mr-2"></span>Bdjobs Resume
+            </button>
+          } @else {
+            @if(applicant()?.videoResume && isCorporateUser() && (applicant()?.isPurchased || CvBankSearchAccess())) {
+              <button class="bg-white text-[#b32d7d] py-2 px-4 rounded-md flex items-center text-sm border-2 mb-2" (click)="switchCvMode('video-cv-details')">
+                <span class="icon-bdjapp mr-2"></span>Video CV
+              </button>
+            }
+          
+          }
+  
+          @if (contentType() === 'video-cv-details' && cvType()) {
+            <button class="bg-white text-black py-2 px-4 rounded-md flex items-center ml-2 text-sm" (click)="downloadCustomizedCV()">
+            @if(cvType()==".docx" || cvType()==".doc") {
+              <span class="text-base icon-ms-word text-blue-600 me-1"></span>
+              Customized CV
+            } @else{
+              <span class="text-base text-red-600 icon-pdf-file icn me-1"></span> 
+              Customized CV
+            }
+          </button>
+          }
+        </div>
+      </div>
+    
+  
+    @switch (contentType()) {
+        @case ('cv-details') {
+          <app-iFrame-loader [previewUrl]="previewUrl()"></app-iFrame-loader>
+        }
+        @case ('video-cv-details') {
+          <app-video-cvdetails 
+              [applyId]="applyId()" 
+              [applicantName]="applicantName()" 
+              [email]="email()"
+              [mobile]="mobile()" 
+              [photo]="photo()" 
+              [isPurchased]="isPurchased()"
+              [serviceId]="serviceId()"
+              [startFromSecondVideo]="startFromSecondVideo()">
+          </app-video-cvdetails>
+        }
+    }
+  } @placeholder {
+    <div class="m-10 flex justify-center items-center h-full w-full bg-gray-200 rounded-md">Loading ...</div>
+  }

@@ -1,0 +1,16 @@
+<div class="w-10 h-10 rounded-full bg-[#FEEBDB] flex justify-center items-center mx-auto mb-3">
+    <p class="icon-exclamation text-[#F57F17]"></p>
+</div>
+<h2 class="text-center text-lg font-semibold mb-2">{{
+    IsCorporateUser() ? 'Your company is not verified' : 'You are not eligible to access this feature.'
+    }}</h2>
+<p class="text-center text-sm font-normal mb-3 text-[#333333]">
+    {{IsCorporateUser() ? 'To verify your company, ' : 'For more information or support, '}} Please contact our representative at
+    <a href="tel:09638666444" class="text-base text-[#008A22] font-bold">09638666444</a> or
+    <a href="tel:01897627858" class="text-base text-[#008A22] font-bold">01897627858</a>.
+</p>
+<div class="w-full flex justify-center items-center">
+    <button (click)="redirectToDashboard()"  class="bg-[#2E7D32] text-white w-40 py-4 rounded-lg text-xl">ok</button>
+</div>
+
+

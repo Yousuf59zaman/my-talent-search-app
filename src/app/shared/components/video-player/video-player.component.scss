@@ -1,0 +1,33 @@
+.video-container {
+  display: flex;
+
+  .left {
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .center {
+    justify-content: center; 
+    align-items: center;
+  }
+
+  .right {
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+.player-large {
+  width: 1200%;
+  height: 700px;
+}
+
+.player-medium {
+  width: 900%;
+  height: 500px;
+}
+
+.player-small {
+  width: 700%;
+  height: 250px;
+}

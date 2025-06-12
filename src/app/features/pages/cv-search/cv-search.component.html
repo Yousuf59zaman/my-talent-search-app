@@ -1,0 +1,155 @@
+@if(isCartShow()){
+  <div class="fixed top-1/2 right-0 bg-[#0E73A9] rounded-l-md z-10" (click)="clickCart()">
+    <div class="absolute -top-4 -left-4 bg-[#EF4A23] rounded-xl h-6 w-6 flex items-center justify-center text-sm   text-white py-2 px-4">{{ApplicantCardService.currentCv()}}+</div>
+   <div class="flex flex-col justify-center items-center py-2 px-4">
+    <span class="icon-purchase text-white text-2xl"></span>
+    <p class="text-white font-medium pt-1"> CVs</p>
+   </div>
+  </div>
+}
+@if (!isCorporateUser()) {
+  <div class="fixed top-1/2 -translate-y-1/2 right-0 bg-[#0E73A9] text-white py-2 pr-4 pl-3 rounded-l-md z-10 shadow-md flex items-center gap-2">
+    <img src="images/money-bag.svg" class="text-2xl">
+    <div class="flex flex-col">
+      <span class="font-bold text-xs">199 BDT</span>
+      <span class="text-xs font-medium">Per CV</span>
+    </div>
+  </div>
+}
+
+@if(isCartOpen()) {
+  <div class="fixed top-1/2 right-0  rounded-l-lg  w-72 border rounded-md rounded-r-none z-10 bg-white">
+    <div class="flex justify-between px-3 py-2 bg-[#F2F4F7]">
+      <div class="text-[#667085]">List Name: <span class="font-semibold">{{ApplicantCardService.selectedListName()}}</span></div>
+      <!-- <span class="icon-times-o font-thin "></span> -->
+       <span class="bg-[#FFFFFF] rounded-full w-6 h-6 text-[#98A2B3] flex items-center justify-center cursor-pointer hover:text-red-500 " (click)="clickCartCancel()">&#10006;</span>
+    </div>
+
+   <div class="mx-3 mb-2 bg-white">
+    <div class="flex w-full">
+      <div
+        class="cursor-pointer px-3 py-2 "
+        [class.text-[#297EED]]="isActiveTab === 'current'"
+        [class.border-b-2]="isActiveTab === 'current'"
+        [class.border-solid]="isActiveTab === 'current'"
+        [class.border-[#297EED]]="isActiveTab === 'current'"
+        [class.font-semibold]="isActiveTab === 'current'"
+        [class.font-medium]="isActiveTab !== 'current'"
+
+
+        (click)="setActiveTab('current')"
+      >
+        Current
+      </div>
+      <div
+      class="cursor-pointer px-3 py-2 font-medium"
+        [class.text-[#297EED]]="isActiveTab === 'total'"
+        [class.border-b-2]="isActiveTab === 'total'"
+        [class.border-solid]="isActiveTab === 'total'"
+        [class.border-[#297EED]]="isActiveTab === 'total'"
+        [class.font-semibold]="isActiveTab === 'total'"
+        [class.font-medium]="isActiveTab !== 'total'"
+        (click)="setActiveTab('total')"
+      >
+        Total
+      </div>
+    </div>
+    <hr>
+
+
+    <div class="flex justify-between my-4 font-bold z-20">
+      @if(isActiveTab=='total'){
+        <div class="text-[#246FCC] space-x-2">
+          <span class="icon-purchase"></span>
+        <span> {{ApplicantCardService.totalCv()}} CVs</span> <span class="icon-right-arrow-big"></span>
+        </div>
+      }
+      @else {
+        <div class="text-[#246FCC] space-x-2">
+          <span class="icon-purchase"></span>
+        <span> {{ApplicantCardService.currentCv()}} CVs</span> <span class="icon-right-arrow-big"></span>
+        </div>
+      }
+      @if(isActiveTab=='total'){
+        <div class="text-[#05A44B]">
+          <span class="icon-taka"></span>
+         {{ApplicantCardService.totalTk()}} BDT
+        </div>
+      }
+      @else {
+        <div class="text-[#05A44B]">
+          <span class="icon-taka"></span>
+         {{ApplicantCardService.currentTk()}} BDT
+        </div>
+      }
+
+    </div>
+
+    <button class="rounded-lg bg-[#079455] w-full py-2 mx-auto text-white" (click)="handleBuyNow()">Pay now</button>
+   </div>
+  </div>
+}
+<div
+    class="max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-6 2xl:mx-auto 2xl:pe-6 mt-6 mb-20">
+    
+    <app-tabs [tabs]="IsCorporateUser() ? corporateUserTabs() : jobSeekUserTabs()" [activeTabId]="activeTab()" (tabChange)="activeTab.set($event)"></app-tabs>
+    <div class="flex gap-6 mt-4">
+        <div class="w-1/4">
+            <app-filter-panel
+              [shortlist]="shortlistData()"
+              [filtersFromDashboard]="filtersFromDashboard()"
+              [removedFilter]="removedFilter()">
+            </app-filter-panel>
+        </div>
+        <div class="w-3/4">
+            @if (activeFiltersBadges() && activeFiltersBadges().length) {
+                <div>
+                    <app-active-filters 
+                        [activeFilters]="activeFiltersBadges()"
+                        (clearAllFilters)="updateRemovedBadge({id: 'clearAll', label: 'clearAll', type: 'clearAll'})"
+                        (removeFilterBadge)="updateRemovedBadge($event)">
+                    </app-active-filters>
+                </div>
+            }
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <h3 class="text-[#0E73A9] text-3xl font-semibold">
+                    {{totalCvCount() | numberSuffix}}{{totalCvCount() >= 1000 ? '+' : ''}}
+                  </h3>
+                  <span class="text-xs">Talents showing</span>
+                </div>
+                <div class="ml-auto">
+                  <app-pagination
+                    (pageChange)="onPageChangeEvent($event)"
+                    [page]="pageNo()"  
+                    [id]="'applicant'"
+                    [isGoByPageNo]="false"
+                    [total]="totalCvCount()"> 
+                  </app-pagination>
+                </div>
+            </div>
+            <div #stickyTargetDown class="space-y-6">
+                @if (isLoading()) {
+                    <card-skeleton-loader></card-skeleton-loader>
+                    <card-skeleton-loader></card-skeleton-loader>
+                    <card-skeleton-loader></card-skeleton-loader>
+                } @else {
+                    @for (applicant of (applicants() | paginate: { id: 'applicant', itemsPerPage: itemsPerPage(), currentPage: pageNo(), totalItems: totalCvCount() }); track $index) {
+                      <div #stickyTargetUp>
+                        <app-applicant-card 
+                        [applicant]="applicant"
+                        (addedToPurchasedList)="onAddedToPurchasedList($event)"
+                        (purchaseListData)="getPurchaseListDataFromApplicantCard($event)">
+                        </app-applicant-card>
+                      </div>
+                    }
+                    @if (showButton()) {
+                      <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
+                      <span class="icon-angle-top pr-2"></span>Back to Top
+                    </button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

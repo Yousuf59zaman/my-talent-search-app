@@ -1,0 +1,114 @@
+<div class="mb-2">
+  <div
+    class="max-w-xl bg-white flex items-center justify-between px-2 py-1.5 rounded-lg border text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+    (click)="toggleList()"
+  >
+    @if(selectedItem() != null){
+    <span class="text-slate-600">{{ selectedItem()?.venueName }}</span>
+    }@else {
+    <span class="text-slate-600">select venue and address</span>
+    }
+    <span class="icon-sort-down text-xs"></span>
+  </div>
+
+  @if(showList()){
+  <div
+    class="max-w-xl bg-white shadow-md border rounded-lg transition-all min-h-36 max-h-60 overflow-y-auto"
+  >
+    @for (item of custmoSelectData(); track $index) {
+    <div
+      class="flex items-center justify-between border-b hover:cursor-pointer hover:bg-[#f5f5f5]"
+      (click)="selectItem($event, item)"
+    >
+      <div class="flex flex-1 flex-col px-2 py-3 truncate">
+        <h4 class="text-sm font-bold">{{ item.venueName }}</h4>
+        <p class="text-xs text-gray-500">{{ item.venueAddress }}</p>
+      </div>
+      <div>
+        <button
+          class="w-12 h-12 rounded-sm hover:text-blue-500"
+          (click)="editItem($event, item)"
+        >
+          <span class="icon-edit"></span>
+        </button>
+      </div>
+
+    </div>
+    }
+    <div class="m-3">
+      <button
+      type="button"
+      class="btn-success"
+      id="setScheduleButton"
+      (click)="addVanueItem($event)"
+      >
+      <span class="icon-plus me-1"></span>
+      Add New Venue
+      </button>
+    </div>
+  </div>
+  }
+  
+   @if(showEditForm()){
+  <div
+    class="max-w-xl bg-white px-2 py-3 rounded-lg border-2 hover:border-slate-400 active:shadow-lg focus:shadow-blue-300"
+  >
+    <div class="max-w-sm mb-6">
+      <app-input
+        [type]="'text'"
+        [placeholder]="'Venue Name'"
+        [control]="venueNameControl()"
+        [isRequired]="true"
+        [isNumericOnly]="false"
+        [label]="'Venue Name'"
+        [validationText]="'Venue Name is Required!'"
+      />
+    </div>
+    <!-- @if(nameErrorMsg){
+      <p
+        class="text-sm text-red-600"
+        id="hs-validation-name-error-helper">
+        {{nameErrorMsg}}
+      </p>
+    } -->
+    <div class="max-w-xl">
+      <label
+        for="venue-address-textarea"
+        class="block text-sm font-medium leading-6 text-gray-900 mb-2"
+        >Venue Address <span class="text-red-400">*</span>
+      </label>
+      <textarea
+        [formControl]="venueAddressControl()"
+        [ngClass]="venueAddressControl().invalid && venueAddressControl().dirty
+          ? textAreaStyles.error
+          : textAreaStyles.normal"
+        [required]="true"
+        rows="2"
+        name="venue-address-textarea"
+        id="venue-address-textarea"
+        placeholder="Venue Address"
+      ></textarea>
+      <!-- @if(addresserrorMsg){
+        <p
+          class="text-sm text-red-600"
+          id="hs-validation-name-error-helper">
+          {{addresserrorMsg}}
+        </p>
+      } -->
+      @if(venueAddressControl().invalid && venueAddressControl().dirty){
+        <p
+          class="text-sm text-red-600 mt-2"
+          id="hs-validation-name-error-helper">
+          Venue Address is Required!
+        </p>
+      }
+    </div>
+    <div class="flex items-center gap-2.5 mt-4">
+      <button type="button" class="btn-save" (click)="editUpdateVanueData()">Save</button>
+      <button type="button" class="btn-cancel" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+  }
+</div>

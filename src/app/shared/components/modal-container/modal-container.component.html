@@ -1,0 +1,59 @@
+@if(componentRef()) {
+<div class="flex items-center justify-center bg-gray-100">
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[99]"
+    [@fadeInBackdrop]="'open'">
+    <div class="relative rounded-lg bg-white shadow-lg transition-all" [ngStyle]="{ width: modalWidth() }"
+      [@modalAnimation]="'open'">
+      <div class="flex justify-end items-center px-4 border-b py-3">
+        @if(inputs()['modalTitle']) {
+        <h1 class="font-bold text-center flex-1 text-[#0e73a9]">
+          @if (inputs()['modalIcon']) {
+          <div class="flex justify-center items-center mb-2">
+            <span class=" bg-[#0e73a9] rounded-full p-3 flex justify-center items-center text-white text-4xl">
+              <i [ngClass]="inputs()['modalIcon']"></i>
+            </span>
+          </div>
+          }
+          <div class="text-center text-xl text-[#0e73a9] mt-2">
+            {{ inputs()['modalTitle'] ? inputs()['modalTitle'] : '' }}
+          </div>
+        </h1>
+        }
+        @if (inputs()['isOpenExternal']) {
+          <a [href]="inputs()['previewUrl']" class="text-sm mr-3 flex" target="_blank">
+            <svg class="mr-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_22654_81817)">
+              <path d="M17.5 7.50001L17.5 2.50001M17.5 2.50001H12.5M17.5 2.50001L10 10M8.33333 2.5H6.5C5.09987 2.5 4.3998 2.5 3.86502 2.77248C3.39462 3.01217 3.01217 3.39462 2.77248 3.86502C2.5 4.3998 2.5 5.09987 2.5 6.5V13.5C2.5 14.9001 2.5 15.6002 2.77248 16.135C3.01217 16.6054 3.39462 16.9878 3.86502 17.2275C4.3998 17.5 5.09987 17.5 6.5 17.5H13.5C14.9001 17.5 15.6002 17.5 16.135 17.2275C16.6054 16.9878 16.9878 16.6054 17.2275 16.135C17.5 15.6002 17.5 14.9001 17.5 13.5V11.6667" stroke="#B32D7D" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_22654_81817">
+              <rect width="20" height="20" fill="white"/>
+              </clipPath>
+              </defs>
+            </svg>
+            Open in New Tab
+          </a>
+        }
+        <button type="button" #closeElem (click)="closeModal()"
+          class="size-7 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent p-1 bg-[#787e33] text-white hover:bg-white hover:border-gray-500 hover:text-gray-500 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none"
+          aria-label="Close">
+          <span class="sr-only">Close</span>
+          <span class="icon-cross-close text-xs"></span>
+        </button>
+      </div>
+      <div id="modalScrollContainer" class="px-6 pt-4 pb-6 max-h-[80vh]"
+        [ngClass]="isHideScroll()? 'overflow-y-hidden':'overflow-y-auto scroll-smooth'">
+        <ng-template *ngComponentOutlet="componentRef(); inputs: inputs()"></ng-template>
+        @if (inputs()['feedBackLink']) {
+        <div class="absolute top-1/2 left-[-30px]">
+          <a [href]="inputs()['feedBackLink']" target="_blank" type="button"
+            class="fixed rotate-90 text-xl bg-pink-400 text-white px-2 py-1 rounded-sm hover:bg-pink-600 opacity-40 hover:opacity-100">
+            Feedback
+          </a>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

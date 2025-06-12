@@ -1,0 +1,19 @@
+@if (label()) {
+  <label for="">{{label()}}</label>
+  @if(isRequired()) {
+      <span style="color: red">*</span>
+  }
+}
+<div class="NgxEditor__Wrapper" [style]="'height:' + height()">
+  <ngx-editor-menu 
+      [editor]="editor"
+      [toolbar]="toolbar()">
+  </ngx-editor-menu>
+  <div class="editor-content" [ngStyle]="{'height': 'calc(' + height() + ' - 40px)', 'overflow-y': 'auto'}">
+      <ngx-editor 
+      [editor]="editor" 
+      [formControl]="control()"
+      [placeholder]="placeholder()">
+  </ngx-editor>
+  </div>
+</div>

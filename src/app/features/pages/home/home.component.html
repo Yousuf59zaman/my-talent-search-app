@@ -1,0 +1,77 @@
+@if(IsCorporateUser()){
+<div class="max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-6 2xl:mx-auto  2xl:pe-6">
+    @if(!CvBankSearchAccess()){
+    <div class="mb-5 mt-5">
+        <img src="images/banner.svg" alt="">
+    </div>
+    }
+    <div class="bg-[#FFFFFF] border border-[#DAE5EC] rounded-lg mb-12" [ngClass]="{'mt-8': CvBankSearchAccess()}">
+        <app-search-talent></app-search-talent>
+    </div>
+    <div class="bg-[#FFFFFF] border border-[#DAE5EC] rounded-lg mb-12">
+        <app-saved-search></app-saved-search>
+    </div>
+    @if (showButton()) {
+        <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
+            <span class="icon-angle-top pr-2"></span>Back to Top
+        </button>
+    }
+</div>
+}@else {
+<div >
+    <div class="mt-5" >
+        <div class="flex justify-center">
+            <a routerLink="/cv-search" class="inline-flex items-center justify-center gap-2 bg-[#E6F3FA] rounded-full px-3 py-1">
+                <div class="flex -space-x-2 border-r-2 border[#C4D0D8] pr-1">
+                  @for (avatar of avatarUrls; track $index) {
+                    <img [src]="avatar" alt="Avatar"
+                        class="w-6 h-6 rounded-full" />
+                  }
+                </div>
+                <span class="text-[9px] md:text-sm text-[#101828] font-medium">
+                  Unlock talents starting from <span class="text-[#0E73A9] font-bold">199 BDT</span> 
+                </span>
+                <span class="icon-right-arrow-big text-[#0E73A9] text-[10px] md:text-base"></span>
+            </a> 
+        </div>
+                      
+    </div>
+</div>
+<div class="relative w-full  max-h-full bg-cover bg-center" style="background-image: url('images/bgImg.svg')">
+    <div>
+        <div>
+            <div class="hidden md:flex justify-center">
+                <img src="images/bannerImg.svg" alt="">
+            </div>
+            <div class="flex justify-center md:hidden">
+                <img src="images/bannerImgRes.svg" alt="">
+            </div>
+            <div class="max-w-[718px] mx-auto my-4">
+                <p class="text-[#344054] font-medium text-center text-xs md:text-base">Forget the small talk. Find the people who actually get you mentors, opportunities, collaborators all just a tap away. Easy, effortless, and real.</p>
+            </div>
+        </div>
+        <div>
+            <app-search-talent></app-search-talent>
+        </div>
+    </div> 
+</div>
+<div class="p-4 md:p-0 max-w-5xl mx-auto mb-10">
+    <h1 class="text-[#101828] font-semibold text-base">Quick Link</h1>
+    <div class="flex flex-col md:flex-row gap-4 mt-4">
+        <div (click)="redirectTo('saved-filter')" class="cursor-pointer bg-[#FFFFFF] border border-[#E4E7EC] rounded-lg flex items-start p-2 gap-2">
+            <img src="images/SavedFilters.svg" alt="">
+            <div>
+                <h1 class="text-[#101828] font-semibold text-base">Saved Filters</h1>
+                <p class="text-[#667085] font-normal text-sm">Quickly access your preferred talent pool by saving filters and finding the right candidates in just one click.</p>
+            </div>
+        </div>
+        <div (click)="redirectTo('puchase-list')" class="cursor-pointer bg-[#FFFFFF] border border-[#E4E7EC] rounded-lg flex items-start p-2 gap-2">
+            <img src="images/TalentBasket.svg" alt="">
+            <div>
+                <h1 class="text-[#101828] font-semibold text-base">Talent Basket</h1>
+                <p class="text-[#667085] font-normal text-sm">Easily manage and revisit your purchased CVs anytime—your shortlisted talents, all in one organized place.</p>
+            </div>
+        </div>
+    </div>
+</div>
+}

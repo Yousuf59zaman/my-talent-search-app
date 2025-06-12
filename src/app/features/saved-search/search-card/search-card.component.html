@@ -1,0 +1,145 @@
+<div class="mb-4 min-h-[93px] px-3 py-1 w-full  flex justify-between items-center bg-white border border-[#DAE5EC] rounded-lg">
+    <div>
+       @if(tabName() === 'savedFiltersTab'){
+            <div class="flex gap-2 w-[400px]">
+                @if(isSaveFilterEdit()){
+                    <div #editInput class="w-[400px]">
+                        <app-input 
+                            [type]="'text'" 
+                            [isNumericOnly]="false" 
+                            [isDecimalAllowed]="true"
+                            [isRequired]="true"
+                            [placeholder]="'Please enter a filter name'"
+                            [control]="savedFilterCardTitleControl">
+                        </app-input>
+                    </div>
+                    <button [disabled]="savedFilterCardTitleControl.invalid" (click)="toggleSaveFilterEditButton()" (click)="editSavedFilterSubmit()"class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]">
+                    </button>  
+                }@else {
+                    <p class="text-base font-semibold text-[#212121]">
+                        {{saveFilterCardTitle()}}
+                    </p>
+                    <button (click)="toggleSaveFilterEditButton()" class="icon-edit text-[#008A22] text-sm"></button>
+                }
+            </div>
+            <div class="text-[13px] w-[400px]">
+                <span class="text-[13px] font-semibold">Filters:</span>
+                <span class="font-normal">
+                    @for (filter of visibleFilters(); track $index) {
+                        {{ filter }}@if ( $index < visibleFilters().length - 1) {, }
+                    }
+                </span>
+                @if (isLongList()){
+                    <button (click)="toggleExpand()" class="text-[#0E73A9] text-[13px] font-medium ml-1">
+                        @if (expanded())
+                        { See Less <span class="icon-angle-top text-[#0E73A9] text-[8px] font-medium"></span> } 
+                        @else { See More <span class="icon-angle-bottom text-[#0E73A9] text-[8px] font-medium"></span> }
+                    </button>
+                }
+            </div>
+            
+       }@else {
+            <div class="flex gap-3" [ngClass]="isShortlistedCvEdit()? 'items-start':'items-center'">
+                @if(isShortlistedCvEdit()){
+                    <div #editShortlistedInput class="w-[400px]">
+                        <app-input 
+                            [type]="'text'" 
+                            [isNumericOnly]="false" 
+                            [isDecimalAllowed]="true"
+                            [isRequired]="true"
+                            [placeholder]="'Please enter a title.'"
+                            [control]="shortlistedCardTitleControl">
+                        </app-input>
+                        <app-input 
+                            [type]="'text'" 
+                            [isNumericOnly]="false" 
+                            [isDecimalAllowed]="true" 
+                            [classes]="'h-20'"
+                            [placeholder]="'Please enter a description.'"
+                            [control]="shortlistedCardDescriptionControl">
+                    </app-input>
+                    </div>
+                    <div class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center mt-1.5">
+                        <button [disabled]="shortlistedCardTitleControl.invalid" class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]" (click)="toggleShortlistedCvEditButton()"
+                            (click)="editShortlistedSubmit()">
+                        </button>
+                    </div>
+                    
+                }@else {
+                    <div>
+                        <p class="text-base font-semibold text-[#212121]">
+                            {{shortlistedCardTitle()}}
+                        </p>
+                        <div class="text-[13px] font-normal w-[400px]">
+                            {{ expanded() ? shortlistedCardDescription() : (shortlistedCardDescription()?.substring(0, previewLength)) }}
+                            @if (isLongText()){
+                                <button (click)="toggleExpand()" class="text-[#0E73A9] text-[13px] font-medium">
+                                    @if (expanded())
+                                    { See Less <span class="icon-angle-top text-[#0E73A9] text-[8px] font-medium"></span> } 
+                                    @else { See More <span class="icon-angle-bottom text-[#0E73A9] text-[8px] font-medium"></span> }
+                                </button>
+                            }
+                            
+                        </div>
+                          
+                    </div>
+                    <div class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center">
+                        <button class="icon-edit text-[#008A22] text-sm" (click)="toggleShortlistedCvEditButton()"
+                            (click)="editShortlistedSubmit()">
+                        </button>
+                    </div>
+                }   
+            </div>
+       }
+    </div>
+    <div class="flex items-center text-sm  gap-1 font-semibold  rounded-3xl bg-[#ECFDF3] text-[#008A22]"
+        [ngClass]="tabName() === 'savedFiltersTab'?'px-3 py-2':'px-5 py-2'">
+        @if(tabName() === 'savedFiltersTab'){
+        <a [href]="'https://corporate3.bdjobs.com/cvbanksearch.asp?filterID=' +card().filterId">Total CVs {{card().numberOfCVs | shortNumber}}</a>
+        }
+        @else {
+        <a [href]="'https://corporate3.bdjobs.com/cv_search_Result.asp?WatchlistGroup=' +card().groupId">{{card().numberOfCVs}} CVs</a>
+        }
+
+    </div>
+
+    <!-- @if(tabName() === 'savedFiltersTab'){
+    <div>
+        <div class="flex gap-1 text-[#0E73A9] items-center">
+            <span class="icon-calendar text-base"></span>
+            <span class="text-sm font-semibold"> Created in:</span>
+            <span class="text-[#212121] text-sm font-semibold">{{formatDate(card().createdOn)}}</span>
+        </div>
+
+    </div>
+    } -->
+
+    <div>
+        <div class="flex gap-1 text-[#0E73A9] items-center">
+            <span class="icon-calendar text-base"></span>
+            <span class="text-sm font-semibold">Created in:</span>
+            <span class="text-[#212121] text-sm font-semibold">{{formatDate(card().createdOn)}}</span>
+        </div>
+    </div>
+    <div class="flex gap-2 items-center">
+        <div>
+            @if(tabName() === 'savedFiltersTab'){
+                <a [href]="'https://corporate3.bdjobs.com/cvbanksearch.asp?filterID=' +card().filterId" class="icon-eye p-3 bg-[#E4EFFB] text-[#0E73A9] rounded-[50%]"></a>
+            }@else {
+                <a [href]="'https://corporate3.bdjobs.com/cv_search_Result.asp?WatchlistGroup=' +card().groupId" class="icon-eye p-3 bg-[#E4EFFB] text-[#0E73A9] rounded-[50%]"></a>
+            }
+            
+        </div>
+        <div>
+            @if (tabName() === 'savedFiltersTab') {
+                <button class="icon-trash p-3 bg-[#E4EFFB] text-[#E02424] rounded-[50%]"
+                    (click)="savedFilterDelete()">
+                </button>
+            } @else {
+                <button class="icon-trash p-3 bg-[#E4EFFB] text-[#E02424] rounded-[50%]"
+                    (click)="shortlistedCvDelete()">
+                </button>
+            }
+        </div>
+    </div>
+</div>

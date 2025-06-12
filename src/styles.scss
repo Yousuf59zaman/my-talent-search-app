@@ -1,0 +1,332 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('../public/css/fontfamily.css');
+@import 'ngx-toastr/toastr';
+@import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+
+@layer components {
+  // Set global font family
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  // buttons
+  .btn-primary{
+    @apply py-2 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none
+  }
+  // .btn-seconday {
+
+  // }
+  .btn-success {
+    @apply py-2 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-300 text-green-900 hover:bg-green-400 focus:outline-none focus:bg-green-300 disabled:opacity-50 disabled:pointer-events-none min-w-32
+  }
+  .btn-danger {
+    @apply py-2 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-100 text-red-800 hover:bg-red-200 focus:outline-none focus:bg-red-200 disabled:opacity-50 disabled:pointer-events-none min-w-32
+  }
+  .btn-outline-red {
+    @apply py-2 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-red-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none min-w-32
+  }
+
+  // loader stats
+  .err-msg {
+    @apply text-sm  text-white capitalize;
+    background-color: #dc2626 !important;
+    background-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M12 2.25C6.615 2.25 2.25 6.615 2.25 12C2.25 17.385 6.615 21.75 12 21.75C17.385 21.75 21.75 17.385 21.75 12C21.75 6.615 17.385 2.25 12 2.25ZM10.28 9.22C10.2113 9.14631 10.1285 9.08721 10.0365 9.04622C9.94454 9.00523 9.84522 8.98318 9.74452 8.98141C9.64382 8.97963 9.54379 8.99816 9.4504 9.03588C9.35701 9.0736 9.27218 9.12974 9.20096 9.20096C9.12974 9.27218 9.0736 9.35701 9.03588 9.4504C8.99816 9.54379 8.97963 9.64382 8.98141 9.74452C8.98318 9.84522 9.00523 9.94454 9.04622 10.0365C9.08721 10.1285 9.14631 10.2113 9.22 10.28L10.94 12L9.22 13.72C9.14631 13.7887 9.08721 13.8715 9.04622 13.9635C9.00523 14.0555 8.98318 14.1548 8.98141 14.2555C8.97963 14.3562 8.99816 14.4562 9.03588 14.5496C9.0736 14.643 9.12974 14.7278 9.20096 14.799C9.27218 14.8703 9.35701 14.9264 9.4504 14.9641C9.54379 15.0018 9.64382 15.0204 9.74452 15.0186C9.84522 15.0168 9.94454 14.9948 10.0365 14.9538C10.1285 14.9128 10.2113 14.8537 10.28 14.78L12 13.06L13.72 14.78C13.7887 14.8537 13.8715 14.9128 13.9635 14.9538C14.0555 14.9948 14.1548 15.0168 14.2555 15.0186C14.3562 15.0204 14.4562 15.0018 14.5496 14.9641C14.643 14.9264 14.7278 14.8703 14.799 14.799C14.8703 14.7278 14.9264 14.643 14.9641 14.5496C15.0018 14.4562 15.0204 14.3562 15.0186 14.2555C15.0168 14.1548 14.9948 14.0555 14.9538 13.9635C14.9128 13.8715 14.8537 13.7887 14.78 13.72L13.06 12L14.78 10.28C14.8537 10.2113 14.9128 10.1285 14.9538 10.0365C14.9948 9.94454 15.0168 9.84522 15.0186 9.74452C15.0204 9.64382 15.0018 9.54379 14.9641 9.4504C14.9264 9.35701 14.8703 9.27218 14.799 9.20096C14.7278 9.12974 14.643 9.0736 14.5496 9.03588C14.4562 8.99816 14.3562 8.97963 14.2555 8.98141C14.1548 8.98318 14.0555 9.00523 13.9635 9.04622C13.8715 9.08721 13.7887 9.14631 13.72 9.22L12 10.94L10.28 9.22Z' fill='white'/%3E%3C/svg%3E%0A");
+  }
+  .info-msg {
+    @apply  text-sm text-white capitalize;
+    background-color: #0284c7 !important;
+    background-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2.25 12C2.25 6.615 6.615 2.25 12 2.25C17.385 2.25 21.75 6.615 21.75 12C21.75 17.385 17.385 21.75 12 21.75C6.615 21.75 2.25 17.385 2.25 12ZM12 8.25C12.1989 8.25 12.3897 8.32902 12.5303 8.46967C12.671 8.61032 12.75 8.80109 12.75 9V12.75C12.75 12.9489 12.671 13.1397 12.5303 13.2803C12.3897 13.421 12.1989 13.5 12 13.5C11.8011 13.5 11.6103 13.421 11.4697 13.2803C11.329 13.1397 11.25 12.9489 11.25 12.75V9C11.25 8.80109 11.329 8.61032 11.4697 8.46967C11.6103 8.32902 11.8011 8.25 12 8.25ZM12 16.5C12.1989 16.5 12.3897 16.421 12.5303 16.2803C12.671 16.1397 12.75 15.9489 12.75 15.75C12.75 15.5511 12.671 15.3603 12.5303 15.2197C12.3897 15.079 12.1989 15 12 15C11.8011 15 11.6103 15.079 11.4697 15.2197C11.329 15.3603 11.25 15.5511 11.25 15.75C11.25 15.9489 11.329 16.1397 11.4697 16.2803C11.6103 16.421 11.8011 16.5 12 16.5Z' fill='white'/%3E%3C/svg%3E%0A");
+  }
+  .success-msg {
+    @apply text-sm text-white capitalize;
+    background-color: #16a34a !important;
+    background-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2.25 12C2.25 6.615 6.615 2.25 12 2.25C17.385 2.25 21.75 6.615 21.75 12C21.75 17.385 17.385 21.75 12 21.75C6.615 21.75 2.25 17.385 2.25 12ZM15.61 10.186C15.67 10.1061 15.7134 10.0149 15.7377 9.91795C15.762 9.82098 15.7666 9.72014 15.7514 9.62135C15.7361 9.52257 15.7012 9.42782 15.6489 9.3427C15.5965 9.25757 15.5276 9.18378 15.4463 9.12565C15.3649 9.06753 15.2728 9.02624 15.1753 9.00423C15.0778 8.98221 14.9769 8.97991 14.8785 8.99746C14.7801 9.01501 14.6862 9.05205 14.6023 9.10641C14.5184 9.16077 14.4462 9.23135 14.39 9.314L11.154 13.844L9.53 12.22C9.38782 12.0875 9.19978 12.0154 9.00548 12.0188C8.81118 12.0223 8.62579 12.101 8.48838 12.2384C8.35097 12.3758 8.27225 12.5612 8.26882 12.7555C8.2654 12.9498 8.33752 13.1378 8.47 13.28L10.72 15.53C10.797 15.6069 10.8898 15.6662 10.992 15.7036C11.0942 15.7411 11.2033 15.7559 11.3118 15.7469C11.4202 15.738 11.5255 15.7055 11.6201 15.6519C11.7148 15.5982 11.7967 15.5245 11.86 15.436L15.61 10.186Z' fill='white'/%3E%3C/svg%3E%0A");
+  }
+  .warning-msg {
+    @apply text-sm text-white capitalize;
+    background-color: #ea580c!important;
+    background-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.40118 3.00299C10.5562 1.00299 13.4442 1.00299 14.5982 3.00299L21.9532 15.751C23.1072 17.751 21.6632 20.251 19.3542 20.251H4.64518C2.33618 20.251 0.893179 17.751 2.04718 15.751L9.40018 3.00299H9.40118ZM12.0002 8.24999C12.1991 8.24999 12.3899 8.32901 12.5305 8.46966C12.6712 8.61031 12.7502 8.80108 12.7502 8.99999V12.75C12.7502 12.9489 12.6712 13.1397 12.5305 13.2803C12.3899 13.421 12.1991 13.5 12.0002 13.5C11.8013 13.5 11.6105 13.421 11.4698 13.2803C11.3292 13.1397 11.2502 12.9489 11.2502 12.75V8.99999C11.2502 8.80108 11.3292 8.61031 11.4698 8.46966C11.6105 8.32901 11.8013 8.24999 12.0002 8.24999ZM12.0002 16.5C12.1991 16.5 12.3899 16.421 12.5305 16.2803C12.6712 16.1397 12.7502 15.9489 12.7502 15.75C12.7502 15.5511 12.6712 15.3603 12.5305 15.2197C12.3899 15.079 12.1991 15 12.0002 15C11.8013 15 11.6105 15.079 11.4698 15.2197C11.3292 15.3603 11.2502 15.5511 11.2502 15.75C11.2502 15.9489 11.3292 16.1397 11.4698 16.2803C11.6105 16.421 11.8013 16.5 12.0002 16.5Z' fill='white'/%3E%3C/svg%3E%0A");
+  }
+
+  // global components
+  .dropdown-item {
+    @apply flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-xs text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 hover:cursor-pointer;
+  }
+
+  .radio {
+    @apply shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800
+  }
+  .checkbox {
+    @apply shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800
+  }
+}
+.btn-save {
+  @apply py-2 px-3 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none
+}
+.btn-cancel {
+  @apply py-2 px-3 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white dark:focus:bg-white/20 dark:focus:text-white min-w-32
+}
+.disabled {
+  @apply opacity-50 pointer-events-none
+}
+
+.toast-container .ngx-toastr {
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.toast-container .ngx-toastr:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+.toast-container .ngx-toastr {
+  padding: 15px 14px 15px 50px !important;
+}
+.toast-close-button {
+  text-shadow: none !important;
+}
+.toast-close-button:hover, .toast-close-button:focus {
+  color: white;
+  opacity: .7;
+}
+.toast-title {
+  font-weight: 500 !important;
+  font-size: 16px !important;
+}
+
+.loader {
+  border: 8px solid #cbd5e1;
+  border-top: 8px solid #b32d7d;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
+body {
+    background-color: #F9FAFB;
+}
+
+.NgxEditor__Wrapper .NgxEditor__MenuBar {
+  width: 100%;
+}
+.NgxEditor__Content p {
+  margin-bottom: 6px;
+}
+
+#print-only-header {
+  display: none !important;
+}
+
+#summeryTable th { 
+  text-align: center;
+  font-size: 14px;
+  color: #ffffff;
+  white-space: normal;
+  word-break: break-all;
+  vertical-align: middle;
+  font-weight: normal;
+  border: 1px solid #568DCB;
+  padding: 12px 6px 12px 6px;
+}
+
+#summeryTable td {
+  padding: 12px 5px;
+  border: 1px solid #CFD8DC;
+  text-align: center;
+}
+
+@media print {
+  #headerhide,
+  #footerhide,
+  #avatarhide {
+    visibility: hidden;
+  }
+  #printDiv,
+  #printDiv * {
+    visibility: visible;
+  }
+
+  #printDiv {
+    position: absolute;
+    left: 0;
+    top: 150px;
+    width: 100%;
+   margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .exclude-from-print {
+    display: none;
+  }
+
+  #printDiv .grid.grid-cols-2.md\:grid-cols-5.gap-2.mb-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;       
+    justify-content: center !important;  
+    align-items: center !important;
+    gap: 2px !important;              
+    margin: 0 auto 50px auto !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+ 
+  #printDiv app-stats-card {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    flex: 0 1 auto !important;
+    width: auto !important;
+    min-width: 100px; 
+    text-align: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #printDiv app-stats-card .stat-data,
+  #printDiv app-stats-card .data,
+  #printDiv app-stats-card h1 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    color: #000 !important;
+  }
+
+  #printDiv app-stats-card h3,
+  #printDiv app-stats-card h2,
+  #printDiv app-stats-card .title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0 0 20px 0 !important;
+    color: #333 !important;
+  }
+
+    #printDiv .mid-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; 
+      padding: 0 !important;
+      margin: 0 !important;
+      gap: 0 !important; 
+    }
+    
+    #printDiv .mid-section > div {
+      width: 100%;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    #printDiv .mid-section > div * {
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+    }
+    
+
+  #printDiv .print-doughnut-chart {
+    display: block;
+    width: 100%;
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+  }
+
+  #printDiv .end-section .grid {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #printDiv .end-section .print-doughnut-chart {
+    width: 100% !important;
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+  }
+
+  #printDiv .print-doughnut-chart .bg-white,
+  #printDiv .mid-section > div .bg-white {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #printDiv .print-doughnut-chart {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
+  }
+
+  #printDiv .print-doughnut-chart app-section-title {
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
+  }
+
+  #printDiv .print-doughnut-chart app-chart,
+  #printDiv .mid-section > div app-chart {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #printDiv app-chart canvas {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  #printDiv .mid-section > div,
+  #printDiv .print-doughnut-chart {
+    page-break-inside: avoid;
+  }
+
+  #printDiv .mid-section > div + div,
+  #printDiv .print-doughnut-chart + .print-doughnut-chart {
+    page-break-before: always;
+  }
+
+  #printDiv .end-section .flex.bg-gray-100 {
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+  }
+
+  #printDiv .end-section .bg-gray-100 button {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #printDiv {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #printDiv .grid.grid-cols-1.sm\:grid-cols-2.gap-1 {
+    gap: 0 !important;
+  }
+
+  #printDiv .print-doughnut-chart app-section-title {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #printDiv .print-doughnut-chart {
+    margin-bottom: 1px !important;
+  }
+
+
+
+  #print-only-header {
+    display: block !important;
+    margin: 2rem auto 1rem auto; 
+    text-align: center; 
+    
+  }
+}

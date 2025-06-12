@@ -1,0 +1,14 @@
+<div class="w-fit h-[52px]">
+  <div class="flex items-center gap-2 p-1 rounded-full border border-gray-200 h-full bg-white">
+    @for (tab of tabs; track tab.id) {
+      <div 
+        class="flex items-center px-4 rounded-full cursor-pointer transition-colors duration-200 h-[calc(100%-8px)]"
+        [class.bg-[#0E73A9]]="!tab.isExternalLink && isActive(tab.id)"
+        [class.text-white]="!tab.isExternalLink && isActive(tab.id)"
+        [class.hover:bg-gray-100]="tab.isExternalLink || !isActive(tab.id)"
+        (click)="selectTab(tab)">
+        <span class="text-sm font-medium">{{ tab.label }}</span>
+      </div>
+    }
+  </div>
+</div>

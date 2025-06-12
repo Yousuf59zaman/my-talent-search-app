@@ -1,0 +1,63 @@
+<pagination-template #p="paginationApi" [id]="id()" [maxSize]="maxSize()" (pageChange)="onPageChange($event)">
+    <div class="custom-pagination" [ngClass]="customClasses()">
+        <nav class="flex items-center gap-x-1" aria-label="Pagination" [ngClass]="isRightAligned() ? 'justify-end' : ''">
+            <div class="pagination-previous" >
+                <button (click)="p.previous()" type="button"
+                    class="min-h-[32px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-xs rounded-lg text-gray-800 active:text-[#0e73a9] hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none hover:bg-white/10 "
+                    aria-label="Previous" [disabled]="p.isFirstPage()">
+                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    <!-- <span>Previous</span> -->
+                </button>
+            </div>
+
+            @for (page of p.pages; track $index) {
+                <div class="flex items-center gap-x-1">
+                    @if (p.getCurrent() !== page.value) {
+                        @if (page.label === '...') {
+                            <button type="button"
+                                    class="min-h-[32px] min-w-[38px] flex justify-center items-center rounded-lg bg-gray-50 text-[#0e73a9] cursor-not-allowed"
+                                    disabled>
+                                ...
+                            </button>
+                        } @else {
+                            <button (click)="p.setCurrent(page.value)" type="button"
+                                    class="min-h-[32px] min-w-[38px] flex justify-center items-center rounded-lg"
+                                    [ngClass]="{
+                                        'bg-gray-50 text-[#0e73a9] hover:bg-[#0e73a9d4] hover:text-gray-50': p.getCurrent() !== page.value
+                                    }">
+                                {{ page.label }}
+                            </button>
+                        }
+                    } @else {
+                        <button type="button"
+                                class="min-h-[32px] min-w-[38px] flex justify-center items-center rounded-lg bg-[#0e73a9] text-gray-50">
+                            {{ page.label }}
+                        </button>
+                    }
+                </div>
+            }
+
+            <div class="pagination-next">
+                <button (click)="p.next()" type="button"
+                    class="min-h-[32px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-xs rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none hover:bg-white/10 "
+                    aria-label="Next" [disabled]="p.isLastPage()">
+                    <!-- <span>Next</span> -->
+                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                </button>
+                @if ((p.getLastPage() >= 10) && isGoByPageNo()) {
+                    <input type="number" [(ngModel)]="page" max="{{ p.getLastPage() }}" class="w-12 px-0 text-sm text-center border border-gray-600 rounded-sm h-7" />
+                    <button type="button" class="text-white text-md bg-[#4D4D4D] p-0.5 px-2 rounded-sm font-bold"  (click)="goToPage()">Go</button>
+                }
+            </div>
+        </nav>
+    </div>
+
+</pagination-template>

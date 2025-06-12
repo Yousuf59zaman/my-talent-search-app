@@ -1,0 +1,22 @@
+<div class="mt-6">
+    @if (shortlistedCvList && shortlistedCvList.length > 0) {
+            @let visibleShortlistedCvList = shortlistedCvList.slice(0,5);
+            @for (card of visibleShortlistedCvList; track $index) {
+            <app-search-card 
+            [card]="card" 
+            [tabName]="'shortlistedCvTab'"
+            (shortlistedCvUpdated)="onShortlistedCvUpdated()"
+            (shortlistedCvCardDeleted)="onShortlistedCvDeleted()"
+            />
+        }
+        <div class="text-[#0E73A9] font-medium text-center">
+            <a href="https://corporate3.bdjobs.com/ShortlistedCVs.asp?pgtype=wl&from=">Show all <span>({{shortlistedCvList.length}})</span></a>
+        </div>
+
+    } @else {
+        <div class="flex flex-col items-center">
+            <img src="images/saved-search-image.svg" alt="No saved search" class="w-28 h-28 mx-auto" />
+            <p class="text-[#212121] mt-2">Saved search will appear after your first saved search</p>
+        </div>
+    }
+</div>

@@ -1,0 +1,46 @@
+::ng-deep .bdjobs-slider {
+    .ngx-slider {
+      height: 0px !important;
+      margin-top: 12px !important;
+      .ngx-slider-pointer {
+        width: 20px !important;
+        height: 20px;
+        top: -8px;
+        background: #ccc;
+      }
+
+      .ngx-slider-selection {
+        background: #8f8f8f;
+      }
+
+      .ngx-slider-model-value, .ngx-slider-model-high, .ngx-slider-floor, .ngx-slider-ceil {
+        font-size: 12px;
+      }
+    }
+
+    .ngx-slider .ngx-slider-pointer:after {
+        content: none;
+    }
+}
+
+::ng-deep .ngx-slider .ngx-slider-bar {
+  background-color: #d3d3d3 !important; 
+}
+
+::ng-deep .ngx-slider .ngx-slider-selection {
+  background-color: #8f8f8f !important;
+}
+
+::ng-deep .bdjobs-slider.selected .ngx-slider .ngx-slider-selection {
+  background-color: #0E73A9 !important;
+}
+
+::ng-deep .ngx-slider .ngx-slider-pointer {
+  background-color: #8f8f8f !important;
+  border: 2px solid white !important;
+}
+
+::ng-deep .bdjobs-slider.selected .ngx-slider-pointer {
+  background-color: #0E73A9 !important;
+  border: 2px solid white !important;
+}

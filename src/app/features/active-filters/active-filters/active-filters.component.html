@@ -1,0 +1,32 @@
+<div class="h-14 max-w-7xl bg-white border border-[#DAE5EC] rounded-full px-6 py-1 flex items-center justify-between gap-4">
+    <div class="flex gap-2 border-r-2 pr-2 border-[#DAE5EC]">
+      <p class="text-[#212121] font-semibold text-base">Filters</p>
+      <p class="bg-[#0E73A9] w-6 h-6 rounded-full text-white flex justify-center items-center text-xs font-semibold">{{filters().length}}</p>
+    </div>
+
+    @if (filters().length > 0) {
+      <div class="flex-1 overflow-x-auto flex items-center gap-2 pb-1">
+        @for (filter of filters(); track $index) {
+          <div class="flex items-center gap-3 bg-[#E4EFFB] text-sm rounded-full px-1.5 py-1.5 whitespace-nowrap text-[#0E73A9] font-medium">
+            {{ filter.label }}
+            <button
+              (click)="removeFilter(filter)"
+              class="w-5 h-5 rounded-full bg-white font-semibold text-base flex justify-center items-center text-[#E02424]"
+            >
+              &times;
+            </button>
+          </div>
+        }
+      </div>
+    }
+  
+    <div>
+      <button
+        class="border border-[#E02424] rounded-full w-[99px] h-[33px] text-[#E02424]"
+        (click)="clearAll()"
+        [disabled]="filters().length === 0"
+      >
+        Clear All <span class="icon-trash"></span>
+      </button>
+    </div>
+  </div>

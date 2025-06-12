@@ -1,0 +1,34 @@
+@if(shouldPlay) {
+  <div [ngStyle]="getContainerStyles()">
+    @if (!isValidSource()) {
+      <vg-player
+        (onPlayerReady)="onPlayerReady($event)"
+        [class]="getPlayerSizeClass()"
+      >
+        <video
+          [vgMedia]="$any(media)"
+          class="w-full"
+          #media
+          id="singleVideo"
+          controls
+          preload="auto"
+        >
+          <source [src]="videoSource" [type]="videoType" />
+        </video>
+      </vg-player>
+    } @else {
+      <div
+        [class]="getPlayerSizeClass()"    
+        class="flex flex-col items-center justify-center text-center rounded-md"
+        style="background-color:#878C93; color: black;"
+      >
+     <h2 class="text-base font-bold mb-2">
+          Video unavailable
+        </h2>
+        <p class="text-sm sm:text-base leading-normal max-w-sm">
+          The video has been removed by the candidate.
+        </p>
+      </div>
+    }
+  </div>
+}
