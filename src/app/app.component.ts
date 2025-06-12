@@ -21,31 +21,31 @@ declare global {
   styleUrl: './app.component.scss',
   imports: [LayoutComponent]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'cv-bank';
   formControlTest = new FormControl(false);
-  
+
   private localStorageService = inject(LocalstorageService)
   private scriptLoader = inject(ScriptLoaderService);
   private destroyRef = inject(DestroyRef);
   private subscription = inject(Router)
-  .events.pipe(
-    takeUntilDestroyed(this.destroyRef),
-    filter((event) => event instanceof NavigationEnd),
-    delay(100),
-    finalize(() => window.HSStaticMethods.autoInit())
-  ).subscribe();
+    .events.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      filter((event) => event instanceof NavigationEnd),
+      delay(100),
+      finalize(() => window.HSStaticMethods.autoInit())
+    ).subscribe();
 
   async ngOnInit() {
     if (typeof window !== 'undefined' &&
-    (await this.scriptLoader.loadScript('assets/js/preline.js'))) {
+      (await this.scriptLoader.loadScript('assets/js/preline.js'))) {
       window.HSStaticMethods.autoInit();
     }
 
-    if(isDevMode()){
+    if (isDevMode()) {
       //sadman_test
-       this.localStorageService.setItem(CompanyId,'ZRLzZRdx')
-       this.localStorageService.setItem(UserId,'ZRYxPRG7')
+      this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
+      this.localStorageService.setItem(UserId, 'ZRYxPRG7')
       //dilruba test
       // this.localStorageService.setItem(CompanyId,'Zxg6ZRg=')
       // this.localStorageService.setItem(UserId,'PxZ9IES=')
@@ -61,16 +61,16 @@ export class AppComponent implements OnInit{
       // this.localStorageService.setItem(CompanyId,'PRd9ZRd=')
       // this.localStorageService.setItem(UserId,'IRY1Pig=')
 
-       //limit over have access
+      //limit over have access
       //  this.localStorageService.setItem(CompanyId,'Zxg6ZRg=')
       //  this.localStorageService.setItem(UserId,'ZRCzZRGu')
-      
+
       //test
       //  this.localStorageService.setItem(CompanyId,'ZRZ3IRd0')
       //  this.localStorageService.setItem(UserId,'ZC==')
-     
-      this.localStorageService.setItem(IsCorporateUser,'true')
-      this.localStorageService.setItem(LastUserType,LastUserTypes.Corporate)
+
+      this.localStorageService.setItem(IsCorporateUser, 'false')
+      this.localStorageService.setItem(LastUserType, LastUserTypes.Jobseeker)
     }
   }
 }

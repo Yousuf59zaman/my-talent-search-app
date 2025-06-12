@@ -185,7 +185,28 @@
     }
 
     @if (!isCorporateUser()) {
-      <div class="mb-4">
+      <div class="mb-4 bg-white rounded-lg border border-gray-100 shadow-sm p-3">
+        <div class="flex justify-between items-center cursor-pointer"
+          (click)="toggleSection('experienceFilters')"> 
+          <div class="flex items-center">
+            <img src="work-experience-icon 1.svg" alt="" class="w-5 h-5 mr-2">
+            <span class="font-semibold text-[#0E73A9]">Experience & Expertise</span>
+          </div>
+
+          <button type="button" class="text-[#0E73A9]">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                class="h-5 w-5 transform transition-transform duration-200 text-white bg-[#0E73A9] rounded-full p-1"
+                [class.rotate-180]="!isExperienceFiltersOpen()"
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
+ @if(isExperienceFiltersOpen()) { 
+    <div class="mb-4">
         <app-range-slider
           [label]="'Year of experience'"
           [customInputClass]="'w-[50px]'"
@@ -195,9 +216,36 @@
           [options]="expRangeConfig"
           ></app-range-slider>
       </div>
-      <!-- <hr class="my-3 border-gray-200"> -->
-    }
 
+    <div class="mb-3">
+      <div class="flex items-center mb-2">
+        <img src="images/work-experience-icon 1.svg" alt="" class="w-5 h-5 mr-2">
+        <label class="text-sm font-medium text-[#0E73A9]">Expertise (Work Experience)</label>
+      </div>
+      
+      <app-multi-select
+        [overLayVisibleOnlyOnFocus]="false"
+        [isBindSelectedItemsOnly]="true"
+        [isShowSelectedItemsAsChip]="true"
+        [chipLabelCharacterCount]="25"
+        [isFullWidth]="true" 
+        [control]="expertiseInputControl()"
+        [multiplSelection]="false"
+        [maxSelection]="3"
+        [resetOnSelection]="true"
+        [placeholderText]="'Write Expertise'"
+        [checkBoxVisible]="false"
+        [overLayVisibleOnlyOnSuggestions]="true"
+        [suggestions]="filteredExpertiseSuggestions()"
+        [isExtraParamInChip]="true"
+        (searchQuery)="onExpertiseQueryInput($event)"
+        (onSelect)="getUpdatedItem($event, multiSelectType.SkillsformField)"
+      ></app-multi-select>
+    </div>
+
+    }
+    </div>  
+  }
     <div class="mb-4">
       <div class="flex items-center mb-1">
         <img src="images/skills2.svg" alt="" class="w-5 h-5 mr-1">
@@ -243,30 +291,33 @@
       ></app-multi-select>
     </div>
 
-    <div class="mb-4">
+      @if(isCorporateUser()){
+      <div class="mb-4">
       <div class="flex items-center mb-1">
-        <span class="icon-briefcase mr-2 text-[#0E73A9]"></span>
+        <img src="images/work-experience-icon 1.svg" alt="" class="w-5 h-5 mr-1">
         <label class="text-base font-bold text-[#0E73A9]">Expertise(Work Experience)</label>
       </div> 
-      <app-multi-select
-        [overLayVisibleOnlyOnFocus]="false"
-        [isBindSelectedItemsOnly]="true"
-        [isShowSelectedItemsAsChip]="true"
-        [chipLabelCharacterCount]="25"
-        [isFullWidth]="true"
-        [control]="expertiseInputControl()"
-        [multiplSelection]="false"
-        [maxSelection]="3"
-        [resetOnSelection]="true"
-        [placeholderText]="'Write Expertise'"
-        [checkBoxVisible]="false"
-        [overLayVisibleOnlyOnSuggestions]="true"
-        [suggestions]="filteredExpertiseSuggestions()"
-        [isExtraParamInChip]="true"
-        (searchQuery)="onExpertiseQueryInput($event)"
-        (onSelect)="getUpdatedItem($event, multiSelectType.SkillsformField)"
-    ></app-multi-select>
+     
+        <app-multi-select
+          [overLayVisibleOnlyOnFocus]="false"
+          [isBindSelectedItemsOnly]="true"
+          [isShowSelectedItemsAsChip]="true"
+          [chipLabelCharacterCount]="25"
+          [isFullWidth]="true"
+          [control]="expertiseInputControl()"
+          [multiplSelection]="false"
+          [maxSelection]="3"
+          [resetOnSelection]="true"
+          [placeholderText]="'Write Expertise'"
+          [checkBoxVisible]="false"
+          [overLayVisibleOnlyOnSuggestions]="true"
+          [suggestions]="filteredExpertiseSuggestions()"
+          [isExtraParamInChip]="true"
+          (searchQuery)="onExpertiseQueryInput($event)"
+          (onSelect)="getUpdatedItem($event, multiSelectType.SkillsformField)"
+      ></app-multi-select>
     </div> 
+  }
 
   <div class="mb-4 bg-white rounded-md border border-gray-200"> 
     <div class="flex justify-between items-center p-3 cursor-pointer"
