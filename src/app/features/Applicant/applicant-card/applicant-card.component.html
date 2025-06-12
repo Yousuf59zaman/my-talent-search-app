@@ -178,7 +178,7 @@
           {{applicant() | applicantPrivacy: 'name' }}
         </h2>
         </button>
-          @if (isCorporateUser()) {
+          @if (isCorporateUser() && ageValue()) {
             <div class="mb-3 lg:mb-2 text-[12px] lg:text-[10px] text-[#0E73A9] border border-[#0E73A9] rounded px-1 inline-block">
             Age: {{ ageValue() }}</div>
 
@@ -189,25 +189,26 @@
 
         @if(!isCorporateUser()){
           @if((applicant() | applicantPrivacy: 'phone')) {
-  <div class="mb-2 flex items-center space-x-1">
-    <span class="icon-phone text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
-    <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'phone' }}</span>
-  </div>
-}
+            <div class="mb-2 flex items-center space-x-1">
+              <span class="icon-phone text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
+              <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'phone' }}</span>
+            </div>
+          }
 
-@if((applicant() | applicantPrivacy: 'email')) {
-  <div class="mb-2 flex items-center space-x-1">
-    <span class="icon-envelope text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
-    <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'email' }}</span>
-  </div>
-}
+          @if((applicant() | applicantPrivacy: 'email')) {
+            <div class="mb-2 flex items-center space-x-1">
+              <span class="icon-envelope text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
+              <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'email' }}</span>
+            </div>
+          }
 
-@if((applicant() | applicantPrivacy: 'location')) {
-  <div class="flex items-center mb-[18px] space-x-1">
-    <span class="icon-location text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
-    <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'location' }}</span>
-  </div>
-        }    }
+          @if((applicant() | applicantPrivacy: 'location')) {
+            <div class="flex items-center mb-[18px] space-x-1">
+              <span class="icon-location text-[#0E73A9]" [ngStyle]="textBlurStyle()"></span>
+              <span class="text-[13px]" [ngStyle]="textBlurStyle()">{{ applicant() | applicantPrivacy: 'location' }}</span>
+            </div>
+          }    
+      }
        
             
         @if(isCorporateUser()){
