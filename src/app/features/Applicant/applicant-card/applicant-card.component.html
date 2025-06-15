@@ -72,6 +72,7 @@
       <img
         [src]="applicant() | applicantPrivacy: 'photo'"
         alt="Applicant Photo"
+        onError="this.src='images/Avatar.png'"
         class="w-full h-full rounded-full object-cover"
         [ngStyle]="photoBlurStyle()"
       />
