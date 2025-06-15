@@ -19,16 +19,16 @@ export class NavbarService {
             ...response,
             data: {
               ...response.data,
-              // cvSearchAccess: isDevMode() ? false : response.data.cvSearchAccess,
-              // cvSearchService: isDevMode() ? 
-              // {
-              //   available: -1,
-              //   endingDate: "2025-05-1 00:00:00",
-              //   id: 31823,
-              //   limit: 15,
-              //   startingDate: "2025-04-1 00:00:00",
-              //   viewed: 16
-              // } : response.data.cvSearchService
+              cvSearchAccess: isDevMode() ? false : response.data.cvSearchAccess,
+              cvSearchService: isDevMode() ? 
+              {
+                available: -1,
+                endingDate: "2025-05-1 00:00:00",
+                id: 31823,
+                limit: 15,
+                startingDate: "2025-04-1 00:00:00",
+                viewed: 16
+              } : response.data.cvSearchService
             }
           };
         })

@@ -25,28 +25,7 @@ export class CvSearchService {
         catchError(() => of({} as CvBankApplicantResponse)),
       )
   }
-  // getCVs(filterform: FilterForm, pageNo: number = 1): Observable<CvBankApplicantResponse> {
-  //   let endPoint = '/CVBank';
-  //   const payload = new QueryBuilder(filterform, this.localStorageService.getItem(CompanyId) || '', pageNo);
-  //   const baseUrl = 'https://gateway.bdjobs.com/cvbank/api' + endPoint;
-  //   return this.http
-  //     .get<CvBankApplicantResponse>(baseUrl, { params: payload as any })
-  //     .pipe(
-  //       filter((res) => res.error === '0' && res.message === 'success'),
-  //       map((data: CvBankApplicantResponse) => {
-  //         return {
-  //           ...data,
-  //           cvBankDetails: data.cvBankDetails.map((cv, i) => {
-  //             if (i % 2 === 0) {
-  //               cv.isPurchased = 10000;
-  //             }
-  //             return cv;
-  //           }),
-  //         };
-  //       }),
-  //       catchError(() => of({} as CvBankApplicantResponse))
-  //     );
-  // }
+
   getCVCount(filterform: FilterForm): Observable<{starCvCount: number, totalCvCount: number}> {
     let endPoint = '/CVBank/filteredcount';
     const payload = new QueryBuilder(filterform, this.localStorageService.getItem(CompanyId) || '');

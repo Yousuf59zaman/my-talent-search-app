@@ -533,28 +533,35 @@
       </div>
     }
 
-    <div class="px-4 lg:px-3 pb-3 lg:pb-2 pt-2 lg:pt-1.5 flex-shrink-0 border-t border-gray-200 mt-4 lg:mt-3">
-      <div class="flex justify-between items-center mt-4 lg:mt-3">
-        <p class="text-[#595959] block text-sm lg:text-xs">Price: <span class="text-sm lg:text-xs text-[#3892F3]">৳99</span> up to <span
-            class="text-sm lg:text-xs text-[#3892F3]">3 CVs,</span> after then each CV <span
-            class="text-sm lg:text-xs text-[#3892F3]">৳30</span></p>
-        @if(isCreatePurchaseList()){
-          <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-            type="button" (click)="createNewPurchaseList()">
-            Create
-          </button>
-        } @else if (purchasedlistData && purchasedlistData.length > 0) {
-          <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-            type="button" (click)="addCvToPurchaseList()">
-            Add
-          </button>
-        }
+      <div class="px-4 lg:px-3 pb-3 lg:pb-2 pt-2 lg:pt-1.5 flex-shrink-0 border-t border-gray-200 mt-4 lg:mt-3">
+        <div class="flex justify-between items-center mt-4 lg:mt-3">
+          <p class="text-[#595959] block text-sm lg:text-xs">Price: <span class="text-sm lg:text-xs text-[#3892F3]">৳99</span> up to <span
+              class="text-sm lg:text-xs text-[#3892F3]">3 CVs,</span> after then each CV <span
+              class="text-sm lg:text-xs text-[#3892F3]">৳30</span></p>
+          @if(isCreatePurchaseList()){
+            <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
+              type="button" (click)="createNewPurchaseList()">
+              Create
+            </button>
+          } @else if (purchasedlistData && purchasedlistData.length > 0) {
+            <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
+              type="button" (click)="addCvToPurchaseList()">
+              Add
+            </button>
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>
             } @else {
                @if(isCorporateUser()){
+                 @if (applicant().isPurchased) {
+                 <div class="flex flex-col items-center">
+                  <div class="bg-green-100 px-3 py-1.5 mt-1 rounded-xl">
+                    <span class="text-sm lg:text-xs font-medium text-green-600">Purchased</span>
+                  </div>
+                </div>
+              } @else {
                 <div class="flex flex-col items-center ml-8 lg:ml-6">
                   <button
                     class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5"
@@ -571,6 +578,7 @@
               
                 </div>
                }
+              }
             }
           </div>
         </div>
