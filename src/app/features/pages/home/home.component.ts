@@ -7,9 +7,10 @@ import { IsCorporateUser } from '../../../shared/enums/app.enums';
 import { NgClass } from '@angular/common';
 import { BdJobsAnalyticsService } from '../../bd-jobs-analytics/bd-jobs-analytics.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { delay, of, tap } from 'rxjs';
+import { delay, filter, of, tap } from 'rxjs';
 import { CompanyVerifyModalComponent } from '../../modal/company-verify-modal/company-verify-modal.component';
 import { ModalService } from '../../../core/services/modal/modal.service';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   bdJobsAnalyticsService = inject (BdJobsAnalyticsService)
   private destroyRef = inject(DestroyRef);
   private modalService = inject(ModalService);
+  private authService = inject(AuthService);
   avatarUrls = [
     'images/riyad.svg',
     'images/rizon.svg',

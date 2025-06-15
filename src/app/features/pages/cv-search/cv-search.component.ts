@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, DestroyRef } from '@angular/core';
+import { Component, signal, computed, inject, DestroyRef, AfterViewInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FilterPanelComponent } from '../../filter-panel/filter-panel.component';
 import { ApplicantCardComponent } from "../../applicant/applicant-card/applicant-card.component";
@@ -22,6 +22,10 @@ import { ActivatedRoute } from '@angular/router';
 import { IsCorporateUser } from '../../../shared/enums/app.enums';
 import { BdJobsAnalyticsService } from '../../bd-jobs-analytics/bd-jobs-analytics.service';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
+import { NavDataService } from '../../../core/services/nav-data.service';
+import { ModalService } from '../../../core/services/modal/modal.service';
+import { CompanyVerifyModalComponent } from '../../modal/company-verify-modal/company-verify-modal.component';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-cv-search',
@@ -41,23 +45,29 @@ import { LocalstorageService } from '../../../core/services/essentials/localstor
   templateUrl: './cv-search.component.html',
   styleUrl: './cv-search.component.scss',
 })
-export class CvSearchComponent {
+export class CvSearchComponent implements AfterViewInit {
   private queryService = inject(QueryService);
   private filterStore = inject(FilterStore);
   private homeQueryStore = inject(HomeQueryStore);
   protected ApplicantCardService = inject(ApplicantCardService);
   private activatedRoute = inject(ActivatedRoute);
-  bdJobsAnalyticsService = inject (BdJobsAnalyticsService)
+  bdJobsAnalyticsService = inject(BdJobsAnalyticsService);
   private destroyRef = inject(DestroyRef);
   localStorageService = inject(LocalstorageService);
-  IsCorporateUser = signal(false)
+  private navDataService = inject(NavDataService);
+  private modalservice = inject(ModalService);
+  private authService = inject(AuthService);
+
+  IsCorporateUser = signal(false);
   pageNo = signal(1);
   total = signal(0);
   showButton = signal(false);
   itemsPerPage = signal<number>(DefaultPageSize);
   totalCvCount = computed(() => this.filterStore.totalCvCount() || 0);
-  isCorporateUser = computed(() => this.localStorageService.getItem(IsCorporateUser) === 'true');
-  
+  isCorporateUser = computed(
+    () => this.localStorageService.getItem(IsCorporateUser) === 'true'
+  );
+
   activeFiltersBadges = computed(() =>
     generateFilterBadges(this.activeFilters())
   );
@@ -65,12 +75,15 @@ export class CvSearchComponent {
   shortlistData = toSignal(
     this.activatedRoute.queryParams.pipe(
       takeUntilDestroyed(),
-      filter((query) => query && query['shortlistId'] && query['shortlistName']),
+      filter(
+        (query) => query && query['shortlistId'] && query['shortlistName']
+      ),
       map((query) => ({
         id: query['shortlistId'],
-        name: query['shortlistName']
+        name: query['shortlistName'],
       }))
-    ), { initialValue: undefined }
+    ),
+    { initialValue: undefined }
   );
 
   removedFilter = signal<FilterBadge | null>(null);
@@ -150,7 +163,8 @@ export class CvSearchComponent {
     .pipe(
       delay(2000),
       tap(() => this.sendUserActivity())
-    ).subscribe();
+    )
+    .subscribe();
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -230,9 +244,10 @@ export class CvSearchComponent {
   private submitPurchaseForm(resumeIds: string, listId: string): void {
     const form = document.createElement('form');
     form.method = 'post';
-    form.action = 'https://corporate3.bdjobs.com/CV_Purchase_Payment_Confirm.asp';
+    form.action =
+      'https://corporate3.bdjobs.com/CV_Purchase_Payment_Confirm.asp';
     form.id = 'frmCartBuy';
-    form.target = '_blank'; 
+    form.target = '_blank';
 
     const resumeIdInput = document.createElement('input');
     resumeIdInput.type = 'hidden';
@@ -254,12 +269,32 @@ export class CvSearchComponent {
     console.log('Resume IDs:', resumeIds);
     console.log('List ID:', listId);
   }
-  sendUserActivity(){
-    const activityType = 'Talent search'
-    const activity = 1
-    const activityName = ''
-    this.bdJobsAnalyticsService.sendDeviceInfoToServer(activityType,activity,activityName)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe()
+  sendUserActivity() {
+    const activityType = 'Talent search';
+    const activity = 1;
+    const activityName = '';
+    this.bdJobsAnalyticsService
+      .sendDeviceInfoToServer(activityType, activity, activityName)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (!this.IsCorporateUser()) {
+        this.navDataService.isValidJobSeeker().subscribe({
+          next: (res) => {
+            if (res && !res.iseligible) {
+              this.modalservice.setModalConfigs({
+                attributes: {
+                  modalWidth: '500px',
+                },
+                componentRef: CompanyVerifyModalComponent,
+              });
+            }
+          },
+        });
+      }
+    }, 1000);
   }
 }
