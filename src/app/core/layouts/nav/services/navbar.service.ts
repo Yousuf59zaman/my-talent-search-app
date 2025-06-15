@@ -10,9 +10,9 @@ export class NavbarService {
 
   constructor(private http: HttpClient) { }
 
-  getNavbarData(payload: { companyId: string, userId: string }): Observable<NavResponse> {
+  getNavbarData(payload:{companyId:string, userId:string}): Observable<NavResponse> {
     const baseUrl = 'https://recruiter.bdjobs.com/authentication/api/services';
-    return this.http.post<NavResponse>(baseUrl, payload)
+    return this.http.post<NavResponse>(baseUrl,payload)
       .pipe(
         map((response: NavResponse) => {
           return {
@@ -20,15 +20,15 @@ export class NavbarService {
             data: {
               ...response.data,
               cvSearchAccess: isDevMode() ? false : response.data.cvSearchAccess,
-              // cvSearchService: isDevMode() ? 
-              // {
-              //   available: -1,
-              //   endingDate: "2025-05-1 00:00:00",
-              //   id: 31823,
-              //   limit: 15,
-              //   startingDate: "2025-04-1 00:00:00",
-              //   viewed: 16
-              // } : response.data.cvSearchService
+              cvSearchService: isDevMode() ? 
+              {
+                available: -1,
+                endingDate: "2025-05-1 00:00:00",
+                id: 31823,
+                limit: 15,
+                startingDate: "2025-04-1 00:00:00",
+                viewed: 16
+              } : response.data.cvSearchService
             }
           };
         })

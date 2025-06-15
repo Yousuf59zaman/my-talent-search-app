@@ -3,20 +3,20 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { ModalContainerComponent } from './modal-container.component';
+import { ModalContainerWoPComponent } from './modal-container.component';
 
-describe('ModalContainerComponent', () => {
-  let component: ModalContainerComponent;
-  let fixture: ComponentFixture<ModalContainerComponent>;
+describe('ModalContainerWoPComponent', () => {
+  let component: ModalContainerWoPComponent;
+  let fixture: ComponentFixture<ModalContainerWoPComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ModalContainerComponent],
+      declarations: [ModalContainerWoPComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalContainerComponent);
+    fixture = TestBed.createComponent(ModalContainerWoPComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

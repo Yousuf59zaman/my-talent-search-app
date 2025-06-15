@@ -48,7 +48,9 @@ export class ApplicantDataPipe implements PipeTransform {
     if (isCorporateUser) {
       if (applicant.isBlueCollarCat === 1) {
         return actualValue;
-      } else if (this.CvBankSearchAccess()) {
+      }
+
+      else if (this.CvBankSearchAccess()) {
         if (this.cvbankAccessLimitExpired()) {
           if (applicant.resumeViewedAlready) {
             return actualValue;
@@ -57,7 +59,8 @@ export class ApplicantDataPipe implements PipeTransform {
         else {
           return actualValue;
         }
-      } else {
+      }
+      else {
         if (applicant.isPurchased) {
           return actualValue;
         }
