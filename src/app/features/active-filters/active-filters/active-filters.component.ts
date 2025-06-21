@@ -26,27 +26,14 @@ export class ActiveFiltersComponent {
       this.filters.set([]);
     }
   }
-  
+
   @Output() removeFilterBadge = new EventEmitter<FilterBadge>();
   @Output() clearAllFilters = new EventEmitter<void>();
 
   removeFilter(filterbadge: FilterBadge) {
-    let filterToRemove
-    if (
-      filterbadge.type === 'location' ||
-      filterbadge.type === 'expertise' ||
-      filterbadge.type === 'skills' ||
-      filterbadge.type === 'industries' ||
-      filterbadge.type === "institutes"
-    ) {
-      filterToRemove = this.filters().find(
-        (filter) => filter.value.selectId === filterbadge.value.selectId
-      );
-    } else {
-      filterToRemove = this.filters().find(
-        (filter) => filter.id === filterbadge.id
-      );
-    }
+    const filterToRemove = this.filters().find(
+      (filter) => filter.id === filterbadge.id
+    );
     if (filterToRemove) {
       this.removeFilterBadge.emit(filterToRemove);
     }

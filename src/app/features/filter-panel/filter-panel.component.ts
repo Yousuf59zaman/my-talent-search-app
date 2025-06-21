@@ -985,10 +985,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           Array.isArray(currentValue) &&
           typeof currentValue[0] !== 'number'
         ) {
-          const updatedValue = currentValue.filter(
-            (item: any) => item.selectId !== removedFilter.value.selectId
-          ) as SelectItem[];
-          control.setValue(updatedValue.length > 0 ? updatedValue : null);
+          // For multi-select values, removing the badge clears all selections
+          control.setValue(null);
         } else {
           control.setValue(null);
         }
