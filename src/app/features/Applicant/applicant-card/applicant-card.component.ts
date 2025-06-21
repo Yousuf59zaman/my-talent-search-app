@@ -20,6 +20,7 @@ import { IFrameLoaderComponent } from '../../../shared/components/iFrame-loader/
 import { NavDataService } from '../../../core/services/nav-data.service';
 import { ToastrService } from 'ngx-toastr';
 import { InputComponent } from '../../../shared/components/input/input.component';
+import { ConfirmationModalService } from '../../../core/services/confirmationModal/confirmation-modal.service';
 
 @Component({
   selector: 'app-applicant-card',
@@ -44,7 +45,7 @@ export class ApplicantCardComponent {
   private localStorageService = inject(LocalstorageService);
   private navDataService = inject(NavDataService);
   private toastr = inject(ToastrService);
-
+  private confirmationModal = inject(ConfirmationModalService);
   CvBankSearchAccess = computed(() => this.salesPersonData()?.cvSearchAccess === true);
   photoBlurAmount: string = '5px';
   textBlurAmount: string = '3px';
@@ -245,7 +246,23 @@ export class ApplicantCardComponent {
   onClickCustomizedCV() {
     // Check for CV bank search access first
     if (this.cvsDisabled()) {
-      this.toastr.warning('Please purchase CVs to view customized resume', 'Access Restricted');
+      this.confirmationModal.openModal({
+        content: {
+          title: 'Resume Details',
+          content: "To view/access the candidate's resume, you have to purchase it first.",
+          linkText: 'Learn more about CV Bank Access',
+          linkUrl: '/help/cv-bank',
+          closeButtonText: 'Okay',
+          saveButtonText: '',
+          isIcon: false,
+          isCloseButtonVisible: true,
+          isSaveButtonVisible: false
+        }
+      }).subscribe(result => {
+        if (result.event?.isConfirm) {
+          // Handle confirmation if needed
+        }
+      });
       return;
     }
     const payload: DownloadCVRequest = {
@@ -269,13 +286,29 @@ export class ApplicantCardComponent {
       });
   }
 
- 
-    
+
+
 
   openVideoCVDetails() {
     // Check for CV bank search access first
     if (this.cvsDisabled()) {
-      this.toastr.warning('Please purchase CVs to view Video resume', 'Access Restricted');
+      this.confirmationModal.openModal({
+        content: {
+          title: 'Video Resume Details',
+          content: "To view/access the candidate's video resume, you have to purchase it first.",
+          linkText: 'Learn more about CV Bank Access',
+          linkUrl: '/help/cv-bank',
+          closeButtonText: 'Okay',
+          saveButtonText: '',
+          isIcon: false,
+          isCloseButtonVisible: true,
+          isSaveButtonVisible: false
+        }
+      }).subscribe(result => {
+        if (result.event?.isConfirm) {
+          // Handle confirmation if needed
+        }
+      });
       return;
     }
     this.cvDetailsLink = this.genCvDetailsLink();
@@ -301,7 +334,7 @@ export class ApplicantCardComponent {
         encrpID: this.applicant()?.EncrpID as string,
         photo: applicant.photo,
         cvType: applicant?.attachedCV === 1 ? applicant?.resumeType || '' : '',
-      
+
       },
       componentRef: MoveToActivityHeaderComponent,
     });
@@ -319,7 +352,7 @@ export class ApplicantCardComponent {
     const isPurchasedValue = applicant?.isPurchased || 0;
     const serviceId: number = (this.salesPersonData()?.cvSearchService?.id ?? 0);
     const applicantId = applicant?.applicantId || 0;
-   
+
     this.modalService.setModalConfigs({
       attributes: {},
       inputs: {
@@ -340,8 +373,8 @@ export class ApplicantCardComponent {
         previewUrl: this.cvDetailsLink
           ? this.cvDetailsLink
           : this.genCvDetailsLink(),
-        applicant: this.applicant(),  
-   
+        applicant: this.applicant(),
+
       },
       componentRef: SingleVideoCVComponent,
     });
@@ -451,33 +484,31 @@ export class ApplicantCardComponent {
   }
 
   handleBuyNowDirectClick(): void {
-  const resumeId = this.applicant().applicantId;
-  
-  if (!resumeId) {
-    this.toastr.error('Invalid resume ID', 'Error');
-    return;
-  }
-  
-  this.applicantCardService.addCvToListFromJobSeeker(resumeId)
-    .subscribe({
-      next: (response) => {
-        if (response && response.listid) {
-          const listId = response.listid.toString();
-          
-          this.submitPurchaseForm(resumeId, listId);
-          
-          this.applicantCardService.addApplicantToSelection(resumeId);
-          this.toastr.success('CV added to purchase list', 'Success');
-        } else {
-          this.toastr.error('Failed to add CV to purchase list', 'Error');
+    const resumeId = this.applicant().applicantId;
+
+    if (!resumeId) {
+      this.toastr.error('Invalid resume ID', 'Error');
+      return;
+    }
+
+    this.applicantCardService.addCvToListFromJobSeeker(resumeId)
+      .subscribe({
+        next: (response) => {
+          if (response && response.listid) {
+            const listId = response.listid.toString();
+
+            this.submitPurchaseForm(resumeId, listId);
+
+            this.applicantCardService.addApplicantToSelection(resumeId);
+          } else {
+          }
+        },
+        error: (error) => {
+          console.error('Error adding CV to purchase list:', error);
+          this.toastr.error('Failed to process CV purchase', 'Error');
         }
-      },
-      error: (error) => {
-        console.error('Error adding CV to purchase list:', error);
-        this.toastr.error('Failed to process CV purchase', 'Error');
-      }
-    });
-}
+      });
+  }
 
   private submitPurchaseForm(resumeId: string, listId: string): void {
 
@@ -505,7 +536,7 @@ export class ApplicantCardComponent {
     requestTypeInput.id = 'hidfrmRequest';
     requestTypeInput.value = 'jobseeker';
     form.appendChild(requestTypeInput);
-  
+
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);

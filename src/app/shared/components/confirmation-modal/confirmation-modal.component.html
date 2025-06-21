@@ -48,18 +48,37 @@
         </button>
       </div>
       <div class="px-4 pb-4 overflow-y-auto flex flex-col gap-2 items-center">
-        <!-- <h3 class="font-bold text-xl mb-4 text-gray-800">
-          {{ config?.content?.title }}
-        </h3> -->
+        <!-- Title -->
+        @if (config?.content?.title) {
+          <h3 class="font-bold text-xl text-center mb-2 text-gray-800 w-full">
+            {{ config?.content?.title }}
+          </h3>
+        }
+        
+        <!-- Icon (if needed) -->
         <div [ngClass]="config?.content?.isIconeClass">
-          @if(config?.content?.isIconeClass) {
+          @if(config?.content?.isIcon) {
             <i class=""></i>
           }
         </div>
-        <p class="mt-1 text-[#212121]">
+        
+        <!-- Content -->
+        <p class="mt-1 text-[#212121] text-center">
           {{ config?.content?.content }}
         </p>
+        
+        <!-- Link -->
+        @if (config?.content?.linkText && config?.content?.linkUrl) {
+          <a href="{{ config?.content?.linkUrl }}" class="text-blue-500 flex items-center hover:underline">
+            {{ config?.content?.linkText }}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        }
       </div>
+      
+      <!-- Buttons -->
       <div class="flex justify-center items-center gap-x-4 py-3 px-4">
         @if (config?.content?.isSaveButtonVisible) {
           <button
@@ -74,7 +93,7 @@
         @if (config?.content?.isCloseButtonVisible) {
           <button
             type="button"
-            class="bg-[#0E73A9] text-white w-[84px] h-[37px]  rounded-md"
+            class="bg-[#507C25] text-white w-[84px] h-[37px] uppercase rounded-md"
             (click)="toggleModal()"
             [ngClass]="{ hidden: !config?.content?.isCloseButtonVisible }"
             >

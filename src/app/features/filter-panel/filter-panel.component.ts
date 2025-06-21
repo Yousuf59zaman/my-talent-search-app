@@ -174,6 +174,10 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isPreferredLocationControl = computed(
     () => this.filterForm.get('isPreferredLocation') as FormControl<boolean>
   );
+  isLocationSelected = computed(() => {
+    const value = this.locationControl().value as SelectItem[] | null;
+    return !!value && value.length > 0;
+  });
   expertiseInputControl = computed(
     () => this.filterForm.get('expertise') as FormControl<SelectItem[] | null>
   );
@@ -540,19 +544,18 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     const isPreferredLocationControl = this.filterForm.get(
       'isPreferredLocation'
     ) as FormControl<boolean>;
-
+    // disable checkboxes initially if no location is selected
+    if (!locationControl.value || locationControl.value.length === 0) {
+      isCurrentLocationControl.disable({ emitEvent: false });
+      isPermanentLocationControl.disable({ emitEvent: false });
+      isPreferredLocationControl.disable({ emitEvent: false });
+    }
     locationControl.valueChanges.subscribe((locationValue) => {
       if (locationValue && locationValue.length > 0) {
-        if (!isCurrentLocationControl.value) {
-          isCurrentLocationControl.setValue(true);
-        }
-      } else {
-        isCurrentLocationControl.setValue(false, { emitEvent: false });
-        isPermanentLocationControl.setValue(false, { emitEvent: false });
-        isPreferredLocationControl.setValue(false, { emitEvent: false });
-      }
+        isCurrentLocationControl.enable({ emitEvent: false });
+        isPermanentLocationControl.enable({ emitEvent: false });
+        isPreferredLocationControl.enable({ emitEvent: false });
 
-      if (locationValue && locationValue.length > 0) {
         const atLeastOneChecked =
           isCurrentLocationControl.value ||
           isPermanentLocationControl.value ||
@@ -560,6 +563,13 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         if (!atLeastOneChecked) {
           isCurrentLocationControl.setValue(true, { emitEvent: false });
         }
+      } else {
+        isCurrentLocationControl.setValue(false, { emitEvent: false });
+        isCurrentLocationControl.disable({ emitEvent: false });
+        isPermanentLocationControl.setValue(false, { emitEvent: false });
+        isPermanentLocationControl.disable({ emitEvent: false });
+        isPreferredLocationControl.setValue(false, { emitEvent: false });
+        isPreferredLocationControl.disable({ emitEvent: false });
       }
     });
 
@@ -596,8 +606,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   getLocationsObservable(event: MultiSelectQueryEvent): Observable<any> {
     return event?.query?.trim()
       ? this.filterDataService.getLocationsByQuery({
-          SearchState: event?.query,
-        })
+        SearchState: event?.query,
+      })
       : of(null);
   }
 
@@ -645,7 +655,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   prepareSuggestions(
     objects: any[],
-    callback: (selectItems: SelectItem[]) => void = () => {}
+    callback: (selectItems: SelectItem[]) => void = () => { }
   ) {
     const filteredSuggestions: SelectItem[] = [];
 

@@ -460,18 +460,21 @@
             <app-checkbox 
               [label]="'Current'" 
               [control]="isCurrentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'currentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Permanent'" 
               [control]="isPermanentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'permanentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Preferred'" 
               [control]="isPreferredLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'preferredLocation'">
             </app-checkbox>
