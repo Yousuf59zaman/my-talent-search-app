@@ -1,5 +1,5 @@
 <div class="max-w-[924px] rounded-md shadow py-4 lg:py-3 pl-[12px] lg:pl-[10px] pr-0.5 relative mb-6 lg:mb-4 bg-white"
- [ngClass]="isCorporateUser() ? 'md:h-[210px] xl:h-[210px] lg:h-[200px]' : 'md:h-[180px] xl:h-[180px] lg:h-[170px]'">
+ [ngClass]="isCorporateUser() ? 'md:h-[190px] xl:h-[210px] lg:h-[200px]' : 'md:h-[160px] xl:h-[180px] lg:h-[170px]'">
  @if(applicant().openToWork === immediatelyAvailable() && isCorporateUser()){
   <div
      class="absolute -top-3 right-0 bg-[#B32D7D] text-white text-xs lg:text-[10px] font-semibold px-3 lg:px-2 py-1 lg:py-0.5 rounded-[4px]"
@@ -51,9 +51,9 @@
 }
   <div class="md:grid md:grid-cols-11 gap-4 md:gap-6 flex flex-col">
 
-     <div class="flex gap-4 lg:gap-2 md:col-span-4">
-      <div class="flex flex-col items-center space-y-2 lg:space-y-1 flex-shrink-0 w-32 lg:w-28 px-2 lg:px-1">
-      <div class="relative w-20 h-20 lg:w-16 lg:h-16 mb-4 lg:mb-3">
+  <div class="flex gap-4 lg:gap-2 md:col-span-4">
+  <div class="flex flex-col items-center space-y-2 lg:space-y-1 flex-shrink-0 w-32 lg:w-28 px-2 lg:px-1">
+  <div class="relative w-20 h-20 lg:w-16 lg:h-16 mb-4 lg:mb-3">
   <button
     type="button"
     class="flex flex-col items-center justify-center object-fill shortvideocv"
@@ -72,7 +72,6 @@
       <img
         [src]="applicant() | applicantPrivacy: 'photo'"
         alt="Applicant Photo"
-        onError="this.src='images/Avatar.png'"
         class="w-full h-full rounded-full object-cover"
         [ngStyle]="photoBlurStyle()"
       />
@@ -412,7 +411,7 @@
           <div class="flex space-x-[6px] lg:space-x-1">
             @if(cvsDisabled()) {
                @if(isCorporateUser()){
-                @if(!isPurchasedBtnFade() && applicant().inListName === '0') {
+                @if(!isPurchasedBtnFade() && applicant().inListName === '') {
                   <div class="flex flex-col items-center">
                     <button
                       class="bg-[#05A44B] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0"
@@ -436,7 +435,7 @@
                       ></span>
                     </button>
                   <span class="text-xs lg:text-[10px] text-[#05A44B] font-medium whitespace-nowrap">
-                    Added to {{ applicant().inListName !== '0' ? applicant().inListName : 
+                    Added to {{ applicant().inListName !== '' ? applicant().inListName : 
                               (applicantCardService.isInSelectedList(applicant().applicantId) ? 
                                 applicantCardService.selectedListName() : '') }}
                   </span>

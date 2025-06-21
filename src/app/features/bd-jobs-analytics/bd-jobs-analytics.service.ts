@@ -4,6 +4,7 @@ import { UserDeviceInfoService } from "../../core/services/user-device-info.serv
 import { BdjAnalyticsApiResponse, CompanyName, LastUserType, LastUserTypes, UserId } from "../../shared/enums/app.enums";
 import { LocalstorageService } from "../../core/services/essentials/localstorage.service";
 import { map } from "rxjs";
+import { CompanyId } from "../../shared/utils/app.const";
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +17,15 @@ export class BdJobsAnalyticsService {
 
   sendDeviceInfoToServer(activityType: string, activity: number, activityName: string) {
       const payload = {
-          userId:this.localStorageService.getItem(UserId),
+          userId:this.localStorageService.getItem(CompanyId),
           userName : this.localStorageService.getItem(CompanyName),
-          childUserId: '',
+          childUserId: this.localStorageService.getItem(UserId),
           childUserName: '',
           userType : +this.localStorageService.getItem(LastUserType) === +LastUserTypes.Corporate ? 2 : 1,
           activityType,
           activity,
           activityName,
+          productName: "Talent Search",
           ipAddress: this.userDeviceInfo.getUserDeviceInfo().ipAddress?? '',
           macAddress: this.userDeviceInfo.getUserDeviceInfo().macAddress ?? '', 
           location: this.getFormattedLocation() ?? '',

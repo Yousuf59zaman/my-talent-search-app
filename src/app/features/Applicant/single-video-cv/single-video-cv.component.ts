@@ -109,11 +109,12 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
     this.selectedVideo.set(newConfig);
   }
 
-   private genCvDetailsLink() {
-      return ApplicantCard.getCVDetailsLink(
-        this.applicant(),this.isCorporateUser()
-      );
-    }
+  private genCvDetailsLink() {
+    return ApplicantCard.getCVDetailsLink(
+      this.applicant(),this.isCorporateUser(), this.localStorageService
+    );
+  }
+  
   openVideoCVDetails() {
     const applicant = this.applicant();
     const isPurchasedValue = applicant?.isPurchased || 0;

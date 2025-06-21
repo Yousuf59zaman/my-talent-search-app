@@ -13,6 +13,7 @@ import {
   Cookies,
   CorporateSession,
   CreateCompanyId,
+  IsAdminUser,
   IsCorporateUser,
   LastUserType,
   LastUserTypes,
@@ -85,6 +86,7 @@ export class AuthService {
                 this.verificationStatus.set(res.VerificationStatus)
                 this.paymentProcess.set(res.PaymentProcess)
                 this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate);
+                this.localStorageService.setItem(IsAdminUser, res.AdminUserType.toString())
                 if (res.CompanyCountry === 'Bangladesh') {
                   this.inSideBangladesh.set(true)
                 } else {

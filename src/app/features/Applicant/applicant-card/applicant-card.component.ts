@@ -310,7 +310,7 @@ export class ApplicantCardComponent {
   private genCvDetailsLink() {
 
     return ApplicantCard.getCVDetailsLink(
-      this.applicant(), this.isCorporateUser()
+      this.applicant(), this.isCorporateUser(), this.localStorageService
     );
   }
 

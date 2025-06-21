@@ -377,7 +377,7 @@
                     class="w-4 h-4" src="images/analytics-up.svg" alt=""> </span>
                 <span class="icolor">Analytics</span></a>
               <hr class="my-2" />
-              @if(isAdminUser){
+              @if(isAdminUser()){
               <a href="https://Corporate3.bdjobs.com/loginInfo.asp"
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-lock-reset"></span>
@@ -723,7 +723,7 @@
                     class="w-4 h-4" src="images/analytics-up.svg" alt=""> </span>
                 <span class="icolor">Analytics</span></a>
               <hr class="my-2" />
-              @if(isAdminUser){
+              @if(isAdminUser()){
               <a href="https://Corporate3.bdjobs.com/loginInfo.asp"
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-lock-reset"></span>
@@ -756,7 +756,7 @@
       class="px-2 md:px-0 max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-2 2xl:mx-auto  2xl:pe-4">
       <div class="flex items-center justify-between">
         <div class="w-full md:w-[213px] flex items-center justify-between">
-          <img class="w-40 md:w-[213px] h-8" src="images/Talent Search Logo-02.svg" alt="BDJobs Logo" />
+          <img class="w-40 md:w-[213px] h-8" src="images/Expert Search Logo-1px.svg" alt="BDJobs Logo" />
           <div>
             <button class="md:hidden block" (click)="this.isMenuOpen.set(!this.isMenuOpen())">
               <span [ngClass]="isMenuOpen()? 'icon-times':'icon-list'"></span>

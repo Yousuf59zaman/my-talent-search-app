@@ -50,7 +50,7 @@ export class NavComponent implements AfterViewInit {
   jobPostingAccessPercentage: number = 0;
   companyName = computed(() => this.navStore.companyName());
   companyLogoURL = computed(() => this.navStore.companyLogoURL());
-  isAdminUser: boolean = window.localStorage.getItem(IsAdminUser) === 'true';
+  // isAdminUser: boolean = window.localStorage.getItem(IsAdminUser) === 'true';
   isMenuOpen = signal(false);
   isCorporeteMenuOpen = signal (false)
   isCorporetProfileDropdownOpen = signal(false)
@@ -67,12 +67,19 @@ export class NavComponent implements AfterViewInit {
     this.localStorageService.getItem(LastUserType) === LastUserTypes.Corporate
   );
 
+  isAdminUser = signal(
+    this.localStorageService.getItem(IsAdminUser) === 'true'
+  )
+
   fetchNavbarDataSub = interval(200)
     .pipe(
       map(() =>
         this.IsCorporateUser.set(
           this.localStorageService.getItem(LastUserType) ===
             LastUserTypes.Corporate
+        ),
+        this.isAdminUser.set(
+          this.localStorageService.getItem(IsAdminUser) === 'true'
         )
       ),
       filter(
