@@ -149,6 +149,26 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.showOverLay();
+    const control = this.control();
+    if (control) {
+      control.valueChanges
+        .pipe(takeUntil(this.isDestroyed$))
+        .subscribe((val: SelectItem[] | null) => {
+          if (!val || val.length === 0) {
+            this.suggestions.update((items) =>
+              items.map((item) => ({ ...item, isSelected: false }))
+            );
+          } else if (this.isRadioAsSelectionType() && !this.multiplSelection()) {
+            const selected = val[0]?.value;
+            this.suggestions.update((items) =>
+              items.map((item) => ({
+                ...item,
+                isSelected: item.value === selected,
+              }))
+            );
+          }
+        });
+    }
   }
 
   showOverLay() {
@@ -187,7 +207,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onSearchInputBlur() {}
+  onSearchInputBlur() { }
 
   isSuggestionsAvailable(suggestions: SelectItem[]): boolean {
     return !!suggestions?.length;
@@ -218,8 +238,8 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   toggleSelection(item: SelectItem) {
-    if(this.maxSelection() && this.maxSelection() === this.control().value?.length){
-     this.showMaxSelectionValidationText()
+    if (this.maxSelection() && this.maxSelection() === this.control().value?.length) {
+      this.showMaxSelectionValidationText()
     }
     const isRenderSelectedItem = this.isRenderSelectedItem();
     const multiplSelection = this.multiplSelection();
@@ -230,7 +250,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
       }
       return;
     }
-    
+
     if (this.isRadioAsSelectionType() && !this.multiplSelection()) {
       this.suggestions.update((prev) =>
         prev.map((s) =>
@@ -309,7 +329,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     selectedItems[itemIndex] = { ...selectedItem };
     control.setValue(selectedItems);
   }
-  showMaxSelectionValidationText(){
+  showMaxSelectionValidationText() {
     switch (this.placeholderText()) {
       case 'Write skills':
         this.toastr.warning('You can add maximum 7 skills.');
@@ -326,7 +346,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
       case 'Select a location':
         this.toastr.warning('You can add maximum 5 locations.');
         break;
-    
+
       default:
         break;
     }
