@@ -15,7 +15,7 @@ import { ApplicantCardService } from '../services/applicant-card.service';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { filter, finalize } from 'rxjs/operators';
 import { CompanyIdLocalStorage } from '../../../shared/enums/app.enums';
-import { downloadCustomizedCV } from '../../../shared/utils/functions';
+import { downloadCustomizedCV, formateDateTime } from '../../../shared/utils/functions';
 import { IFrameLoaderComponent } from '../../../shared/components/iFrame-loader/iFrame-loader.component';
 import { NavDataService } from '../../../core/services/nav-data.service';
 import { ToastrService } from 'ngx-toastr';
@@ -52,7 +52,7 @@ export class ApplicantCardComponent {
   cvDetailsLink: string = '';
   pageType = PageType;
   sType = SType;
-
+  formateDateTime = formateDateTime;
   rankPointStars = computed(() => {
     const rankPoint = this.applicant().rankPoint || 0;
 

@@ -113,12 +113,25 @@
             }
              <div class="flex items-center justify-between flex-wrap md:flex-nowrap mb-4">
                 <div class="flex items-center gap-2">
+                @if(totalCvCount() > 0) {
                   <h3 class="text-[#0E73A9] text-3xl font-semibold">
                     {{totalCvCount() | numberSuffix}}{{totalCvCount() >= 1000 ? '+' : ''}}
                   </h3>
                   <span class="text-xs">Talents showing</span>
-                </div>
-                <div class="ml-auto">
+                } @else {
+                  <div class="ml-auto flex flex-col items-center w-full py-8 px-4">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 w-full text-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <h3 class="text-[#0E73A9] text-2xl font-semibold mb-2">No Profile Found</h3>
+                      <p class="text-gray-600">Try adjusting your search filters to find more candidates</p>
+                    </div>
+                  </div>
+                }
+              </div>
+              @if(totalCvCount() > 0) {
+                 <div class="ml-auto">
                   <app-pagination
                     (pageChange)="onPageChangeEvent($event)"
                     [page]="pageNo()"  
@@ -127,6 +140,8 @@
                     [total]="totalCvCount()"> 
                   </app-pagination>
                 </div>
+              }
+               
             </div>
             <div #stickyTargetDown class="space-y-6">
                 @if (isLoading()) {

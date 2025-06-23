@@ -554,32 +554,38 @@
     </div>
   </div>
             } @else {
-               @if(isCorporateUser()){
-                 @if (applicant().isPurchased) {
-                 <div class="flex flex-col items-center">
-                  <div class="bg-green-100 px-3 py-1.5 mt-1 rounded-xl">
-                    <span class="text-sm lg:text-xs font-medium text-green-600">Purchased</span>
+              @if(isCorporateUser()){
+                @if (applicant().isPurchased) {
+                  <div class="flex flex-col items-center">
+                    <div class="bg-green-100 px-3 py-1.5 mt-1 rounded-xl">
+                      <span class="text-sm lg:text-xs font-medium text-green-600">Purchased</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-600 text-xs lg:text-xs mt-1">
+                      <span class="text-gray-900">Expired date</span>
+                      <div class="flex items-center mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ formateDateTime(applicant().expiredDate).formattedDate }}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              } @else {
-                <div class="flex flex-col items-center ml-8 lg:ml-6">
-                  <button
-                    class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5"
-                    type="button"
-                    (click)="handleShortlistClick()"
-                  >
-                    <span
-                      class="icon-check-o text-lg lg:text-base inline-block scale-110 lg:scale-100"
-                    ></span>
-
-                  </button>
-                
-                    <span class="text-sm lg:text-xs font-medium">Shortlist</span>
-              
-                </div>
-               }
+                }@else {
+                  <div class="flex flex-col items-center ml-8 lg:ml-6">
+                    <button
+                      class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5"
+                      type="button"
+                      (click)="handleShortlistClick()"
+                    >
+                      <span
+                        class="icon-check-o text-lg lg:text-base inline-block scale-110 lg:scale-100"
+                      ></span>
+                    </button>
+                      <span class="text-sm lg:text-xs font-medium">Shortlist</span>
+                  </div>
+                 }
+                }
               }
-            }
           </div>
         </div>
       </div>
