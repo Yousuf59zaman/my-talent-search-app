@@ -6,7 +6,7 @@ import { ActiveFiltersComponent, FilterBadge } from "../../active-filters/active
 import { CommonModule } from '@angular/common';
 import { QueryService } from '../../filter-panel/services/query.service';
 import { FilterStore } from '../../../store/filter.store';
-import { delay, filter, map, of, tap } from 'rxjs';
+import { delay, filter, map, of, skip, tap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { generateFilterBadges } from '../../filter-panel/utility/functions';
 import { TabsComponent, TabItem } from '../../tabs/tabs.component';
@@ -64,6 +64,8 @@ export class CvSearchComponent implements AfterViewInit {
   showButton = signal(false);
   itemsPerPage = signal<number>(DefaultPageSize);
   totalCvCount = computed(() => this.filterStore.totalCvCount() || 0);
+  filterApplied = signal(false);
+  showNoProfile = computed(() => this.totalCvCount() === 0 && this.filterApplied());
   isCorporateUser = computed(
     () => this.localStorageService.getItem(IsCorporateUser) === 'true'
   );
@@ -157,6 +159,10 @@ export class CvSearchComponent implements AfterViewInit {
     });
     const value = localStorage.getItem(IsCorporateUser);
     this.IsCorporateUser.set(value === 'true');
+
+    this.queryService.filterQuery$
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.filterApplied.set(true));
   }
 
   analytics = of(null)
