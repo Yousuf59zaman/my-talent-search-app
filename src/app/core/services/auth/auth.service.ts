@@ -34,7 +34,7 @@ import { CompanyId, CvBankJwtPayload } from '../../../shared/utils/app.const';
 import { NavDataStore } from '../../layouts/nav/services/nav-data.store';
 import { ModalService } from '../modal/modal.service';
 import { CompanyVerifyModalComponent } from '../../../features/modal/company-verify-modal/company-verify-modal.component';
-import { filter, Subscription, Observable, of, map, switchMap } from 'rxjs';
+import { filter, Subscription, Observable, of, map, switchMap, BehaviorSubject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Injectable({
   providedIn: 'root',
@@ -61,6 +61,9 @@ export class AuthService {
   redirectToMybdjobsApp = () => redirectExternal(MybdjobsPanelUrl)
   redirectToRecruiterDashboard = () => redirectExternal(RecruiterDashboard);
   redirectToBdjobs = () => redirectExternal(BdjobsUrl);
+
+  private userSubject = new BehaviorSubject<SupportingInfo | null>(null);
+  user$ = this.userSubject.asObservable();
   
   
   getRecturerUserInfo(){
@@ -86,7 +89,8 @@ export class AuthService {
                 this.verificationStatus.set(res.VerificationStatus)
                 this.paymentProcess.set(res.PaymentProcess)
                 this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate);
-                this.localStorageService.setItem(IsAdminUser, res.AdminUserType.toString())
+                this.localStorageService.setItem(IsAdminUser, res.AdminUserType.toString());
+                this.userSubject.next(res);
                 if (res.CompanyCountry === 'Bangladesh') {
                   this.inSideBangladesh.set(true)
                 } else {
@@ -217,10 +221,6 @@ export class AuthService {
     .pipe(
       takeUntilDestroyed(this.destroy$),
       filter(res => res && res.event.eventType === MybdjobsUserApiResponseType.SuccessResponse),
-      map(res => {
-        this.cookieService.setCookie(Cookies.AUTH, res.event.eventData[0].value.token, 7);
-        this.cookieService.setCookie(Cookies.REFTOKEN, res.event.eventData[0].value.refreshToken, 7);
-      }),
       switchMap(() => this.getJobseekerSupportingData(companyId, userId))
     )
     .subscribe()

@@ -77,9 +77,6 @@ export class NavComponent implements AfterViewInit {
         this.IsCorporateUser.set(
           this.localStorageService.getItem(LastUserType) ===
             LastUserTypes.Corporate
-        ),
-        this.isAdminUser.set(
-          this.localStorageService.getItem(IsAdminUser) === 'true'
         )
       ),
       filter(
@@ -95,6 +92,15 @@ export class NavComponent implements AfterViewInit {
         this.fetchNavbarDataSub.unsubscribe();
       },
     });
+
+  listenOnUserDataChange = this.authService.user$
+    .subscribe({
+      next: (user) => {
+        if (user) {
+          this.isAdminUser.set(user.AdminUserType)
+        }
+      }
+    })
 
   @ViewChild('jobPostingDropdown', { static: false }) jobPostingDropdown!: ElementRef;
   @ViewChild('smsDropdown', { static: false }) smsDropdown!: ElementRef;
