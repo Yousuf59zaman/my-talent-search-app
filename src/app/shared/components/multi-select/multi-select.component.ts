@@ -158,15 +158,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
             this.suggestions.update((items) =>
               items.map((item) => ({ ...item, isSelected: false }))
             );
-          } else if (this.isRadioAsSelectionType() && !this.multiplSelection()) {
-            const selected = val[0]?.value;
-            this.suggestions.update((items) =>
-              items.map((item) => ({
-                ...item,
-                isSelected: item.value === selected,
-              }))
-            );
-          }
+          } 
         });
     }
   }

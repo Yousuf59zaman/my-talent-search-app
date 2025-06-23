@@ -31,9 +31,22 @@ export class ActiveFiltersComponent {
   @Output() clearAllFilters = new EventEmitter<void>();
 
   removeFilter(filterbadge: FilterBadge) {
-    const filterToRemove = this.filters().find(
-      (filter) => filter.id === filterbadge.id
-    );
+    let filterToRemove
+    if (
+      filterbadge.type === 'location' ||
+      filterbadge.type === 'expertise' ||
+      filterbadge.type === 'skills' ||
+      filterbadge.type === 'industries' ||
+      filterbadge.type === "institutes"
+    ) {
+      filterToRemove = this.filters().find(
+        (filter) => filter.value.selectId === filterbadge.value.selectId
+      );
+    } else {
+      filterToRemove = this.filters().find(
+        (filter) => filter.id === filterbadge.id
+      );
+    }
     if (filterToRemove) {
       this.removeFilterBadge.emit(filterToRemove);
     }
