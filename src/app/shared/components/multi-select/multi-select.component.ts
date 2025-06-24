@@ -123,6 +123,11 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
               isSelected: item.value === selectedValue
             }))
           );
+        } else {
+          const newSuggestionsList = changes['suggestions'].currentValue as SelectItem[];
+          this.suggestions.set(
+            newSuggestionsList.map((item) => ({ ...item, isSelected: false }))
+          );
         }
       }
       if (!changes?.['suggestions'].isFirstChange()) {
@@ -158,7 +163,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
             this.suggestions.update((items) =>
               items.map((item) => ({ ...item, isSelected: false }))
             );
-          } 
+          }
         });
     }
   }
@@ -299,11 +304,12 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  removeChip(val: any) {
+  removeChip(id: any) {
     const control = this.control();
     const selectedItems = [...(control?.value || [])];
     const itemIndex = selectedItems.findIndex(
-      (selectedItem) => selectedItem.value === val
+      (selectedItem) =>
+        selectedItem.selectId === id || selectedItem.value === id
     );
     if (itemIndex > -1) {
       selectedItems.splice(itemIndex, 1);

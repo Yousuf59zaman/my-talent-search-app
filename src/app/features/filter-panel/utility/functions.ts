@@ -89,13 +89,9 @@ export function generateFilterBadges(filters: FilterForm | null): FilterBadge[] 
       .filter(Boolean)
       .join(", ");
     const locationTypeText = locationTypes ? ` (${locationTypes})` : "";
-    const locationLabels = filters.location.map((loc) => loc.label).join(', ');
-    addBadge(
-      `location`,
-      `Location: ${locationLabels}${locationTypeText}`,
-      "location",
-      filters.location
-    );
+    filters.location.forEach((loc) => {
+      addBadge(`location`, `Location: ${loc.label}${locationTypeText}`, "location", loc);
+    });
   }
 
   if (filters.education) {
