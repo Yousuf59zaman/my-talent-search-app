@@ -131,7 +131,7 @@ export class CvSearchComponent implements AfterViewInit {
     },
   ]);
   jobSeekUserTabs = signal<TabItem[]>([
-    { id: 'cv-search', label: 'Talent Search', count: 0 },
+    { id: 'cv-search', label: 'Expert Search', count: 0 },
     {
       id: 'saved-filters',
       label: 'Saved Filters',
@@ -141,7 +141,7 @@ export class CvSearchComponent implements AfterViewInit {
     },
     {
       id: 'Talent Basket',
-      label: 'Talent Basket',
+      label: 'My Expert',
       count: 24,
       isExternalLink: true,
       externalUrl: 'https://corporate3.bdjobs.com/PurchaseList.asp?from=cvbank',
