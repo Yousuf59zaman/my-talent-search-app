@@ -89,9 +89,13 @@ export function generateFilterBadges(filters: FilterForm | null): FilterBadge[] 
       .filter(Boolean)
       .join(", ");
     const locationTypeText = locationTypes ? ` (${locationTypes})` : "";
-    filters.location.forEach((loc) => {
-      addBadge(`location`, `Location: ${loc.label}${locationTypeText}`, "location", loc);
-    });
+    const locationLabels = filters.location.map((loc) => loc.label).join(', ');
+    addBadge(
+      `location`,
+      `Location: ${locationLabels}${locationTypeText}`,
+      "location",
+      filters.location
+    );
   }
 
   if (filters.education) {
@@ -110,7 +114,7 @@ export function generateFilterBadges(filters: FilterForm | null): FilterBadge[] 
   handleArray("industries", "Industry", filters.industries, true);
   handleArray("industryType", "Industry Type", filters.industryType);
   handleArray("category", "Category", filters.category);
-  handleArray("expertise", "Expertise", filters.expertise);
+  handleArray("expertise", "Expertise", filters.expertise, true);
 
   handleBoolean("isEntry", "Entry Level", filters.isEntry);
   handleBoolean("isMid", "Mid Level", filters.isMid);
