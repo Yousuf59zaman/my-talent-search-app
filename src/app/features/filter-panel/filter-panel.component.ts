@@ -561,7 +561,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           isPermanentLocationControl.value ||
           isPreferredLocationControl.value;
         if (!atLeastOneChecked) {
-          isCurrentLocationControl.setValue(true, { emitEvent: false });
+          isCurrentLocationControl.setValue(true);
         }
       } else {
         isCurrentLocationControl.setValue(false, { emitEvent: false });
