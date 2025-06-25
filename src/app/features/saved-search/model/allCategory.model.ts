@@ -75,7 +75,8 @@ export interface SpecialSkilledCategoryData{
 export interface Data{
     id:number
     value:number
-    categoryName:string
+    categoryName:string;
+    filters?: Record<string, any>;
 }
 export interface CategoryByIdData {
   catIds: Record<string, number>;

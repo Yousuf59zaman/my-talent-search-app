@@ -1,18 +1,20 @@
-import { signal } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { SelectItem } from '../shared/models/models';
 import { Data } from '../features/saved-search/model/allCategory.model';
 
 export type HomeFilterForm = {
-    keyWords?: string | null,
-    age?: number[],
-    eduInstitute?: SelectItem[] | null,
-    eduSubject?: SelectItem[] | null,
-    salary?: number[],
-    expRange?: number[],
-    industryType?: SelectItem[] | null,
-    category?: {type: 'category' | 'recent' | 'immediate' | 'star', category: Data}
-}
+  keyWords?: string | null;
+  age?: number[];
+  eduInstitute?: SelectItem[] | null;
+  eduSubject?: SelectItem[] | null;
+  salary?: number[];
+  expRange?: number[];
+  industryType?: SelectItem[] | null;
+  category?: {
+    type: 'category' | 'recent' | 'immediate' | 'star' | 'shortlisted' | 'saved' | 'purchased';
+    category: Data;
+  };
+};
 
 export interface IHomeQueryStore {
   filters: HomeFilterForm;

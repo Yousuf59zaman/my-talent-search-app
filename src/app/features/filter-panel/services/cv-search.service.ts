@@ -18,7 +18,7 @@ export class CvSearchService {
   getCVs(filterform: FilterForm, pageNo: number = 1): Observable<CvBankApplicantResponse> {
     let endPoint = '/CVBank';
     const payload = new QueryBuilder(filterform, this.localStorageService.getItem(CompanyId) || '', pageNo);
-    const baseUrl = 'https://gateway.bdjobs.com/cvbankv3/api' + endPoint;
+    const baseUrl = 'https://gateway.bdjobs.com/cvbank/api' + endPoint;
     return this.http.get<CvBankApplicantResponse>(baseUrl, { params: payload as any })
       .pipe(
         filter(res => res.error === '0' && res.message === 'success'),

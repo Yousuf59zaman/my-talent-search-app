@@ -72,10 +72,7 @@ export class SearchTalentComponent implements OnInit {
   triggeredBy = signal<TriggeredBy[]>([]);
   displayCount = signal(0);
   isCrunching = signal(true);
-  IsCorporateUser = signal(false)
-  constructor() {
-    effect(() => this.animateCount());
-  }
+  IsCorporateUser = signal(false);
   multiSelectType = MultiSelectType;
   ageRangeOptions = signal({floor: DefaultAge[0], ceil:DefaultAge[1], hidePointerLabels: true, hideLimitLabels: true});
   expRangeOptions = signal({floor: DefaultExpRange[0], ceil: DefaultExpRange[1], hidePointerLabels: true, hideLimitLabels: true});
@@ -85,6 +82,18 @@ export class SearchTalentComponent implements OnInit {
     { value: 'F', label: 'Female' },
     { value: 'O', label: 'Other' },
   ];
+
+private lastCount = 0;
+
+constructor() {
+  effect(() => {
+    const count = this.totalCount();
+    if (count !== this.lastCount) {
+      this.animateCount();
+      this.lastCount = count;
+    }
+  });
+}
 
   searchHistory = signal<SearchHistory[]>([]);
   defaultAge = DefaultAge;
@@ -764,6 +773,7 @@ export class SearchTalentComponent implements OnInit {
   // }
 
   private animateCount() {
+    console.log('totalCount:', this.totalCount());
     const target = this.totalCount();
     const current = this.displayCount();
   

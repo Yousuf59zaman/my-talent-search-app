@@ -1,22 +1,37 @@
-<div class="mt-6">
-    @if (  purchasedListData && purchasedListData.length > 0) {
-      <div class="grid grid-cols-2 gap-4 mb-4">
-        @let visiblePurchasedListData = purchasedListData.slice(0, 6);
-        @for (card of visiblePurchasedListData; track $index) {
-           <app-purchased-list-card [card]="card"
-           (purchasedListUpdated)="onPurchasedListUpdated()"
-           (purchasedListDeleted)="onPurchasedListDeleted()"
-           ></app-purchased-list-card>
+@if (isLoading()) {
+  <div class="flex items-center justify-center min-h-[300px] py-10">
+    <div class="loader"></div>
+  </div>
+}@else {
+  <div class="mt-6">
+  @if (  purchasedListData && purchasedListData.length > 0) {
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      @let visiblePurchasedListData = showAllListData ? purchasedListData : purchasedListData.slice(0, 10);
+      @for (card of visiblePurchasedListData; track $index) {
+        <app-purchased-list-card [card]="card"
+          (purchasedListUpdated)="onPurchasedListUpdated()"
+          (purchasedListDeleted)="onPurchasedListDeleted()"
+          (changeActiveTab)="changeActiveTab.emit('cv-search')"
+        ></app-purchased-list-card>
         }
-      </div>
+    </div>
+    @if (!showAllListData && purchasedListData.length > 10) {
       <div class="text-[#0E73A9] font-medium text-center">
-        <a href="https://corporate3.bdjobs.com/PurchaseList.asp?from=">Show all <span>({{purchasedListData.length}})</span></a>
+        <a href="https://corporate3.bdjobs.com/PurchaseList.asp?from=">Show all
+        <span>({{purchasedListData.length}})</span></a>
       </div>
-        }
-    @else {
+    }
+  }
+  @else {
     <div class="flex flex-col items-center">
       <img src="images/saved-search-image.svg" alt="No saved search" class="w-28 h-28 mx-auto" />
-      <p class="text-[#212121] mt-2">Saved search will appear after your first saved search</p>
+      <p class="text-[#212121] mt-2 text-center"><span class="font-bold">No filters saved yet.</span> <br> YYou can create lists for purchased profiles from the Talent Search portal</p>
     </div>
+  }
+  @if (showAllListData && showButton()) {
+        <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
+            <span class="icon-angle-top pr-2"></span>Back to Top
+        </button>
     } 
 </div>
+}

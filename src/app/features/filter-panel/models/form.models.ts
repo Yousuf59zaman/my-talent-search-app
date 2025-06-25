@@ -34,6 +34,8 @@ export interface FilterFormControls {
   videoCV: AbstractControl<boolean | null>;
   shortlist: AbstractControl<{id: string, name: string} | null>;
   lastUpdated: AbstractControl<string | null>;
+  purchaseListId: AbstractControl<string | null>;
+  isAlreadyPurchased: AbstractControl<boolean | null>;
 }
 
 export interface FilterForm {
@@ -67,6 +69,8 @@ export interface FilterForm {
     industryType: SelectItem[] | null;
     currentSalary: number[];
     videoCV: boolean;
-    shortlist: {id: string, name: string},
+    shortlist: {id: string, name: string} | null,
     lastUpdated: string | null;
+    purchaseListId: string | null;
+    isAlreadyPurchased: boolean;
 }

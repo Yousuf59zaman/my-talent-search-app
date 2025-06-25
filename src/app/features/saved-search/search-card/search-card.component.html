@@ -9,17 +9,20 @@
                             [isNumericOnly]="false" 
                             [isDecimalAllowed]="true"
                             [isRequired]="true"
+                            [maxLength]="45"
+                            [isCheckSpecialCharsValidation]="true" 
+                            [allowedSpecialChars]="['[', ']', '{','}', ',', '.', ' ', '/', '_', '-' ,'~','`','!','@','#','$','^','|','?','*',':',';']"
                             [placeholder]="'Please enter a filter name'"
                             [control]="savedFilterCardTitleControl">
                         </app-input>
                     </div>
-                    <button [disabled]="savedFilterCardTitleControl.invalid" (click)="toggleSaveFilterEditButton()" (click)="editSavedFilterSubmit()"class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]">
+                    <button [disabled]="savedFilterCardTitleControl.invalid"(click)="editSavedFilterSubmit()"class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]">
                     </button>  
                 }@else {
-                    <p class="text-base font-semibold text-[#212121]">
+                    <button (click)="onClickView(card())" class="text-base font-semibold text-[#212121]">
                         {{saveFilterCardTitle()}}
-                    </p>
-                    <button (click)="toggleSaveFilterEditButton()" class="icon-edit text-[#008A22] text-sm"></button>
+                    </button>
+                    <button (click)="editSavedFilterSubmit()" class="icon-edit text-[#008A22] text-sm"></button>
                 }
             </div>
             <div class="text-[13px] w-[400px]">
@@ -47,30 +50,37 @@
                             [isNumericOnly]="false" 
                             [isDecimalAllowed]="true"
                             [isRequired]="true"
+                            [maxLength]="45"
+                            [isCheckSpecialCharsValidation]="true" 
+                            [allowedSpecialChars]="['[', ']', '{','}', ',', '.', ' ', '/', '_', '-' ,'~','`','!','@','#','$','^','|','?','*',':',';']"
                             [placeholder]="'Please enter a title.'"
                             [control]="shortlistedCardTitleControl">
                         </app-input>
-                        <app-input 
-                            [type]="'text'" 
-                            [isNumericOnly]="false" 
-                            [isDecimalAllowed]="true" 
-                            [classes]="'h-20'"
-                            [placeholder]="'Please enter a description.'"
-                            [control]="shortlistedCardDescriptionControl">
-                    </app-input>
+                        <textarea id="shortlistDescription"
+                        class="w-full rounded-lg border border-gray-300 mt-2 focus:ring-0 focus:border focus:border-[#008A22] h-20"
+                        [formControl]="shortlistedCardDescriptionControl"
+                        [placeholder]="'Please enter a description'"
+                        ></textarea>
+                        @if (shortlistedCardDescriptionControl.errors?.['maxlength']) {
+                          <p class="text-red-600 text-sm mt-1">Description must not exceed 250 characters.</p>
+                        }
+                        @if (shortlistedCardDescriptionControl.errors?.['pattern']) {
+                        <p class="text-red-600 text-sm mt-1">Please avoid using ', %, <,>, ", &, (, ).</p>
+                        }
                     </div>
                     <div class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center mt-1.5">
-                        <button [disabled]="shortlistedCardTitleControl.invalid" class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]" (click)="toggleShortlistedCvEditButton()"
-                            (click)="editShortlistedSubmit()">
+                        <button class="icon-check text-[#008A22] text-sm disabled:text-[#E4EFFB]"
+                        (click)="editShortlistedSubmit()"
+                        [disabled]="shortlistedCardTitleControl.invalid ||(shortlistedCardTitleControl.value?.length || 0) > 45 ||(shortlistedCardDescriptionControl.value?.length || 0) > 250 ||  shortlistedCardDescriptionControl.invalid">
                         </button>
                     </div>
                     
                 }@else {
                     <div>
-                        <p class="text-base font-semibold text-[#212121]">
+                        <button (click)="onClickView(card())" class="text-base font-semibold text-[#212121]">
                             {{shortlistedCardTitle()}}
-                        </p>
-                        <div class="text-[13px] font-normal w-[400px]">
+                        </button>
+                        <div class="text-[13px] font-normal w-[400px] break-words">
                             {{ expanded() ? shortlistedCardDescription() : (shortlistedCardDescription()?.substring(0, previewLength)) }}
                             @if (isLongText()){
                                 <button (click)="toggleExpand()" class="text-[#0E73A9] text-[13px] font-medium">
@@ -84,7 +94,7 @@
                           
                     </div>
                     <div class="w-10 h-10 bg-[#ECFDF3] rounded-full flex justify-center items-center">
-                        <button class="icon-edit text-[#008A22] text-sm" (click)="toggleShortlistedCvEditButton()"
+                        <button class="icon-edit text-[#008A22] text-sm"
                             (click)="editShortlistedSubmit()">
                         </button>
                     </div>
@@ -95,10 +105,10 @@
     <div class="flex items-center text-sm  gap-1 font-semibold  rounded-3xl bg-[#ECFDF3] text-[#008A22]"
         [ngClass]="tabName() === 'savedFiltersTab'?'px-3 py-2':'px-5 py-2'">
         @if(tabName() === 'savedFiltersTab'){
-        <a [href]="'https://corporate3.bdjobs.com/cvbanksearch.asp?filterID=' +card().filterId">Total CVs {{card().numberOfCVs | shortNumber}}</a>
+        <button (click)="onClickView(card())">Total CVs {{card().numberOfCVs | shortNumber}}</button>
         }
         @else {
-        <a [href]="'https://corporate3.bdjobs.com/cv_search_Result.asp?WatchlistGroup=' +card().groupId">{{card().numberOfCVs}} CVs</a>
+        <button (click)="onClickView(card())">{{card().numberOfCVs}} CVs</button>
         }
 
     </div>
@@ -123,12 +133,7 @@
     </div>
     <div class="flex gap-2 items-center">
         <div>
-            @if(tabName() === 'savedFiltersTab'){
-                <a [href]="'https://corporate3.bdjobs.com/cvbanksearch.asp?filterID=' +card().filterId" class="icon-eye p-3 bg-[#E4EFFB] text-[#0E73A9] rounded-[50%]"></a>
-            }@else {
-                <a [href]="'https://corporate3.bdjobs.com/cv_search_Result.asp?WatchlistGroup=' +card().groupId" class="icon-eye p-3 bg-[#E4EFFB] text-[#0E73A9] rounded-[50%]"></a>
-            }
-            
+            <button class="icon-eye p-3 bg-[#E4EFFB] text-[#0E73A9] rounded-[50%]" (click)="onClickView(card())"></button>  
         </div>
         <div>
             @if (tabName() === 'savedFiltersTab') {
