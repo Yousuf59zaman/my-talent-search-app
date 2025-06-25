@@ -178,17 +178,20 @@ export class PurchasedListCardComponent {
 
   onClickPurchased(isAlreadyPurchased: boolean) {
     if (this.authService.isVerified()) {
+      console.log('listId:', this.card().listId);
+      console.log('listName:', this.card().listName);
+      console.log('isAlreadyPurchased:', isAlreadyPurchased);
       this.homeStore.setFilter({
         category: {
           type: 'purchased',
           category: {
-            id: this.card().listId as number,
-            value: this.card().listId as number,
-            categoryName: this.card().listName,
-            filters: {
-              ...this.card(),
-              isAlreadyPurchased: isAlreadyPurchased,
-            },
+        id: this.card().listId as number,
+        value: this.card().listId as number,
+        categoryName: this.card().listName,
+        filters: {
+          ...this.card(),
+          isAlreadyPurchased: isAlreadyPurchased,
+        },
           },
         },
       });

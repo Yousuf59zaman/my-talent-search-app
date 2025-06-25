@@ -393,7 +393,7 @@
             @else {
               @if (isPurchaseListState()) {
                 <div class="flex items-center gap-2">
-                    <button class="text-white bg-[#049042] px-3 py-1.5 rounded-3xl text-xs">Unlock Profile</button>
+                    <button class="text-white bg-[#049042] px-3 py-1.5 rounded-3xl text-xs" (click)="onUnlockProfileClick()">Unlock Profile</button>
                   <div> 
                     <button (click)="removeCvFromPurchaseList()"
                       class="bg-[#FF4848] text-white rounded-full w-8 h-8 flex items-center justify-center">

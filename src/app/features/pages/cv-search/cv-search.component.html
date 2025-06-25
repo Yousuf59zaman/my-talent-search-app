@@ -162,8 +162,9 @@
                           [applicant]="applicant"
                           (addedToPurchasedList)="onAddedToPurchasedList($event)"
                            (addedToShortList)="onAddedToShortList($event)"
-                          (purchaseListData)="getPurchaseListDataFromApplicantCard($event)">
-                          </app-applicant-card>
+                          (purchaseListData)="getPurchaseListDataFromApplicantCard($event)"
+                          (unlockProfileClicked)="handleUnlockProfile($event)">
+                         </app-applicant-card>
                         </div>
                       }
                       @if (showButton()) {

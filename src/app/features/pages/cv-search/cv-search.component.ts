@@ -17,7 +17,7 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { DefaultPageSize } from '../../../shared/utils/app.const';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ApplicantCardService } from '../../applicant/services/applicant-card.service';
-import { PurchaseList } from '../../applicant/models/applicant.model';
+import { Applicant, PurchaseList } from '../../applicant/models/applicant.model';
 import { ActivatedRoute } from '@angular/router';
 import { corporateUserTabs, IsCorporateUser, jobSeekUserTabs } from '../../../shared/enums/app.enums';
 import { BdJobsAnalyticsService } from '../../bd-jobs-analytics/bd-jobs-analytics.service';
@@ -48,7 +48,7 @@ import { FilterForm } from '../../filter-panel/models/form.models';
     SavedFiltersTabComponent,
     ShortlistedCvTabComponent,
     PurchasedListTabComponent
-],
+  ],
   templateUrl: './cv-search.component.html',
   styleUrl: './cv-search.component.scss',
 })
@@ -112,7 +112,7 @@ export class CvSearchComponent implements AfterViewInit {
   corporateUserTabs = signal<TabItem[]>(corporateUserTabs);
 
   jobSeekUserTabs = signal<TabItem[]>(jobSeekUserTabs);
-  
+
   activeTab = signal('cv-search');
 
   activeFilters = toSignal(this.queryService.filterQuery$, {
@@ -184,11 +184,11 @@ export class CvSearchComponent implements AfterViewInit {
     // this.isCartShow.set(true);
   }
 
-  onAddedToShortList($event: any){
+  onAddedToShortList($event: any) {
     this.isShortListNotificationShow.set($event)
   }
 
-  shortListNotificationClose(){
+  shortListNotificationClose() {
     this.ApplicantCardService.clearShortListToast()
     this.isShortListNotificationShow.set(false)
   }
@@ -219,6 +219,32 @@ export class CvSearchComponent implements AfterViewInit {
     this.submitPurchaseForm(resumeIds.join(','), listId);
   }
 
+  handleUnlockProfile(applicantId: string): void {
+    console.log('Unlocking profile for:', applicantId);
+    // Ensure cart UI is managed correctly if needed
+    // this.isCartOpen.set(true); 
+    // this.isCartShow.set(false); // Or true, depending on desired flow
+
+    const numericListId = this.ApplicantCardService.purchaseListNumericId();
+    if (numericListId === null) {
+      console.error('Numeric List ID is null, cannot proceed with unlock.');
+      // Optionally, show a toastr message to the user
+      // this.toastr.error('Could not find a purchase list. Please select or create one first.');
+      return;
+    }
+    const listId = numericListId.toString();
+
+    // Add the single applicant to the selection in the service if this is part of the flow
+    // This ensures that if other parts of the application rely on this selection, it's up-to-date.
+    // this.ApplicantCardService.clearSelections(); // Clear previous selections if it's a single CV purchase
+    this.ApplicantCardService.addApplicantToSelection(applicantId);
+
+    // Update cart display values for a single CV
+    this.ApplicantCardService.currentCv.set(1);
+    // Potentially update totalTk based on this single CV's price if that logic exists
+
+    this.submitPurchaseForm(applicantId, listId);
+  }
   private submitPurchaseForm(resumeIds: string, listId: string): void {
     const form = document.createElement('form');
     form.method = 'post';
@@ -283,7 +309,7 @@ export class CvSearchComponent implements AfterViewInit {
     if (isClearStore) {
       this.homeQueryStore.clearFilter();
       this.queryService.filterQuery$.next({} as FilterForm);
-      this.updateRemovedBadge({id: 'clearAll', label: 'clearAll', type: 'clearAll'});
+      this.updateRemovedBadge({ id: 'clearAll', label: 'clearAll', type: 'clearAll' });
     }
   }
 }
