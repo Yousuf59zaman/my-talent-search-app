@@ -244,25 +244,20 @@ export class ApplicantCardComponent {
   }
 
   onClickCustomizedCV() {
-    // Check for CV bank search access first
     if (this.cvsDisabled()) {
       this.confirmationModal.openModal({
         content: {
           title: 'Resume Details',
           content: "To view/access the candidate's resume, you have to purchase it first.",
-          linkText: 'Learn more about CV Bank Access',
-          linkUrl: 'https://corporate3.bdjobs.com/services.asp?from=recruiter',
+          linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
+          linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
           closeButtonText: 'Okay',
           saveButtonText: '',
           isIcon: false,
           isCloseButtonVisible: true,
           isSaveButtonVisible: false
         }
-      }).subscribe(result => {
-        if (result.event?.isConfirm) {
-          // Handle confirmation if needed
-        }
-      });
+      })
       return;
     }
     const payload: DownloadCVRequest = {
@@ -286,29 +281,21 @@ export class ApplicantCardComponent {
       });
   }
 
-
-
-
   openVideoCVDetails() {
-    // Check for CV bank search access first
     if (this.cvsDisabled()) {
       this.confirmationModal.openModal({
         content: {
           title: 'Video Resume Details',
           content: "To view/access the candidate's video resume, you have to purchase it first.",
-          linkText: 'Learn more about CV Bank Access',
-          linkUrl: 'https://corporate3.bdjobs.com/services.asp?from=recruiter',
+          linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
+          linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
           closeButtonText: 'Okay',
           saveButtonText: '',
           isIcon: false,
           isCloseButtonVisible: true,
           isSaveButtonVisible: false
         }
-      }).subscribe(result => {
-        if (result.event?.isConfirm) {
-          // Handle confirmation if needed
-        }
-      });
+      })
       return;
     }
     this.cvDetailsLink = this.genCvDetailsLink();
