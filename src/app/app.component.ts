@@ -44,11 +44,11 @@ export class AppComponent implements OnInit {
 
     if (isDevMode()) {
       //sadman_test
-      this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
-      this.localStorageService.setItem(UserId, 'ZRYxPRG7')
+      // this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
+      // this.localStorageService.setItem(UserId, 'ZRYxPRG7')
       //bunny test
-      // this.localStorageService.setItem(CompanyId, 'ZRS1PEUu')
-      // this.localStorageService.setItem(UserId, 'ZRg3ZxG1')
+      this.localStorageService.setItem(CompanyId, 'ZRS1PEUu')
+      this.localStorageService.setItem(UserId, 'ZRg3ZxG1')
       //dilruba test
       // this.localStorageService.setItem(CompanyId,'Zxg6ZRg=')
       // this.localStorageService.setItem(UserId,'PxZ9IES=')
@@ -72,8 +72,8 @@ export class AppComponent implements OnInit {
       //  this.localStorageService.setItem(CompanyId,'ZRZ3IRd0')
       //  this.localStorageService.setItem(UserId,'ZC==')
 
-      this.localStorageService.setItem(IsCorporateUser, 'true')
-      this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate)
+      this.localStorageService.setItem(IsCorporateUser, 'false')
+      this.localStorageService.setItem(LastUserType, LastUserTypes.Jobseeker)
     }
   }
 }

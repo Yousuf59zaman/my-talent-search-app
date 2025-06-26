@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, OnInit, input, OnChanges, SimpleChanges } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { RangeSliderComponent } from '../../shared/components/range-slider/range-slider.component';
 import { CheckboxComponent } from '../../shared/components/checkbox/checkbox.component';
 import { InputWithSearchComponent } from '../../shared/components/input-with-search/input-with-search.component';
@@ -8,7 +8,7 @@ import { MultiSelectComponent } from '../../shared/components/multi-select/multi
 import { RadioComponent } from '../../shared/components/radio/radio.component';
 import { MultiSelectQueryEvent, SelectItem } from '../../shared/models/models';
 import { AgeRangeConfig, DefaultPageSize, ExpRangeConfig, SalaryRangeConfig } from '../../shared/utils/app.const';
-import { combineLatest, debounceTime, distinctUntilChanged, Observable, of, skip, skipWhile, startWith, Subject, switchMap, map, tap, filter } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, Observable, of, skip, skipWhile, startWith, Subject, switchMap, map, tap } from 'rxjs';
 import { FilterDataService } from './services/filter-data.service';
 import { CommonModule } from '@angular/common';
 import { IndustryTypeResponse, InstituteResponse, SearchCountObject, SkillResponse } from './models/filter-datamodel';
@@ -23,8 +23,6 @@ import { LocalstorageService } from '../../core/services/essentials/localstorage
 import { IsCorporateUser } from '../../shared/enums/app.enums';
 import { SelectComponent } from '../../shared/components/select/select.component';
 import { ToastrService } from 'ngx-toastr';
-import { QueryBuilderReverse } from './services/query-builder-reverse';
-import { FilterStore } from '../../store/filter.store';
 
 @Component({
   selector: 'app-filter-panel',
@@ -38,6 +36,7 @@ import { FilterStore } from '../../store/filter.store';
     InputWithSearchComponent,
     SelectComponent,
   ],
+  providers: [FilterDataService],
   templateUrl: './filter-panel.component.html',
   styleUrl: './filter-panel.component.scss',
   animations: [
@@ -95,8 +94,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     videoCV: new FormControl<boolean>(false),
     shortlist: new FormControl<{ id: string; name: string } | null>(null),
     lastUpdated: new FormControl<string | null>(null),
-    purchaseListId: new FormControl<string | null>(null),
-    isAlreadyPurchased: new FormControl<boolean | null>(false),
   });
 
   ageRangeConfig = AgeRangeConfig;
@@ -105,15 +102,12 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   multiSelectType = MultiSelectType;
 
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
+  private _filterNameInput = signal<string>('');
   private _saveAsNewFilter = signal<boolean>(false);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
 
-  filterNameInput = new FormControl('', [
-    Validators.maxLength(45),
-    Validators.pattern(/^[^'%"<>&()]*$/),
-  ]);
   salaryControl = computed(
     () => this.filterForm.get('expectedSalary') as FormControl<number[]>
   );
@@ -180,6 +174,10 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isPreferredLocationControl = computed(
     () => this.filterForm.get('isPreferredLocation') as FormControl<boolean>
   );
+  isLocationSelected = computed(() => {
+    const value = this.locationControl().value as SelectItem[] | null;
+    return !!value && value.length > 0;
+  });
   expertiseInputControl = computed(
     () => this.filterForm.get('expertise') as FormControl<SelectItem[] | null>
   );
@@ -213,7 +211,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isSaveFilterPopoverVisible = computed(() =>
     this._isSaveFilterPopoverVisible()
   );
-
+  filterNameInput = computed(() => this._filterNameInput());
   saveAsNewFilter = computed(() => this._saveAsNewFilter());
 
   isQuickFiltersOpen = computed(
@@ -233,7 +231,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   private filterDataService = inject(FilterDataService);
   private homeQueryStore = inject(HomeQueryStore);
-  private filterStore = inject(FilterStore);
   private destroyRef = inject(DestroyRef);
   private queryService = inject(QueryService);
   private modalService = inject(ModalService);
@@ -358,15 +355,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
       this.setIndustrySuggestions(industrySelectItems);
     });
 
-  private listenOnRefreshQuery = this.queryService.isRefreshQuery$
-    .pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter((isRefresh) => isRefresh)
-    )
-    .subscribe({
-      next: () => this.queryService.filterQuery$.next(this.currentFilterData),
-    });
-
   filterQuery$!: Observable<FilterForm>;
   isTouchedAgeControl = signal(false);
   isTouchedExpControl = signal(false);
@@ -451,8 +439,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         startWith(this.shortlist() ? this.shortlist() : null)
       ),
       controls.lastUpdated.valueChanges.pipe(startWith(null)),
-      controls.purchaseListId.valueChanges.pipe(startWith(null)),
-      controls.isAlreadyPurchased.valueChanges.pipe(startWith(null)),
     ];
 
     this.filterQuery$ = combineLatest(formControlsObs$).pipe(
@@ -501,8 +487,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           videoCV: controls && controls.length ? controls[29] : null,
           shortlist: controls && controls.length ? controls[30] : null,
           lastUpdated: controls && controls.length ? controls[31] : null,
-          purchaseListId: controls && controls.length ? controls[32] : null,
-          isAlreadyPurchased: controls && controls.length ? controls[33] : null,
         };
 
         return formGroupObj;
@@ -560,29 +544,34 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     const isPreferredLocationControl = this.filterForm.get(
       'isPreferredLocation'
     ) as FormControl<boolean>;
-
+    // disable checkboxes initially if no location is selected
+    if (!locationControl.value || locationControl.value.length === 0) {
+      isCurrentLocationControl.disable({ emitEvent: false });
+      isPermanentLocationControl.disable({ emitEvent: false });
+      isPreferredLocationControl.disable({ emitEvent: false });
+    }
     locationControl.valueChanges.subscribe((locationValue) => {
       if (locationValue && locationValue.length > 0) {
-        if (!isCurrentLocationControl.value) {
-          isCurrentLocationControl.setValue(true);
-        }
-      } else {
-        isCurrentLocationControl.setValue(false, { emitEvent: false });
-        isPermanentLocationControl.setValue(false, { emitEvent: false });
-        isPreferredLocationControl.setValue(false, { emitEvent: false });
-      }
+        isCurrentLocationControl.enable({ emitEvent: false });
+        isPermanentLocationControl.enable({ emitEvent: false });
+        isPreferredLocationControl.enable({ emitEvent: false });
 
-      if (locationValue && locationValue.length > 0) {
         const atLeastOneChecked =
           isCurrentLocationControl.value ||
           isPermanentLocationControl.value ||
           isPreferredLocationControl.value;
         if (!atLeastOneChecked) {
-          isCurrentLocationControl.setValue(true, { emitEvent: false });
+          isCurrentLocationControl.setValue(true);
         }
+      } else {
+        isCurrentLocationControl.setValue(false);
+        isCurrentLocationControl.disable({ emitEvent: false });
+        isPermanentLocationControl.setValue(false);
+        isPermanentLocationControl.disable({ emitEvent: false });
+        isPreferredLocationControl.setValue(false);
+        isPreferredLocationControl.disable({ emitEvent: false });
       }
     });
-
     [
       isCurrentLocationControl,
       isPermanentLocationControl,
@@ -616,8 +605,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   getLocationsObservable(event: MultiSelectQueryEvent): Observable<any> {
     return event?.query?.trim()
       ? this.filterDataService.getLocationsByQuery({
-          SearchState: event?.query,
-        })
+        SearchState: event?.query,
+      })
       : of(null);
   }
 
@@ -665,7 +654,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   prepareSuggestions(
     objects: any[],
-    callback: (selectItems: SelectItem[]) => void = () => {}
+    callback: (selectItems: SelectItem[]) => void = () => { }
   ) {
     const filteredSuggestions: SelectItem[] = [];
 
@@ -769,7 +758,13 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   closeSaveFilterPopover(): void {
     this._isSaveFilterPopoverVisible.set(false);
+    this._filterNameInput.set('');
     this._saveAsNewFilter.set(false);
+  }
+
+  updateFilterName(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this._filterNameInput.set(target.value);
   }
 
   toggleSaveAsNew(): void {
@@ -798,7 +793,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
       changes['filtersFromDashboard'] &&
       changes['filtersFromDashboard'].currentValue
     ) {
-      this.queryService.isQueryLoading.next(true);
       this.syncFilterFormWithDashboardFilters();
     }
     if (changes['shortlist'] && changes['shortlist'].currentValue) {
@@ -840,7 +834,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  async syncFilterFormWithDashboardFilters() {
+  syncFilterFormWithDashboardFilters() {
     if (this.filtersFromDashboard()) {
       const filter = this.filtersFromDashboard();
       if (
@@ -929,46 +923,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.updateCategoryFilter(filter);
         this.filterForm.get('showStarCandidates')?.setValue(true);
       }
-      if (
-        filter?.filters.category &&
-        filter.filters.category.type === 'shortlisted'
-      ) {
-        this.filterForm.get('shortlist')?.setValue({
-          id: filter.filters.category.category.id.toString(),
-          name: filter.filters.category.category.categoryName,
-        });
-        this.filterStore.setIsShortlist(true);
-        if (
-          filter?.filters.category.category.filters &&
-          filter.filters.category.category.filters['id'] !== undefined
-        ) {
-          this.filterStore.setShortlistGuidId(
-            filter.filters.category.category.filters['id']
-          );
-        }
-      }
-      if (
-        filter?.filters.category &&
-        filter.filters.category.type === 'saved'
-      ) {
-        const form = await QueryBuilderReverse.toFilterForm(
-          filter.filters.category.category.filters,
-          this.filterDataService
-        );
-        this.filterForm.patchValue(form);
-      }
-      if (filter?.filters.category && filter.filters.category.type === 'purchased') {
-        this.filterForm.get('purchaseListId')?.setValue(
-          filter.filters.category.category.id.toString()
-        );
-        this.filterForm.get('isAlreadyPurchased')?.setValue(
-          filter?.filters.category.category.filters &&
-          filter.filters.category.category.filters['isAlreadyPurchased'] !== undefined
-            ? filter.filters.category.category.filters['isAlreadyPurchased']
-            : null
-        );
-        this.filterStore.setIsPurchaseList(true);
-      }
       return;
     }
     this.triggerDefaultFilterQuery();
@@ -1030,10 +984,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           Array.isArray(currentValue) &&
           typeof currentValue[0] !== 'number'
         ) {
-          const updatedValue = currentValue.filter(
-            (item: any) => item.selectId !== removedFilter.value.selectId
-          ) as SelectItem[];
-          control.setValue(updatedValue.length > 0 ? updatedValue : null);
+          // For multi-select values, removing the badge clears all selections
+          control.setValue(null);
         } else {
           control.setValue(null);
         }
@@ -1062,8 +1014,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   }
   public toastr = inject(ToastrService);
   saveFilter(): void {
-    const filterName = this.filterNameInput.value || '';
-    if (!filterName.trim() && filterName) {
+    const filterName = this.filterNameInput();
+    if (!filterName.trim()) {
       return;
     }
 

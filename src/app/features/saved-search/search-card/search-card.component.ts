@@ -1,8 +1,8 @@
-import { Component, computed, DestroyRef, ElementRef, HostListener, inject, signal, Signal, ViewChild, input, Output, EventEmitter, output } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, HostListener, inject, signal, Signal, ViewChild, input, Output, EventEmitter } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { EditSaveFilterInputRequestBody, EditShortlistedInputRequestBody, SavedSearchCard } from '../model/saved-filters.model';
 import { InputComponent } from "../../../shared/components/input/input.component";
-import { AbstractControl, FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { SavedFiltersService } from '../services/saved-filters.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, mergeMap } from 'rxjs';
@@ -11,10 +11,9 @@ import { ConfirmationModalService } from '../../../core/services/confirmationMod
 import { ShortlistedCvService } from '../services/shortlisted-cv.service';
 import { ShortNumberPipe } from "../../../shared/pipes/shortNumber.pipe";
 import { SavedSearchCardEnum } from '../enum/searchCard.enum';
-import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-search-card',
-  imports: [NgClass, InputComponent, ShortNumberPipe,ReactiveFormsModule],
+  imports: [NgClass, InputComponent, ShortNumberPipe],
   templateUrl: './search-card.component.html',
   styleUrl: './search-card.component.scss'
 })
@@ -31,16 +30,14 @@ export class SearchCardComponent {
   private savedFilterService = inject(SavedFiltersService)
   private shortlistedCvService = inject(ShortlistedCvService)
   protected confirm =inject(ConfirmationModalService)
-  private toastr = inject(ToastrService);
   @Output() saveFilterCardTitleUpdated = new EventEmitter<void>(); 
   @Output() saveFilterCardDeleted = new EventEmitter<void>();
   @Output() shortlistedCvUpdated = new EventEmitter<void>(); 
   @Output() shortlistedCvCardDeleted = new EventEmitter<void>();
-  @Output() onCardClick = new EventEmitter<SavedSearchCard>();
 
   savedFilterCardTitleControl = new FormControl('',[Validators.required,this.noLeadingOrOnlyWhitespaceValidator()])
-  shortlistedCardTitleControl = new FormControl('',[Validators.required,Validators.pattern(/^(?!\s)[^'"%<>&()]*$/),this.noLeadingOrOnlyWhitespaceValidator()]);
-  shortlistedCardDescriptionControl = new FormControl('', [Validators.maxLength(250),Validators.pattern(/^[^'%"<>&()]*$/)])
+  shortlistedCardTitleControl = new FormControl('',[Validators.required,this.noLeadingOrOnlyWhitespaceValidator()]);
+  shortlistedCardDescriptionControl = new FormControl('');
 
   noLeadingOrOnlyWhitespaceValidator(): ValidatorFn {
     return (control: AbstractControl) => {
@@ -94,27 +91,30 @@ export class SearchCardComponent {
 
   savedFiltersCategoryName: Signal<string[]> = computed(() => {
     const card = this.card();
-    const excludedKeys = ['InsType', 'qFilter', 'reqCount', 'qEduTitle'];
-
+    const excluded = ['InsType', 'qFilter', 'reqCount'];
+  
     return card.filters
       ? Object.entries(card.filters)
-        .filter(([key, value]) =>
-          !excludedKeys.includes(key) &&
-          value !== 'Local' &&
-          !(key === 'IsStarCandidate' && value === 'False')
-        )
-        .map(([key]) =>
-          SavedSearchCardEnum[key as keyof typeof SavedSearchCardEnum] as string || key
-        )
-        .filter((value, index, self) => self.indexOf(value) === index)
+          .map(([key]) =>
+            SavedSearchCardEnum[key as keyof typeof SavedSearchCardEnum] as string || key
+          )
+          .filter(
+            (value, index, self) =>
+              self.indexOf(value) === index && !excluded.includes(value)
+          )
       : [];
-  });
-  
+  });  
   visibleFilters = computed(() =>
     this.expanded() ? this.savedFiltersCategoryName() : this.savedFiltersCategoryName().slice(0, this.previewCount)
   );
   isLongList = computed(() => this.savedFiltersCategoryName().length > this.previewCount);
 
+  toggleSaveFilterEditButton(){
+    this.isSaveFilterEdit.set(!this.isSaveFilterEdit())
+  }
+  toggleShortlistedCvEditButton(){
+    this.isShortlistedCvEdit.set(!this.isShortlistedCvEdit())
+  }
   @HostListener('document:click', ['$event'])
     onClickOutside(event: Event) {
       if (this.editInput && !this.editInput.nativeElement.contains(event.target)) {
@@ -133,7 +133,6 @@ export class SearchCardComponent {
     }
 
   editSavedFilterSubmit() {
-    this.isSaveFilterEdit.set(true)
     const trimmedValue = this.savedFilterCardTitleControl.value?.trim() || '';
     this.savedFilterCardTitleControl.setValue(trimmedValue);
     
@@ -183,39 +182,27 @@ export class SearchCardComponent {
     ).subscribe({
       next: () => {
         this.saveFilterCardDeleted.emit()
-        this.toastr.success('Saved Filter delete successfuly', 'Success');
       },
       error: (error) => {
-        this.toastr.error('Error while deleting the saved filter', 'Error');
         console.log('error while deleting the saved filter', error);
         
       }
     });
   }
   editShortlistedSubmit(){
-    this.isShortlistedCvEdit.set(true)
     const trimmedTitle = this.shortlistedCardTitleControl.value?.trim() || '';
     this.shortlistedCardTitleControl.setValue(trimmedTitle)
 
-    const title = this.shortlistedCardTitleControl.value || '';
-    const description = this.shortlistedCardDescriptionControl.value || '';
-
-    if (title.length > 45 || description.length > 250) {
-      this.shortlistedCardTitleControl.setErrors({ maxlength: true });
-      this.shortlistedCardDescriptionControl.setErrors({ maxlength: true });
-      return;
-    }
-
-    if (this.shortlistedCardTitleControl.invalid) {
-      this.shortlistedCardTitleControl.markAsTouched();
-      return;
+    if(this.shortlistedCardTitleControl.invalid){
+      this.shortlistedCardTitleControl.markAsTouched()
+      return
     }
 
     const reqBody:EditShortlistedInputRequestBody = {
       id:this.card().id,
       CpId:this.card().companyId,
-      categoryName:title,
-      categoryDescription:description,
+      categoryName:this.shortlistedCardTitleControl.value || '',
+      categoryDescription:this.shortlistedCardDescriptionControl.value || '',
       IsInsert:0
     }
     this.shortlistedCvService
@@ -251,10 +238,8 @@ export class SearchCardComponent {
     ).subscribe({
       next: () => {
         this.shortlistedCvCardDeleted.emit()
-        this.toastr.success('Shortlisted cv group delete successfuly', 'Success');
       },
       error: (error) => {
-        this.toastr.error('error while deleting the shortlisted cv group', 'Error');
         console.log('error while deleting the shortlisted cv', error);
         
       }
@@ -267,8 +252,4 @@ export class SearchCardComponent {
     const description = this.shortlistedCardDescription();
     return description ? description.length > this.previewLength : false;
   });
-
-  onClickView(card: SavedSearchCard) {
-    this.onCardClick.emit(card);
-  }
 }

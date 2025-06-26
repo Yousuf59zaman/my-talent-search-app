@@ -1,13 +1,10 @@
-import { inject } from "@angular/core";
 import { SelectItem } from "../../../shared/models/models";
 import { FilterBadge } from "../../active-filters/active-filters/active-filters.component";
 import { MaxAgeRange, MaxExpRange, MaxSalaryRange } from "../../search-talent/search-talent/search-talent.component";
 import { DegreeLevel } from "../models/filter-datamodel";
 import { FilterForm } from "../models/form.models";
-import { FilterStore } from "../../../store/filter.store";
-import { HomeQueryStore, IHomeQueryStore } from "../../../store/home-query.store";
 
-export function generateFilterBadges(filters: FilterForm | null, homeStore: IHomeQueryStore | null): FilterBadge[] {
+export function generateFilterBadges(filters: FilterForm | null): FilterBadge[] {
   if (!filters) return [];
 
   const badges: FilterBadge[] = [];
@@ -30,11 +27,26 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
   const handleArray = (
     idPrefix: string,
     labelPrefix: string,
-    items: SelectItem[] | null
+    items: SelectItem[] | null,
+    joinWithComma: boolean = false
   ) => {
-    items?.forEach((item) => {
-      addBadge(`${idPrefix}`, `${labelPrefix}: ${item.label} ${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`, idPrefix, item);
-    });
+    if (!items || items.length === 0) return;
+
+    if (joinWithComma) {
+      const labels = items
+        .map((item) => `${item.label}${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`)
+        .join(', ');
+      addBadge(`${idPrefix}`, `${labelPrefix}: ${labels}`, idPrefix, items);
+    } else {
+      items.forEach((item) => {
+        addBadge(
+          `${idPrefix}`,
+          `${labelPrefix}: ${item.label} ${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`,
+          idPrefix,
+          item
+        );
+      });
+    }
   };
 
   const handleBoolean = (id: string, label: string, value: boolean | undefined) => {
@@ -42,17 +54,9 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
       addBadge(id, label, id, true);
     }
   };
-  
+
   if (filters.shortlist) {
     addBadge("shortlist", `Shortlist: ${filters.shortlist.name}`, "shortlist", filters.shortlist.name)
-  }
-
-  if (filters.purchaseListId) {
-    addBadge("purchaseListId", `Purchase List: ${homeStore?.filters.category?.category.categoryName}`, "purchaseList", filters.purchaseListId);
-  }
-
-  if (filters.isAlreadyPurchased) {
-    addBadge("alreadyPurchased", "Already Purchased", "alreadyPurchased", true);
   }
 
   if (filters.keyword) {
@@ -85,9 +89,13 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
       .filter(Boolean)
       .join(", ");
     const locationTypeText = locationTypes ? ` (${locationTypes})` : "";
-    filters.location.forEach((loc) => {
-      addBadge(`location`, `Location: ${loc.label}${locationTypeText}`, "location", loc);
-    });
+    const locationLabels = filters.location.map((loc) => loc.label).join(', ');
+    addBadge(
+      `location`,
+      `Location: ${locationLabels}${locationTypeText}`,
+      "location",
+      filters.location
+    );
   }
 
   if (filters.education) {
@@ -101,12 +109,12 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
   }
 
   handleArray("courses", "Course", filters.courses);
-  handleArray("institutes", "Institute", filters.institutes);
-  handleArray("skills", "Skill", filters.skills);
-  handleArray("industries", "Industry", filters.industries);
+  handleArray("institutes", "Institute", filters.institutes, true);
+  handleArray("skills", "Skill", filters.skills, true);
+  handleArray("industries", "Industry", filters.industries, true);
   handleArray("industryType", "Industry Type", filters.industryType);
   handleArray("category", "Category", filters.category);
-  handleArray("expertise", "Expertise", filters.expertise);
+  handleArray("expertise", "Expertise", filters.expertise, true);
 
   handleBoolean("isEntry", "Entry Level", filters.isEntry);
   handleBoolean("isMid", "Mid Level", filters.isMid);

@@ -31,8 +31,8 @@
             href="https://recruiter.bdjobs.com/dashboard" aria-current="page">
             Job Dashboard
           </a>
-          <div class="relative w-32 h-8 cursor-pointer">
-            <img class="w-full h-full" (click)="navigateToHome()" src="images/Talent Search Logo-02.svg" alt="">
+          <div class="relative w-32 h-8">
+            <img [routerLink]="['/']" class="w-full h-full" src="images/Talent Search Logo-02.svg" alt="">
             <div class="absolute top-[41.5px] w-32 h-0.5 bg-[#0E73A9]"></div>
           </div>
     
@@ -756,7 +756,7 @@
       class="px-2 md:px-0 max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-2 2xl:mx-auto  2xl:pe-4">
       <div class="flex items-center justify-between">
         <div class="w-full md:w-[213px] flex items-center justify-between">
-          <img class="w-40 md:w-[213px] h-8 mt-[-9px]" src="images/Expert Search Logo-1px.svg" alt="BDJobs Logo" />
+          <img [routerLink]="['/']" class="w-40 md:w-[213px] h-8 mt-[-9px] cursor-pointer" src="images/Expert Search Logo-1px.svg" alt="BDJobs Logo" />
           <div>
             <button class="md:hidden block" (click)="this.isMenuOpen.set(!this.isMenuOpen())">
               <span [ngClass]="isMenuOpen()? 'icon-times':'icon-list'"></span>

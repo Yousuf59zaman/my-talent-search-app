@@ -5,9 +5,10 @@
                     class="flex-1 py-2 text-center text-[#595959] rounded-full transition font-medium text-sm"
                     [class.bg-[#0E73A9]]="activeTab().name === tab.name"
                     [class.text-white]="activeTab().name === tab.name"
-                    (click)="activeTab.set(tab)"
+                    (click)="setActiveTab(tab)"
                   >
                     {{ tab.name }}
+                    <!-- (click)="activeTab.set(tab)" -->
                   </button>
                 }
         </div>

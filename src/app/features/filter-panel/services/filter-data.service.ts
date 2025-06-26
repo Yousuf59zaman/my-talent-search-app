@@ -9,12 +9,9 @@ import { FilterForm } from '../models/form.models';
 import { CompanyIdLocalStorage } from '../../../shared/enums/app.enums';
 import { FilterStore } from '../../../store/filter.store';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
-import { MaxAgeRange, MaxExpRange, MaxSalaryRange } from '../../search-talent/search-talent/search-talent.component';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FilterDataService {
 
   constructor(
@@ -46,23 +43,13 @@ export class FilterDataService {
     return this.http.get(url, { params: queryParams});
   }
 
-  getLocationsById(queryParams: any) {
-    const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetLocations"
-    return this.http.get<ApiResponse<Location[]>>(url, { params: queryParams});
-  }
-
   getSkills(queryParams: { CategoryId: number, searchTxt: string }) {
     const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetSkills";
     return this.http.get<ApiResponse<SkillResponse[]>>(url, { params: queryParams });
   }
 
-  getSkillsByIds(queryParams: { searchTxt: string }) {
-    const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetSkillsData";
-    return this.http.get<ApiResponse<SkillResponse[]>>(url, { params: queryParams });
-  }
-
   getSearchCount(params?: any): Observable<SearchCountObject> {
-    const url = "https://gateway.bdjobs.com/cvbank/api/CVBank/SearchCount";
+    const url = "https://gateway.bdjobs.com/cvbankv3/api/CVBank/SearchCount";
     const defaultParams = {
       CompanyId: 'ZxU0PRC=',
       CatId: '',
@@ -364,15 +351,15 @@ export class FilterDataService {
       }
     }
 
-   if (filterData.ageRange?.length === 2 && !(filterData.ageRange[0] === MaxAgeRange[0] && filterData.ageRange[1] === MaxAgeRange[1] )) {
+   if (filterData.ageRange?.length === 2) {
       parameters['qAge'] = filterData.ageRange.join('/');
     }
 
-    if (filterData.experience?.length === 2 && !(filterData.experience[0] === MaxExpRange[0] && filterData.experience[1] === MaxExpRange[1] )) {
+    if (filterData.experience?.length === 2) {
       parameters['qExp'] = filterData.experience.join('/');
     }
 
-    if (filterData.expectedSalary?.length === 2 && !(filterData.expectedSalary[0] === MaxSalaryRange[0] && filterData.expectedSalary[1] === MaxSalaryRange[1] )) {
+    if (filterData.expectedSalary?.length === 2) {
       parameters['qSalary'] = filterData.expectedSalary.join('/');
     }
 
@@ -452,7 +439,7 @@ export class FilterDataService {
     }
 
     if (filterData.institutes?.length) {
-      parameters['InsName'] = filterData.institutes.map(inst => inst.label).join('__');
+      parameters['InsName'] = filterData.institutes.map(inst => inst.label).join(',');
     }
 
     if (filterData.shortlist) {
@@ -491,12 +478,4 @@ function getGenderQueryValue(gender: string): string {
     case 'Other': return 'O';
     default: return '';
   }
-}
-
-export interface Location {
-  display: null | string;
-  locId: number;
-  locName: string;
-  prId: number;
-  regionalId: number;
 }

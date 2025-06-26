@@ -20,13 +20,9 @@
             type="text" 
             placeholder="Write Filter name" 
             class="w-full border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            [formControl]="filterNameInput">
-            @if (filterNameInput.errors?.['maxlength']) {
-            <p class="text-red-600 text-sm mt-1">Name must not exceed 45 characters.</p>
-            }
-            @if (filterNameInput.errors?.['pattern']) {
-            <p class="text-red-600 text-sm mt-1">Please avoid using ', %, <,>, ", &, (, ).</p>
-            }
+            (input)="updateFilterName($event)"
+            [value]="filterNameInput()">
+          
             @if(false){
               <div class="flex items-center mb-2">
                 <input 
@@ -277,8 +273,7 @@
       <div class="flex items-center mb-1">
         <img src="images/industry.svg" alt="" class="w-5 h-5 mr-1">
         <label class="text-base font-bold text-[#0E73A9]">Industry/Organization</label>
-      </div>
-      <app-multi-select
+      </div><app-multi-select
         [overLayVisibleOnlyOnFocus]="false"
         [isBindSelectedItemsOnly]="true"
         [isShowSelectedItemsAsChip]="true"
@@ -465,18 +460,21 @@
             <app-checkbox 
               [label]="'Current'" 
               [control]="isCurrentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'currentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Permanent'" 
               [control]="isPermanentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'permanentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Preferred'" 
               [control]="isPreferredLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'preferredLocation'">
             </app-checkbox>

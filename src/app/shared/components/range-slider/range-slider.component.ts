@@ -24,9 +24,6 @@ export class RangeSliderComponent {
 
   onMinInputChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    if (!value) {
-      return;
-    }
     const minValue = Number(value);
     const maxValue = this.control().value[1];
     const floor =this.options().floor || 0;

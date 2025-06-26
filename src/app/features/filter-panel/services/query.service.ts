@@ -24,9 +24,6 @@ export class QueryService {
   isQueryLoading = new Subject<boolean>();
   filterQuery$: Subject<FilterForm> = new Subject();
 
-  isRefreshQuery = new BehaviorSubject<boolean>(false);
-  isRefreshQuery$ = this.isRefreshQuery.asObservable();
-
   private paginationObs = new BehaviorSubject<Pagination>({
     pageNo: 1,
     pageSize: 10,

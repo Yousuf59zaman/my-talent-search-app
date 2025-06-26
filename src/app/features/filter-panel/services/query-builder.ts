@@ -48,8 +48,6 @@ export class QueryBuilder {
   reqCount = '0';
   immediateAvailable = '';
   isStarCandidate = false;
-  WishListId = '';
-  AlreadyPurchased= '0';
 
   constructor(filterData: FilterForm, compamyId: string, pageNo: number = 1) {
     this.CompanyId = compamyId || '';
@@ -102,8 +100,6 @@ export class QueryBuilder {
     this.immediateAvailable = filterData.immediateAvailable ? '1' : '0';
     this.qwatchlist = filterData.shortlist ? filterData.shortlist.id : '';
     this.qLastUpdated = filterData.lastUpdated ? filterData.lastUpdated : '';
-    this.WishListId = filterData.purchaseListId || '';
-    this.AlreadyPurchased = filterData.isAlreadyPurchased ? '1' : '0';
   }
 
   private getRangeQuery(experience: number[], maxRange: number[]): string {

@@ -2,31 +2,50 @@
  [ngClass]="isCorporateUser() ? 'md:h-[190px] xl:h-[210px] lg:h-[200px]' : 'md:h-[160px] xl:h-[180px] lg:h-[170px]'">
  @if(applicant().openToWork === immediatelyAvailable() && isCorporateUser()){
   <div
-    class="absolute -top-3 right-0 bg-[#B32D7D] text-white text-xs lg:text-[10px] font-semibold px-3 lg:px-2 py-1 lg:py-0.5 rounded-[4px]">
+     class="absolute -top-3 right-0 bg-[#B32D7D] text-white text-xs lg:text-[10px] font-semibold px-3 lg:px-2 py-1 lg:py-0.5 rounded-[4px]"
+      >
     <div class="flex items-center gap-1 content">
-      <svg width="17" height="16" class="lg:w-4 lg:h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="17"
+        height="16"
+        class="lg:w-4 lg:h-4"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <g clip-path="url(#a)">
           <path
             d="M12.465 12.146a3.417 3.417 0 1 0 0-6.835 3.417 3.417 0 0 0 0 6.835Zm0-7.689a4.271 4.271 0 1 1 0 8.543 4.271 4.271 0 0 1 0-8.543Zm.214 2.136v2.242l1.922 1.14-.32.526-2.243-1.345V6.593h.64Z"
-            fill="#fff"></path>
+            fill="#fff"
+          ></path>
         </g>
-        <path d="M3.055 5.525h4.932M1.822 7.169h4.52M1 8.813h4.11M1.822 10.457h4.52M3.055 12.1h4.932" stroke="#fff"
-          stroke-width=".425" stroke-linecap="round"></path>
+        <path
+          d="M3.055 5.525h4.932M1.822 7.169h4.52M1 8.813h4.11M1.822 10.457h4.52M3.055 12.1h4.932"
+          stroke="#fff"
+          stroke-width=".425"
+          stroke-linecap="round"
+        ></path>
         <defs>
           <clipPath id="a">
-            <path fill="#fff" transform="translate(8.194 4.457)" d="M0 0h8.543v8.543H0z"></path>
+            <path
+              fill="#fff"
+              transform="translate(8.194 4.457)"
+              d="M0 0h8.543v8.543H0z"
+            ></path>
           </clipPath>
         </defs>
       </svg>
-      <span class="text-white font-semibold text-center text-[10px] lg:text-[9px]">Immediately Available</span>
+      <span class="text-white font-semibold text-center text-[10px] lg:text-[9px]"
+        >Immediately Available</span>
     </div>
   </div>
-  }@else if (applicant().isPurchased && !isCorporateUser()) {
-  <div
-    class="absolute -top-3 right-0 bg-[#B32D7D] text-white text-xs lg:text-[10px] font-semibold px-3 lg:px-2 py-1 lg:py-0.5 rounded-[4px]">
+}@else if (applicant().isPurchased && !isCorporateUser()) {
+   <div
+     class="absolute -top-3 right-0 bg-[#B32D7D] text-white text-xs lg:text-[10px] font-semibold px-3 lg:px-2 py-1 lg:py-0.5 rounded-[4px]"
+      >
     <div class="flex items-center gap-1 content">
       <span class="icon-purchase"></span>
-      <span class="text-white font-semibold text-center text-[10px] lg:text-[9px]">already Purchased</span>
+      <span class="text-white font-semibold text-center text-[10px] lg:text-[9px]"
+        >already Purchased</span>
     </div>
   </div>
 }
@@ -48,7 +67,6 @@
     [class.cursor-default]="cvsDisabled()"
     (click)="cvsDisabled() ? null : (applicant().videoResume ? openSingleVideoResume() : loadCvDetailsInIFrame())"
   >
-  
     <div class="w-20 h-20 lg:w-16 lg:h-16 rounded-full shadow-md p-[1px] flex items-center justify-center"
       [ngClass]="{'border-2 border-[#0E73A9]': applicant().videoResume && isCorporateUser()}">
       <img
@@ -68,8 +86,8 @@
           </button>
         </div>
       }
-      </div>
-@if(applicant().videoResume && isCorporateUser()) {
+    </div>
+    @if(applicant().videoResume && isCorporateUser()) {
       <span
         class="icon-play-video bg-[#0F6DDB] text-white p-1 lg:p-0.5 rounded-full 
               absolute bottom-0 right-0 
@@ -91,68 +109,84 @@
     }
   </button>
 </div>
-        <div class="relative group">
-          <div class="flex items-center bg-[#FEF6E1] px-2 py-[2px] rounded-xl mb-4 lg:mb-2 cursor-help">
-            @for(star of stars; track $index; let i = $index) {
-            @if(i < rankPointStars()) { <svg class="w-4 h-4 lg:w-3 lg:h-3 text-yellow-400 inline-block"
-              fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.283 3.947a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.447a1 1 0 00-.364 1.118l1.283 3.947c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.341 2.426c-.784.57-1.84-.197-1.54-1.118l1.283-3.947a1 1 0 00-.364-1.118L2.668 9.374c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.283-3.947z">
-              </path>
+  
+      <div class="relative group">
+        <div class="flex items-center bg-[#FEF6E1] px-2 py-[2px] rounded-xl mb-4 lg:mb-2 cursor-help">
+          @for(star of stars; track $index; let i = $index) {
+            @if(i < rankPointStars()) {
+              <svg
+                class="w-4 h-4 lg:w-3 lg:h-3 text-yellow-400 inline-block"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.283 3.947a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.447a1 1 0 00-.364 1.118l1.283 3.947c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.341 2.426c-.784.57-1.84-.197-1.54-1.118l1.283-3.947a1 1 0 00-.364-1.118L2.668 9.374c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.283-3.947z"
+                ></path>
               </svg>
-              } @else {
-              <svg class="w-4 h-4 lg:w-3 lg:h-3 text-yellow-400 inline-block" fill="none" stroke="currentColor"
-                stroke-width="2" viewBox="0 0 20 20">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.283 3.947a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.447a1 1 0 00-.364 1.118l1.283 3.947c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.341 2.426c-.784.57-1.84-.197-1.54-1.118l1.283-3.947a1 1 0 00-.364-1.118L2.668 9.374c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.283-3.947z">
-                </path>
+            } @else {
+              <svg
+                class="w-4 h-4 lg:w-3 lg:h-3 text-yellow-400 inline-block"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.283 3.947a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.447a1 1 0 00-.364 1.118l1.283 3.947c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.341 2.426c-.784.57-1.84-.197-1.54-1.118l1.283-3.947a1 1 0 00-.364-1.118L2.668 9.374c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.283-3.947z"
+                ></path>
               </svg>
-              }
-              }
-          </div>
-
-          <div
-            class=" opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200 absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 lg:w-60 bg-gray-800 text-white text-xs rounded-md p-3 shadow-lg">
-            <div class="text-center font-medium mb-1">Rank Points</div>
-            <p class="mb-1">Each CV has a rank point which depends on completeness of CV, number of shortlisted versus
-              applied jobs, CV viewed by employers, freshness of CV, etc.
-              Star candidate denotes who has achieved three or more stars.</p>
-            <div
-              class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800">
-            </div>
-          </div>
+            }
+          }
         </div>
-        <button type="button"
+        
+        <div class=" opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200 absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 lg:w-60 bg-gray-800 text-white text-xs rounded-md p-3 shadow-lg">
+          <div class="text-center font-medium mb-1">Rank Points</div>
+          <p class="mb-1">Each CV has a rank point which depends on completeness of CV, number of shortlisted versus applied jobs, CV viewed by employers, freshness of CV, etc.
+          Star candidate denotes who has achieved three or more stars.</p>
+          <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800"></div>
+        </div>
+      </div>
+        <button
+          type="button"
           class="bg-[#0E73A9] text-white px-3 lg:px-2 py-2 lg:py-1.5 rounded-full text-sm lg:text-xs font-semibold shadow hover:bg-[#186fa7] transition focus:outline-none"
-          (click)="loadCvDetailsInIFrame()">
+          (click)="loadCvDetailsInIFrame()"
+          >
           View Profile
         </button>
         @if (isCorporateUser() && (expectedSalaryValue() !== "0" && expectedSalaryValue() !== "")) {
-        <div class="flex flex-col items-center font-medium text-sm lg:text-xs space-y-1 lg:space-y-0.5">
-          <span class="text-[#212121]">Expected Salary:</span>
-          <span class="text-[#0E73A9] font-semibold">
-            <span class="icon-taka text-[#0E73A9]"></span> {{ expectedSalaryValue() }}</span>
-        </div>
+          <div class="flex flex-col items-center font-medium text-sm lg:text-xs space-y-1 lg:space-y-0.5">
+            <span class="text-[#212121]">Expected Salary:</span>
+            <span class="text-[#0E73A9] font-semibold">
+              <span class="icon-taka text-[#0E73A9]"></span> {{ expectedSalaryValue() }}</span>
+          </div>
         }
       </div>
-
-      <div
-        class="text-sm lg:text-xs text-gray-700 -mt-2 shadow-sm bg-[#F6F8FC] px-2 flex-grow min-w-[200px] lg:min-w-[180px]"
-        [ngClass]="isCorporateUser() ? 
+      
+      <div class="text-sm lg:text-xs text-gray-700 -mt-2 shadow-sm bg-[#F6F8FC] px-2 flex-grow min-w-[200px] lg:min-w-[180px]"
+       [ngClass]="isCorporateUser() ? 
                'min-h-[210px] max-h-[210px] lg:min-h-[200px] lg:max-h-[200px]' : 
                'min-h-[180px] max-h-[180px] lg:min-h-[170px] lg:max-h-[170px]'">
-        <button type="button"
+        <button
+          type="button"
           class="flex flex-col items-center justify-center object-fill shortvideocv mt-1 mb-[6px] lg:mb-1"
-          [class.cursor-default]="cvsDisabled()" (click)="cvsDisabled() ? null : loadCvDetailsInIFrame()">
-          <h2 class="font-semibold text-gray-800 lg:text-sm" [ngStyle]="textBlurStyle()">
-            {{applicant() | applicantPrivacy: 'name' }}
-          </h2>
+          [class.cursor-default]="cvsDisabled()"
+          (click)="cvsDisabled() ? null : loadCvDetailsInIFrame()"
+        > 
+        <h2 class="font-semibold text-gray-800 lg:text-sm" [ngStyle]="textBlurStyle()">
+          {{applicant() | applicantPrivacy: 'name' }}
+        </h2>
         </button>
           @if (isCorporateUser() && ageValue()) {
             <div class="mb-3 lg:mb-2 text-[12px] lg:text-[10px] text-[#0E73A9] border border-[#0E73A9] rounded px-1 inline-block">
             Age: {{ ageValue() }}</div>
 
-            }
+          }@else {
+            <div class="mt-3"></div>
+          }
+          
+
         @if(!isCorporateUser()){
           @if((applicant() | applicantPrivacy: 'phone')) {
             <div class="mb-2 flex items-center space-x-1">
@@ -178,47 +212,44 @@
        
             
         @if(isCorporateUser()){
-        @if(applicant().attachedCV || applicant().videoResume){
-        <div class="flex flex-col space-y-1 py-3 lg:py-2 pl-3 pr-0 shadow-sm bg-[#ECF0F9] rounded-sm">
-          @if(applicant().attachedCV===CustomizedResume()){
-          <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
-            <span class="font-medium">Customized Resume:</span>
-            <button (click)="onClickCustomizedCV()" title="Download Resume">
-              <span
-                class="icon-pdf-file w-[14px] h-[14px] lg:w-[12px] lg:h-[12px] text-[#F40F02] cursor-pointer"></span>
-            </button>
+              @if(applicant().attachedCV || applicant().videoResume){
+              <div class="flex flex-col space-y-1 py-3 lg:py-2 pl-3 pr-0 shadow-sm bg-[#ECF0F9] rounded-sm">
+                @if(applicant().attachedCV===CustomizedResume()){
+                  <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
+                    <span class="font-medium">Customized Resume:</span>
+                    <button (click)="onClickCustomizedCV()" title="Download Resume">
+                      <span class="icon-pdf-file w-[14px] h-[14px] lg:w-[12px] lg:h-[12px] text-[#F40F02] cursor-pointer"></span>
+                    </button>
+                  </div>
+                }
+                @if(applicant().videoResume){
+                  <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
+                    <span class="font-medium">Video Resume:</span>
+                    <button (click)="openVideoCVDetails()" title="View Video Resume">
+                      <span class="icon-video-account w-4 h-4 lg:w-3.5 lg:h-3.5 pt-[2px] text-[#B32D7D] cursor-pointer"></span>
+                    </button>
+                  </div>
+                }
           </div>
           }
-          @if(applicant().videoResume){
-          <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
-            <span class="font-medium">Video Resume:</span>
-            <button (click)="openVideoCVDetails()" title="View Video Resume">
-              <span class="icon-video-account w-4 h-4 lg:w-3.5 lg:h-3.5 pt-[2px] text-[#B32D7D] cursor-pointer"></span>
-            </button>
-          </div>
-          }
-        </div>
-        
-        }
-      }@else if(applicant().attachedCV===CustomizedResume()){
-        <div class="flex flex-col space-y-1 py-3 lg:py-2 pl-3 pr-0 shadow-sm bg-[#ECF0F9] rounded-sm">
-          <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
-            <span class="font-medium">Customized Resume:</span>
-            <button (click)="onClickCustomizedCV()" title="Download Resume">
-              <span
-                class="icon-pdf-file w-[14px] h-[14px] lg:w-[12px] lg:h-[12px] text-[#F40F02] cursor-pointer"></span>
-            </button>
-          </div>
-        </div>
+        }@else if(applicant().attachedCV===CustomizedResume()){
+              <div class="flex flex-col space-y-1 py-3 lg:py-2 pl-3 pr-0 shadow-sm bg-[#ECF0F9] rounded-sm">
+                      <div class="flex items-center text-[13px] lg:text-[11px] text-[#0E73A9] space-x-1">
+                        <span class="font-medium">Customized Resume:</span>
+                        <button (click)="onClickCustomizedCV()" title="Download Resume">
+                          <span class="icon-pdf-file w-[14px] h-[14px] lg:w-[12px] lg:h-[12px] text-[#F40F02] cursor-pointer"></span>
+                        </button>
+                      </div>
+              </div>
         }
       </div>
     </div>
 
      <div class="md:col-span-7 pr-3 lg:pr-2 ml-3 lg:ml-2 mt-4 md:mt-0">
       <div class="grid grid-cols-8 gap-3 lg:gap-2">
-        <div class="text-sm lg:text-xs text-gray-700 col-span-3">
+      <div class="text-sm lg:text-xs text-gray-700 col-span-3">
 
-          @if(education()) {
+        @if(education()) {
           <div class="flex items-start space-x-2 lg:space-x-1.5 mb-1">
             <span class="icon-graduation-cap text-[#0E73A9] mt-1"></span>
             <span class="font-semibold text-gray-900">
@@ -228,8 +259,8 @@
           <div class="text-gray-600 ml-5 lg:ml-4">
             {{ applicant().university }}
           </div>
-          }
-        </div>
+        }
+      </div>
 
 
         <div class="text-sm lg:text-xs text-gray-700 col-span-3">
@@ -246,129 +277,132 @@
                   </div>
                 }
             }
-            
-
+           
           </div>
           <div class="mb-4 lg:mb-2 text-[#0E73A9] col-span-2 cursor-pointer">
             <div class="relative inline-block">
-              <a (click)="getSkillExperience()"
-                class="popover-toggle cursor-pointer text-[13px] lg:text-[11px] text-[#337ab7]">
+              <a
+                (click)="getSkillExperience()"
+                class="popover-toggle cursor-pointer text-[13px] lg:text-[11px] text-[#337ab7]"
+              >
                 <span class="flex items-center gap-2 lg:gap-1">
-                  Skill &amp; Expertise
+                  Skill &amp; Expertise 
                   <i class="icon-angle-bottom" [ngClass]="{'hidden': visible()}"></i>
                   <i class="icon-angle-top" [ngClass]="{'hidden': !visible()}"></i>
                 </span>
               </a>
-
+              
               <!-- Popover Content -->
               @if(visible()){
-              <span
-                class="icon-sort-up z-100 text-[#2F64A3] absolute bottom-[-21px] lg:bottom-[-18px] left-6 lg:left-4 text-3xl lg:text-2xl mt-[5px]"></span>
+                <span class="icon-sort-up z-100 text-[#2F64A3] absolute bottom-[-21px] lg:bottom-[-18px] left-6 lg:left-4 text-3xl lg:text-2xl mt-[5px]"></span>
               }
-              <div
+                <div
                 class="popover-content transition-opacity z-20 duration-200 absolute left-1/2 transform -translate-x-1/2 first-letter:z-10 bg-white shadow-xl rounded-md w-[485px] lg:w-[420px] px-0 pb-3 lg:pb-2 mt-3 lg:mt-2"
-                role="tooltip" [class.opacity-0]="!isVisible()" [class.invisible]="!isVisible()"
-                [class.opacity-100]="isVisible()" [class.visible]="isVisible()">
+                role="tooltip"
+                [class.opacity-0]="!isVisible()"
+                [class.invisible]="!isVisible()"
+                [class.opacity-100]="isVisible()"
+                [class.visible]="isVisible()"
+                >
                 <div class="panel panel-default">
-                  <div
-                    class="panel-heading bg-[#2F64A3] text-white text-base lg:text-sm font-bold py-[5px] lg:py-1 text-left rounded-t-md">
-                    <h3 class="panel-title pl-4 lg:pl-3 py-[5px] lg:py-1">Skill &amp; Expertise</h3>
-                    <button (click)="closePopoverSkills()"
-                      class="absolute right-5 lg:right-4 font-bold top-[20px] lg:top-[16px] transform -translate-y-1/2 text-white hover:text-gray-300 focus:outline-none"
-                      style="font-size: 20px;">
-                      &times;
-                    </button>
+                 <div
+                  class="panel-heading bg-[#2F64A3] text-white text-base lg:text-sm font-bold py-[5px] lg:py-1 text-left rounded-t-md"
+                  >
+                  <h3 class="panel-title pl-4 lg:pl-3 py-[5px] lg:py-1">Skill &amp; Expertise</h3>
+                  <button
+                    (click)="closePopoverSkills()"
+                    class="absolute right-5 lg:right-4 font-bold top-[20px] lg:top-[16px] transform -translate-y-1/2 text-white hover:text-gray-300 focus:outline-none"
+                    style="font-size: 20px;"
+                  >
+                    &times;
+                  </button>
                   </div>
 
                   <div class="panel-body mt-[10px] lg:mt-[8px] mb-2 lg:mb-1 px-4 lg:px-3">
-                    @if(skillsLoading()) {
+                  @if(skillsLoading()) {
                     <div class="flex justify-center items-center py-4 lg:py-3"></div>
                     <div class="animate-spin rounded-full h-6 w-6 lg:h-5 lg:w-5 border-b-2 border-[#2F64A3]"></div>
-
-                    } @else if(skilExperiences() && skilExperiences().length) {
+                   
+                  } @else if(skilExperiences() && skilExperiences().length) {
                     @if (checkIfSkillHasWorkArea()) {
-                    <div>
-                      <h4 class="font-medium text-base lg:text-sm text-[#212121]">Work area</h4>
-                    </div>
-
-                    <div class="relative">
-                      <div class="overflow-hidden transition-all duration-300" [class.max-h-[36px]]="!expanded()"
-                        [class.max-h-[500px]]="expanded()">
-                        <div #workAreaContainer class="flex flex-wrap">
-                          @for(skilExperience of skilExperiences();track $index) {
-                          @if(skilExperience.SkillType=="workarea") {
-                          <div
-                            class="inline-block py-1 lg:py-0.5 px-[10px] lg:px-[8px] text-sm lg:text-xs font-normal text-[#424242] border border-[#E2F2FC] rounded-xl m-1 lg:m-0.5">
-                            <label>{{ skilExperience.SkillName }}
-                              @if(skilExperience.ExperienceDuration!="") {
-                              <span class="mx-0.5 text-sm lg:text-xs text-[#424242]">({{
-                                skilExperience.ExperienceDuration }})</span>
+                      <div>
+                        <h4 class="font-medium text-base lg:text-sm text-[#212121]">Work area</h4>
+                      </div>
+                      
+                      <div class="relative">
+                        <div class="overflow-hidden transition-all duration-300"
+                          [class.max-h-[36px]]="!expanded()"
+                          [class.max-h-[500px]]="expanded()">
+                          <div #workAreaContainer class="flex flex-wrap">
+                            @for(skilExperience of skilExperiences();track $index) {
+                              @if(skilExperience.SkillType=="workarea") {
+                                <div class="inline-block py-1 lg:py-0.5 px-[10px] lg:px-[8px] text-sm lg:text-xs font-normal text-[#424242] border border-[#E2F2FC] rounded-xl m-1 lg:m-0.5">
+                                  <label>{{ skilExperience.SkillName }}
+                                    @if(skilExperience.ExperienceDuration!="") {
+                                      <span class="mx-0.5 text-sm lg:text-xs text-[#424242]">({{ skilExperience.ExperienceDuration }})</span>
+                                    }
+                                  </label>
+                                </div>
                               }
-                            </label>
+                            }
                           </div>
-                          }
-                          }
                         </div>
+                        
+                        @if(hasOverflow()) {
+                          <div class="text-right mt-2 lg:mt-1">
+                            <button class="text-[#337ab7] text-sm lg:text-xs font-medium flex items-center justify-end w-full" 
+                                (click)="toggleExpanded()">
+                              See {{ expanded() ? 'Less' : 'More' }}
+                              <i class="icon-angle-bottom ml-1 lg:ml-0.5" [ngClass]="{'rotate-180': expanded()}"></i>
+                            </button>
+                          </div>
+                        }
                       </div>
-
-                      @if(hasOverflow()) {
-                      <div class="text-right mt-2 lg:mt-1">
-                        <button
-                          class="text-[#337ab7] text-sm lg:text-xs font-medium flex items-center justify-end w-full"
-                          (click)="toggleExpanded()">
-                          See {{ expanded() ? 'Less' : 'More' }}
-                          <i class="icon-angle-bottom ml-1 lg:ml-0.5" [ngClass]="{'rotate-180': expanded()}"></i>
-                        </button>
-                      </div>
-                      }
-                    </div>
                     }
 
                     @if (checkIfSkillHasSkill()) {
-                    <div>
-                      <h4 class="font-medium text-base lg:text-sm text-[#212121] mt-2 lg:mt-1.5">Skills</h4>
-                    </div>
-
-                    <div class="relative">
-                      <div class="overflow-hidden transition-all duration-300" [class.max-h-[36px]]="!skillsExpanded()"
-                        [class.max-h-[500px]]="skillsExpanded()">
-                        <div #skillsContainer class="flex flex-wrap">
-                          @for(skillExperience of skilExperiences();track $index) {
-                          @if(skillExperience.SkillType=="skill") {
-                          <div
-                            class="inline-block py-1 lg:py-0.5 px-[10px] lg:px-[8px] text-sm lg:text-xs font-normal text-[#424242] bg-white rounded-xl m-1 lg:m-0.5 border border-[#E2F2FC]">
-                            <label>{{ skillExperience.SkillName }}
-                              @if(skillExperience.SkilledBy!="") {
-                              <span class="text-sm lg:text-xs mx-0.5 text-[#424242]">({{ skillExperience.SkilledBy
-                                }})</span>
+                      <div>
+                        <h4 class="font-medium text-base lg:text-sm text-[#212121] mt-2 lg:mt-1.5">Skills</h4>
+                      </div>
+                      
+                      <div class="relative">
+                        <div class="overflow-hidden transition-all duration-300"
+                          [class.max-h-[36px]]="!skillsExpanded()"
+                          [class.max-h-[500px]]="skillsExpanded()">
+                          <div #skillsContainer class="flex flex-wrap">
+                            @for(skillExperience of skilExperiences();track $index) {
+                              @if(skillExperience.SkillType=="skill") {
+                                <div class="inline-block py-1 lg:py-0.5 px-[10px] lg:px-[8px] text-sm lg:text-xs font-normal text-[#424242] bg-white rounded-xl m-1 lg:m-0.5 border border-[#E2F2FC]">
+                                  <label>{{ skillExperience.SkillName }}
+                                    @if(skillExperience.SkilledBy!="") {
+                                      <span class="text-sm lg:text-xs mx-0.5 text-[#424242]">({{ skillExperience.SkilledBy }})</span>
+                                    }
+                                  </label>
+                                </div>
                               }
-                            </label>
+                            }
                           </div>
-                          }
-                          }
                         </div>
+                        
+                        @if(hasSkillsOverflow()) {
+                          <div class="text-right mt-2 lg:mt-1">
+                            <button class="text-[#337ab7] text-sm lg:text-xs font-medium flex items-center justify-end w-full" 
+                                (click)="toggleSkillsExpanded()">
+                              See {{ skillsExpanded() ? 'Less' : 'More' }}
+                              <i class="icon-angle-bottom ml-1 lg:ml-0.5" [ngClass]="{'rotate-180': skillsExpanded()}"></i>
+                            </button>
+                          </div>
+                        }
                       </div>
-
-                      @if(hasSkillsOverflow()) {
-                      <div class="text-right mt-2 lg:mt-1">
-                        <button
-                          class="text-[#337ab7] text-sm lg:text-xs font-medium flex items-center justify-end w-full"
-                          (click)="toggleSkillsExpanded()">
-                          See {{ skillsExpanded() ? 'Less' : 'More' }}
-                          <i class="icon-angle-bottom ml-1 lg:ml-0.5" [ngClass]="{'rotate-180': skillsExpanded()}"></i>
-                        </button>
-                      </div>
-                      }
-                    </div>
                     }
-                    }@else {
+                  }@else {
                     <div class="text-center text-base lg:text-sm font-semibold">
-                      No data available
+                    No data available
                     </div>
-                    }
+                  }
                   </div>
                 </div>
-              </div>
+                </div>
             </div>
           </div>
         </div>
@@ -376,323 +410,187 @@
         <div class="absolute top-4 lg:top-3 right-4 lg:right-3 flex items-center gap-2 lg:gap-1.5">
           <div class="flex space-x-[6px] lg:space-x-1">
             @if(cvsDisabled()) {
-            @if(isCorporateUser()){
-            @if(!isPurchasedBtnFade() && applicant().inListName === '') {
-            <div class="flex flex-col items-center">
-              <button
-                class="bg-[#05A44B] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0"
-                type="button" (click)="getPurchaseList()">
-                <span class="icon-purchase-plus text-lg lg:text-base inline-block scale-110 lg:scale-100"></span>
-              </button>
-              <span class="text-xs lg:text-[10px] font-medium whitespace-nowrap">
-                Add to Purchase List
-              </span>
-            </div>
-
-            }
-            @else {
-              @if (isPurchaseListState()) {
-                <div class="flex items-center gap-2">
-                    <button class="text-white bg-[#049042] px-3 py-1.5 rounded-3xl text-xs" (click)="onUnlockProfileClick()">Unlock Profile</button>
-                  <div> 
-                    <button (click)="removeCvFromPurchaseList()"
-                      class="bg-[#FF4848] text-white rounded-full w-8 h-8 flex items-center justify-center">
-                      <span class="icon-times-o text-xs "></span>
-                    </button>
-                  </div>
-                </div>
-              }@else {
-                <div class="flex flex-col items-center">
-              <button
-                class="bg-[#05A44B] opacity-60 text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0 cursor-no-drop mb-1 lg:mb-0.5"
-                type="button">
-                <span class="icon-purchase-plus text-lg lg:text-base inline-block scale-110 lg:scale-100"></span>
-              </button>
-              <span class="text-xs lg:text-[10px] text-[#05A44B] font-medium whitespace-nowrap">
-                Added to {{ applicant().inListName !== '' ? applicant().inListName :
-                (applicantCardService.isInSelectedList(applicant().applicantId) ?
-                applicantCardService.selectedListName() : '') }}
-              </span>
-            </div>
-              }
-            }
-            }@else {
-            <div class="flex flex-col items-center mt-3">
-              <button
-                class="bg-[#05A44B] text-white px-3 lg:px-2.5 py-2 lg:py-1.5 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0 h-10 lg:h-9 w-10 lg:w-9 flex items-center justify-center"
-                type="button" (click)="handleBuyNowDirectClick()">
-                <span class="icon-purchase text-lg lg:text-base"></span>
-              </button>
-              <span class="text-sm lg:text-xs mt-2 font-medium whitespace-nowrap">
-                Buy Now
-              </span>
-
-            </div>
-
-            }
-
-
-            <!-- pop over  -->
-            <div
-              class="popover-content transition-opacity z-20 duration-200 absolute left-1/2 transform -translate-x-[83%] bg-white shadow-xl rounded-md w-[485px] lg:w-[400px] px-0 mt-3 lg:mt-2 text-left"
-              role="tooltip" [class.opacity-0]="!purchasePopoverVisible()" [class.invisible]="!purchasePopoverVisible()"
-              [class.opacity-100]="purchasePopoverVisible()" [class.visible]="purchasePopoverVisible()"
-              (click)="$event.stopPropagation()">
-              <div class="flex flex-col h-full">
-                <div
-                  class="bg-[#0E73A9] text-white font-medium py-[5px] lg:py-1 text-left rounded-t-md relative flex-shrink-0">
-                  <h3 class="pl-4 lg:pl-3 py-[5px] lg:py-1 text-lg lg:text-base">Add Profiles to Purchase List</h3>
-                  <button (click)="closePurchasePopoverTop()"
-                    class="absolute right-3 lg:right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 lg:w-5 lg:h-5 rounded-full bg-white text-black hover:text-red-500 focus:outline-none flex items-center justify-center"
-                    type="button" style="font-size: 16px; line-height: 1">
-                    &times;
-                  </button>
-                </div>
-
-                @if (isCreatePurchaseList()) {
-                <div class="text-black mt-[10px] lg:mt-2 px-4 lg:px-3 flex-growoverflow-y-auto">
-                  <button class="text-[#0E73A9] text-base lg:text-sm font-medium mt-2 flex-grow overflow-y-auto"
-                    (click)="backToPurchaseList()">
-                    <span class="icon-angle-left"></span> Back to list
-                    </button>
-
-                  <div class="flex flex-col">
-                    <div class="text-base lg:text-sm font-medium mt-6 lg:mt-4 px-3 lg:px-2">
-                      Create New List
-                    </div>
-                    <div class="space-y-2 rounded-md shadow-sm overflow-hidden">
-                      <div class="py-2 px-3 cursor-pointer mb-20">
-                        <app-input [control]="newPurchaseListName" [isNumericOnly]="false" [maxLength]="45"
-                          [classes]="'flex items-center justify-between w-full rounded-lg border border-gray-300'"
-                          [isCheckSpecialCharsValidation]="true" [allowedSpecialChars]="['(', ')', ',', '.', ' ', '/']"
-                          [placeholder]="'Write Purchase List Name'" [type]="'text'">
-                        </app-input>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                } @else if (purchasedlistData && purchasedlistData.length > 0) {
-                <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto">
-                  <div class="flex justify-between items-center mt-4 lg:mt-3 mb-2 lg:mb-1.5">
-                    <h4 class="text-gray-700 text-base lg:text-sm">
-                      Choose a List
-                    </h4>
-                    <button class="text-[#0E73A9] text-base lg:text-sm font-medium"
-                      (click)="createPurchaseListBtn()">Create New
-                      List</button>
-                  </div>
-
-                  <div class="border border-gray-200 overflow-y-scroll max-h-44 lg:max-h-36">
-                    @for (list of purchasedlistData; track $index) {
-                    <div class="space-y-2 lg:space-y-1.5 divide-y rounded-md shadow-sm"
-                      (click)="selectedPurchaseList(list)">
-                      <div
-                        class="flex justify-between items-center py-2 lg:py-1.5 px-3 lg:px-2 border-b border-gray-100 cursor-pointer"
-                        [class.bg-gray-200]="selectedList().id === list.id"
-                        [class.text-gray-900]="selectedList().id === list.id"
-                        [class.text-gray-800]="selectedList().id!== list.id"
-                        [class.hover:bg-gray-50]="selectedList().id!== list.id">
-                        <div class="flex items-center justify-between">
-                          <span class="text-sm lg:text-xs">{{ list.listName }}</span>
-                        </div>
-                        <span class="text-sm lg:text-xs font-medium">{{ list.wishlist }} CVs</span>
-                      </div>
-                    </div>
-                    }
-                  </div>
-                </div>
-                } @else {
-                <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto py-8 text-center">
+               @if(isCorporateUser()){
+                @if(!isPurchasedBtnFade() && applicant().inListName === '') {
                   <div class="flex flex-col items-center">
-                    <p class="text-gray-600 text-lg mb-4">No List Found</p>
-                    <button class="text-[#0E73A9] text-base lg:text-sm font-medium"
-                      (click)="createPurchaseListBtn()">Create New
-                      List</button>
-                  </div>
-                </div>
+                    <button
+                      class="bg-[#05A44B] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0"
+                      type="button" (click)="getPurchaseList()">
+                      <span class="icon-purchase-plus text-lg lg:text-base inline-block scale-110 lg:scale-100"></span>
+                    </button>
+                    <span class="text-xs lg:text-[10px] font-medium whitespace-nowrap">
+                        Add to Purchase List
+                    </span>
+                  </div>  
+                  
                 }
-
-                <div
-                  class="px-4 lg:px-3 pb-3 lg:pb-2 pt-2 lg:pt-1.5 flex-shrink-0 border-t border-gray-200 mt-4 lg:mt-3">
-                  <div class="flex justify-between items-center mt-4 lg:mt-3">
-                    <p class="text-[#595959] block text-sm lg:text-xs">Price: <span
-                        class="text-sm lg:text-xs text-[#3892F3]">৳99</span> up to <span
-                        class="text-sm lg:text-xs text-[#3892F3]">3
-                        CVs,</span> after then each CV <span class="text-sm lg:text-xs text-[#3892F3]">৳30</span></p>
-                    @if(isCreatePurchaseList()){
+                @else {
+                  <div class="flex flex-col items-center">
                     <button
-                      class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-                      type="button" (click)="createNewPurchaseList()">
-                      Create
+                      class="bg-[#05A44B] opacity-60 text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0 cursor-no-drop mb-1 lg:mb-0.5"
+                      type="button"
+                    >
+                      <span
+                        class="icon-purchase-plus text-lg lg:text-base inline-block scale-110 lg:scale-100"
+                      ></span>
                     </button>
-                    } @else if (purchasedlistData && purchasedlistData.length > 0) {
-                    <button
-                      class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-                      type="button" (click)="addCvToPurchaseList()">
-                      Add
-                    </button>
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-            } @else {
-            @if(isCorporateUser()){
-            <div class="flex flex-col items-center ml-8 lg:ml-6 mt-3">
-              @if (applicant().groupName.length !== 0 || applicantCardService.isInSelectedShortListId(applicant().applicantId)) {
-                @if (isShortListState()) {
-                  <button (click)="removeCvFromShortListedGroup()" class="bg-[#FF4848] text-white rounded-full w-8 h-8 flex items-center justify-center">
-                  <span class="icon-times-o text-xs "></span>
-                </button>
-                <span class="text-sm lg:text-xs font-medium mt-2">Remove</span>
-                } @else {
-                  <button
-                    class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5 cursor-no-drop opacity-30"
-                    type="button">
-                    <span class="icon-check-o text-lg lg:text-base inline-block scale-110 lg:scale-100"></span>
-                  </button>
-                  <span class="text-sm lg:text-xs font-medium text-[#757575] w-28 text-center">Shortlisted to {{
-                    applicant().groupName.length !== 0 ? (applicant().groupName | truncate: 15): (applicantCardService.selectedShortListName() | truncate: 15 ) }}
+                  <span class="text-xs lg:text-[10px] text-[#05A44B] font-medium whitespace-nowrap">
+                    Added to {{ applicant().inListName !== '' ? applicant().inListName : 
+                              (applicantCardService.isInSelectedList(applicant().applicantId) ? 
+                                applicantCardService.selectedListName() : '') }}
                   </span>
+                  </div>
                 }
-              }@else {
-                <button class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5"
-                  type="button" (click)="getShortList()">
-                  <span class="icon-check-o text-lg lg:text-base inline-block scale-110 lg:scale-100"></span>
+               }@else {
+                  <div class="flex flex-col items-center mt-3">
+                     <button
+                      class="bg-[#05A44B] text-white px-3 lg:px-2.5 py-2 lg:py-1.5 rounded-full hover:bg-[#247748] transition text-sm lg:text-xs flex-shrink-0 h-10 lg:h-9 w-10 lg:w-9 flex items-center justify-center"
+                      type="button" (click)="handleBuyNowDirectClick()">
+                      <span class="icon-purchase text-lg lg:text-base"></span>
+                    </button>
+                  <span class="text-sm lg:text-xs mt-2 font-medium whitespace-nowrap">
+                     Buy Now
+                 </span>
+                 
+                  </div>
 
-                </button>
+               }
+           
 
-                <span class="text-sm lg:text-xs font-medium">Shortlist</span>
-              }
+              <!-- pop over  -->
+              <div class="popover-content transition-opacity z-20 duration-200 absolute left-1/2 transform -translate-x-[83%]
+                            bg-white shadow-xl rounded-md w-[485px] lg:w-[400px] px-0 mt-3 lg:mt-2 text-left " role="tooltip"
+                [class.opacity-0]="!purchasePopoverVisible()" [class.invisible]="!purchasePopoverVisible()"
+                [class.opacity-100]="purchasePopoverVisible()" [class.visible]="purchasePopoverVisible()"
+                (click)="$event.stopPropagation()">
+  <div class="flex flex-col h-full">
+    <div class="bg-[#0E73A9] text-white font-medium py-[5px] lg:py-1 text-left rounded-t-md relative flex-shrink-0">
+      <h3 class="pl-4 lg:pl-3 py-[5px] lg:py-1 text-lg lg:text-base">Add Profiles to Purchase List</h3>
+      <button (click)="closePurchasePopoverTop()"
+        class="absolute right-3 lg:right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 lg:w-5 lg:h-5 rounded-full bg-white text-black hover:text-red-500 focus:outline-none flex items-center justify-center"
+        type="button" style="font-size: 16px; line-height: 1">
+        &times;
+      </button>
+    </div>
+
+    @if (isCreatePurchaseList()) {
+      <div class="text-black mt-[10px] lg:mt-2 px-4 lg:px-3 flex-growoverflow-y-auto">
+        <div class="text-[#0E73A9] text-base lg:text-sm font-medium mt-2 flex-grow overflow-y-auto" (click)="backToPurchaseList()">
+          <span class="icon-angle-left"></span> Back to list
+        </div>
+
+        <div class="flex flex-col">
+          <div class="text-base lg:text-sm font-medium mt-6 lg:mt-4 px-3 lg:px-2">
+            Create New List
+          </div>
+          <div class="space-y-2 rounded-md shadow-sm overflow-hidden">
+            <div class="py-2 px-3 cursor-pointer mb-20">
+              <app-input
+                [control]="newPurchaseListName"
+                [isNumericOnly]="false"
+                [maxLength]="45"
+                [classes]="'flex items-center justify-between w-full rounded-lg border border-gray-300'"
+                [isCheckSpecialCharsValidation]="true"
+                [allowedSpecialChars]="['(', ')', ',', '.', ' ', '/']"
+                [placeholder]="'Write Purchase List Name'"
+                [type]="'text'">
+              </app-input>
             </div>
-            <div
-              class="popover-content transition-opacity z-20 duration-200 absolute left-1/2 transform -translate-x-[83%] bg-white shadow-xl rounded-md w-[485px] lg:w-[400px] px-0 mt-3 lg:mt-2 text-left"
-              role="tooltip" 
-              [class.opacity-0]="!shortListPopoverVisible()" 
-              [class.invisible]="!shortListPopoverVisible()"
-              [class.opacity-100]="shortListPopoverVisible()" 
-              [class.visible]="shortListPopoverVisible()"
-              (click)="$event.stopPropagation()">
-              <div class="flex flex-col h-full">
-                <div
-                  class="bg-[#0E73A9] text-white font-medium py-[5px] lg:py-1 text-left rounded-t-md relative flex-shrink-0">
-                  <h3 class="pl-4 lg:pl-3 py-[5px] lg:py-1 text-lg lg:text-base">Add CV to a Shortlisting Group</h3>
-                  <button (click)="shortListPopoverClose()"
-                    class="absolute right-3 lg:right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 lg:w-5 lg:h-5 rounded-full bg-white text-black hover:text-red-500 focus:outline-none flex items-center justify-center"
-                    type="button" style="font-size: 16px; line-height: 1">
-                    &times;
-                  </button>
-                </div>
+          </div>
+        </div>
+      </div>
+    } @else if (purchasedlistData && purchasedlistData.length > 0) {
+      <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto">
+        <div class="flex justify-between items-center mt-4 lg:mt-3 mb-2 lg:mb-1.5">
+          <h4 class="text-gray-700 text-base lg:text-sm">
+            Choose a List
+          </h4>
+          <button class="text-[#0E73A9] text-base lg:text-sm font-medium" (click)="createPurchaseListBtn()">Create New List</button>
+        </div>
 
-                @if (isCreateShortlistedGroup()) {
-                <div class="text-black mt-[10px] lg:mt-2 px-4 lg:px-3 flex-growoverflow-y-auto">
-                    <button class="text-[#0E73A9] text-base lg:text-sm font-medium mt-2 flex-grow overflow-y-auto"
-                    (click)="isCreateShortlistedGroup.set(false)">
-                    <span class="icon-angle-left"></span> Back to list
-                    </button>
-                  <div class="flex flex-col mt-6">
-                      <div>
-                        <p class="text-base lg:text-sm font-medium">
-                          Create New Group
-                        </p>
-                        <app-input 
-                          [control]="newShortListName" 
-                          [isNumericOnly]="false" 
-                          [maxLength]="45"
-                          [classes]="'flex items-center justify-between w-full rounded-lg border border-gray-300'"
-                          [isCheckSpecialCharsValidation]="true" 
-                          [allowedSpecialChars]="['[', ']', '{','}', ',', '.', ' ', '/', '_', '-' ,'~','`','!','@','#','$','^','|','?','*',':',';']"
-                          [placeholder]="'Write Shortlist Group Name'" 
-                          [type]="'text'">
-                        </app-input>
-                      </div>
-                      <div>
-                        <p class="text-base lg:text-sm font-medium">Group Description</p>
-                        <textarea id="shortlistDescription"
-                        class="w-full rounded-lg border border-gray-300 mt-2 focus:ring-0 focus:border focus:border-[#008A22]"
-                        [formControl]="newShortListDescription"
-                        ></textarea>
-                        @if (newShortListDescription.errors?.['maxlength']) {
-                          <p class="text-red-600 text-sm mt-1">Description must not exceed 250 characters.</p>
-                        }
-                        @if (newShortListDescription.errors?.['pattern']) {
-                        <p class="text-red-600 text-sm mt-1">Please avoid using ', %, <,>, ", &, (, ).</p>
-                        }
-                        <p class="text-[#0E73A9] text-sm font-normal">You can type maximum <span class="font-semibold">250</span> character(s)</p>
-                      </div>
-                  </div>
+        <div class="border border-gray-200 overflow-y-scroll max-h-44 lg:max-h-36">
+          @for (list of purchasedlistData; track $index) {
+            <div class="space-y-2 lg:space-y-1.5 divide-y rounded-md shadow-sm" (click)="selectedPurchaseList(list)">
+              <div class="flex justify-between items-center py-2 lg:py-1.5 px-3 lg:px-2 border-b border-gray-100 cursor-pointer"
+                [class.bg-gray-200]="selectedList().id === list.id" [class.text-gray-900]="selectedList().id === list.id"
+                [class.text-gray-800]="selectedList().id!== list.id"
+                [class.hover:bg-gray-50]="selectedList().id!== list.id">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm lg:text-xs">{{ list.listName }}</span>
                 </div>
-                } @else if (shortListData && shortListData.length > 0) {
-                <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto">
-                  <div class="flex justify-between items-center mt-4 lg:mt-3 mb-2 lg:mb-1.5">
-                    <h4 class="text-gray-700 text-base lg:text-sm">
-                      Choose a List
-                    </h4>
-                    <button class="text-[#0E73A9] text-base lg:text-sm font-medium"
-                      (click)="isCreateShortlistedGroup.set(true)">Create New
-                      Group</button>
-                  </div>
-
-                  <div class="border border-gray-200 overflow-y-auto max-h-44 lg:max-h-36 rounded-md">
-                    @for (list of shortListData; track $index) {
-                    <div class="space-y-2 lg:space-y-1.5 divide-y"
-                    (click)="selectedShortListGroup(list)">
-                      <div
-                        class="flex justify-between items-center py-2 lg:py-1.5 px-3 lg:px-2 border-b border-gray-100 cursor-pointer"
-                        [class.bg-gray-200]="selectedShortList().id === list.id"
-                        [class.text-gray-900]="selectedShortList().id === list.id"
-                        [class.text-gray-800]="selectedShortList().id!== list.id"
-                        [class.hover:bg-[#E0F0F9]]="selectedShortList().id!== list.id">
-                        <div class="flex items-center justify-between">
-                          <span class="text-sm lg:text-xs">{{ list.groupName }}</span>
-                        </div>
-                        <span class="text-sm lg:text-xs font-medium">{{ list.numberOfCVs }} CVs</span>
-                      </div>
-                    </div>
-                    }
-                  </div>
-                </div>
-                } @else {
-                <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto py-8 text-center">
-                  <div class="flex flex-col items-center">
-                    <p class="text-gray-600 text-lg mb-4">No List Found</p>
-                    <button class="text-[#0E73A9] text-base lg:text-sm font-medium"
-                      (click)="isCreateShortlistedGroup.set(true)">Create New
-                      Group</button>
-                  </div>
-                </div>
-                }
-
-                <div
-                  class="px-4 lg:px-3 pb-3 lg:pb-2 pt-2 lg:pt-1.5 flex-shrink-0 border-t border-gray-200 mt-4 lg:mt-3">
-                  <div class="flex justify-end gap-4 items-center mt-4 lg:mt-3">
-                    @if(isCreateShortlistedGroup()){
-                    <button
-                      class="bg-[#ECEBEB] text-[#757575] px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium transition"
-                      type="button" (click)="shortListPopoverClose()" >
-                      Not Now
-                    </button>
-                    <button
-                      class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-                      type="button" (click)="createShortListingGroup()">
-                      Add
-                    </button>
-                    } @else if (shortListData && shortListData.length > 0) {
-                    <button
-                      class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
-                      type="button" (click)="addCvToShortListGroup()">
-                      Add
-                    </button>
-                    }
-                  </div>
-                </div>
+                <span class="text-sm lg:text-xs font-medium">{{ list.wishlist }} CVs</span>
               </div>
             </div>
-            }
-            }
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="mt-[10px] lg:mt-2 px-4 lg:px-3 flex-grow overflow-y-auto py-8 text-center">
+        <div class="flex flex-col items-center">
+          <p class="text-gray-600 text-lg mb-4">No List Found</p>
+          <button class="text-[#0E73A9] text-base lg:text-sm font-medium" (click)="createPurchaseListBtn()">Create New List</button>
+        </div>
+      </div>
+    }
+
+      <div class="px-4 lg:px-3 pb-3 lg:pb-2 pt-2 lg:pt-1.5 flex-shrink-0 border-t border-gray-200 mt-4 lg:mt-3">
+        <div class="flex justify-between items-center mt-4 lg:mt-3">
+          <p class="text-[#595959] block text-sm lg:text-xs">Price: <span class="text-sm lg:text-xs text-[#3892F3]">৳99</span> up to <span
+              class="text-sm lg:text-xs text-[#3892F3]">3 CVs,</span> after then each CV <span
+              class="text-sm lg:text-xs text-[#3892F3]">৳30</span></p>
+          @if(isCreatePurchaseList()){
+            <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
+              type="button" (click)="createNewPurchaseList()">
+              Create
+            </button>
+          } @else if (purchasedlistData && purchasedlistData.length > 0) {
+            <button class="bg-[#0E73A9] text-white px-5 lg:px-4 py-1.5 lg:py-1 rounded text-sm lg:text-xs font-medium hover:bg-[#0b5a87] transition"
+              type="button" (click)="addCvToPurchaseList()">
+              Add
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+            } @else {
+              @if(isCorporateUser()){
+                @if (applicant().isPurchased) {
+                  <div class="flex flex-col items-center">
+                    <div class="bg-green-100 px-3 py-1.5 mt-1 rounded-xl">
+                      <span class="text-sm lg:text-xs font-medium text-green-600">Purchased</span>
+                    </div>
+                  </div>
+                }@else {
+                  <div class="flex flex-col items-center ml-8 lg:ml-6">
+                    <button
+                      class="bg-[#4FBF43] text-white px-2 lg:px-1.5 py-[6px] lg:py-1 rounded-full text-sm lg:text-xs mb-1 lg:mb-0.5"
+                      type="button"
+                      (click)="handleShortlistClick()"
+                    >
+                      <span
+                        class="icon-check-o text-lg lg:text-base inline-block scale-110 lg:scale-100"
+                      ></span>
+                    </button>
+                      <span class="text-sm lg:text-xs font-medium">Shortlist</span>
+                  </div>
+                 }
+                }
+              }
           </div>
         </div>
       </div>
     </div>
   </div>
+  @if(isCorporateUser() && applicant().isPurchased) {
+    <div class="absolute bottom-6 right-5 flex flex-col items-center text-gray-600 text-xs lg:text-xs">
+      <span class="text-gray-900">Expired date</span>
+      <div class="flex items-center mt-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ formateDateTime(applicant().expiredDate).formattedDate }}</span>
+      </div>
+    </div>
+  }
 </div>
