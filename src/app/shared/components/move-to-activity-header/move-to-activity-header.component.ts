@@ -50,7 +50,12 @@ export class MoveToActivityHeaderComponent extends VideoCvView implements AfterV
   CvBankSearchAccess = computed(() => this.navDataService.navData()?.cvSearchAccess === true);
   
   isCorporateUser = computed(() => this.localStorageService.getItem(IsCorporateUser) === 'true');
-
+  shortlistUrl = computed(() =>
+      this.applicantCardService.generateShortlistCvUrl(
+        this.applyId().toString(),
+        this.applicantName()
+      )
+  );
   ngAfterViewInit(): void { }
 
   switchCvMode(switchToType: 'video-cv-details' | 'cv-details') {

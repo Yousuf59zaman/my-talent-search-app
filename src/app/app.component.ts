@@ -72,8 +72,8 @@ export class AppComponent implements OnInit {
       //  this.localStorageService.setItem(CompanyId,'ZRZ3IRd0')
       //  this.localStorageService.setItem(UserId,'ZC==')
 
-      this.localStorageService.setItem(IsCorporateUser, 'false')
-      this.localStorageService.setItem(LastUserType, LastUserTypes.Jobseeker)
+      this.localStorageService.setItem(IsCorporateUser, 'true')
+      this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate)
     }
   }
 }

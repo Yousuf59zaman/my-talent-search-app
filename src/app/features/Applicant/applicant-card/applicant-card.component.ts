@@ -317,6 +317,7 @@ export class ApplicantCardComponent {
         modalTitle: 'Video CV',
         jobId: 0,
         previewUrl: this.cvDetailsLink,
+        isOpenExternal: true,
         contentType: 'video-cv-details',
         applyId: applicantId,
         applicantName: applicant.applicantName || '',
