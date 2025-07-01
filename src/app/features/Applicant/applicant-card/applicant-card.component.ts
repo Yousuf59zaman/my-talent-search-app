@@ -245,21 +245,27 @@ export class ApplicantCardComponent {
 
   onClickCustomizedCV() {
     if (this.cvsDisabled()) {
-      this.confirmationModal.openModal({
-        content: {
-          title: 'Resume Details',
-          content: "To view/access the candidate's resume, you have to purchase it first.",
-          linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
-          linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
-          closeButtonText: 'Okay',
-          saveButtonText: '',
-          isIcon: false,
-          isCloseButtonVisible: true,
-          isSaveButtonVisible: false
-        }
-      })
-      return;
+      if (!this.isCorporateUser()) {
+        this.toastr.warning('Please purchase CVs to view customized resume', 'Access Restricted');
+        return;
+      } else {
+        this.confirmationModal.openModal({
+          content: {
+            title: 'Resume Details',
+            content: "To view/access the candidate's resume, you have to purchase it first.",
+            linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
+            linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
+            closeButtonText: 'Okay',
+            saveButtonText: '',
+            isIcon: false,
+            isCloseButtonVisible: true,
+            isSaveButtonVisible: false
+          }
+        })
+        return;
+      }
     }
+
     const payload: DownloadCVRequest = {
       hFileName: this.applicant()?.applicantName as string,
       hID: this.applicant()?.EncrpID as string,

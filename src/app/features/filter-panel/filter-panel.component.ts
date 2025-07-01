@@ -1016,6 +1016,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   saveFilter(): void {
     const filterName = this.filterNameInput();
     if (!filterName.trim()) {
+      this.toastr.warning('Please enter a filter name!', 'Error');
       return;
     }
 
