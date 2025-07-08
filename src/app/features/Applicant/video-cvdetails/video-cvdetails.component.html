@@ -135,10 +135,9 @@
           (click)="getRatingData(star)"
         />
         <label
-          [for]="'rating-' + star"
+          [for]="'hs-ratings-readonly-' + star"
           [ngClass]="star <= thisUserRating() ? 'text-[#b32d7d]' : 'text-gray-300'"
-          class="cursor-pointer transition-transform peer-hover:text-[#b32d7d] peer-checked:text-[#b32d7d]"
-        >
+          class="cursor-pointer transition-transform peer-hover:text-[#b32d7d] peer-checked:text-[#b32d7d] p-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="w-6 h-6"

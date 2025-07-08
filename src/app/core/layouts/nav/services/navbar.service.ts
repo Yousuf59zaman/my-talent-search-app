@@ -19,7 +19,7 @@ export class NavbarService {
             ...response,
             data: {
               ...response.data,
-              cvSearchAccess: isDevMode() ? true : response.data.cvSearchAccess,
+              cvSearchAccess: isDevMode() ? false : response.data.cvSearchAccess,
               cvSearchService: isDevMode() ? 
               {
                 available: -1,

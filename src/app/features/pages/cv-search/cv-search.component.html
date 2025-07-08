@@ -119,9 +119,23 @@
                       {{totalCvCount() | numberSuffix}}{{totalCvCount() >= 1000 ? '+' : ''}}
                     </h3>
                   @if (IsCorporateUser()) {
-                      <span class="text-xs">Talents showing</span>
+                       @if(totalCvCount()==1){
+
+                      <span class="text-xs">Talent showing</span>
+                    }@else{
+
+                      <span class="text-xs">Talent showing</span>
+                    }
+
+
                   }@else {
-                    <span class="text-xs">Experts showing</span>
+                    @if(totalCvCount()==1){
+
+                      <span class="text-xs">Expert showing</span>
+                    }@else{
+
+                      <span class="text-xs">Experts showing</span>
+                    }
                   }
                   </div>
                   <div class="ml-auto">
