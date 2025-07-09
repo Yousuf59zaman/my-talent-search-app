@@ -107,9 +107,8 @@
           </button>
         </div>
   
-        @if(isQuickFiltersOpen()) {
-          <div @expandCollapse class="px-3 pb-3 pt-1 bg-white border-b border-gray-200 rounded-b-md"> 
-            <div class="mb-3">
+         <div [@expandCollapse]="isQuickFiltersOpen() ? 'open' : 'closed'" class="px-3 pt-1 bg-white border-b border-gray-200 rounded-b-md">
+           <div class="mb-3">
               <app-select
                 [label]="'Last updated within'"
                 [control]="lastUpdatedControl()"
@@ -180,7 +179,7 @@
               </label>
             </div>
           </div>
-        }
+        
       </div>
     }
 

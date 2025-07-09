@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, OnInit, input, OnChanges, SimpleChanges } from '@angular/core';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { RangeSliderComponent } from '../../shared/components/range-slider/range-slider.component';
 import { CheckboxComponent } from '../../shared/components/checkbox/checkbox.component';
@@ -41,6 +41,15 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './filter-panel.component.scss',
   animations: [
     trigger('expandCollapse', [
+       state(
+        'open',
+        style({ height: '*', opacity: 1, overflow: 'hidden' })
+      ),
+      state(
+        'closed',
+        style({ height: '0px', opacity: 0, overflow: 'hidden' })
+      ),
+      transition('open <=> closed', animate('300ms ease-in-out')),
       transition(':enter', [
         style({ height: 0, opacity: 0, overflow: 'hidden' }),
         animate('300ms ease-out', style({ height: '*', opacity: 1 })),

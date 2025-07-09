@@ -272,7 +272,7 @@
             @if(this.applicant().experienceFrom!=='N/A'){
                 @for(exp of parseExperiences(); track $index) {
                   <div class="mb-1 lg:mb-0.5">
-                    <div class="font-semibold">{{ exp.company }}</div>
+                    <div class="truncate max-w-[70ch] font-semibold" [title]="exp.company.length > 30 ? exp.company : ''">{{ exp.company }}</div>
                     <div class="truncate max-w-[70ch]" [title]="exp.position.length > 20 ? exp.position : ''">{{ exp.position }}</div>
                   </div>
                 }
