@@ -47,19 +47,19 @@ export class AppComponent implements OnInit {
       // this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
       // this.localStorageService.setItem(UserId, 'ZRYxPRG7')
       //bunny test
-      this.localStorageService.setItem(CompanyId, 'ZRS1PEUu')
-      this.localStorageService.setItem(UserId, 'ZRg3ZxG1')
+      // this.localStorageService.setItem(CompanyId, 'ZRS1PEUu')
+      // this.localStorageService.setItem(UserId, 'ZRg3ZxG1')
       //dilruba test
       // this.localStorageService.setItem(CompanyId,'Zxg6ZRg=')
       // this.localStorageService.setItem(UserId,'PxZ9IES=')
       //have access
-      // this.localStorageService.setItem(CompanyId,'ZxU0PRC=')
-      // this.localStorageService.setItem(UserId,'ZRU1PiY3')
+      this.localStorageService.setItem(CompanyId,'ZxU0PRC=')
+      this.localStorageService.setItem(UserId,'ZRU1PiY3')
       // this.localStorageService.setItem(CompanyId,'ZRL0IEC9')
       // this.localStorageService.setItem(UserId,'ZRY1PRLx')
       //Bdjobs test account
       //  this.localStorageService.setItem(CompanyId,'ZxU0PRC=')
-      // this.localStorageService.setItem(UserId,'ZRZ3ZiCw')
+      //  this.localStorageService.setItem(UserId,'ZRZ3ZiCw')
       //57151
       // this.localStorageService.setItem(CompanyId,'PRd9ZRd=')
       // this.localStorageService.setItem(UserId,'IRY1Pig=')
@@ -72,8 +72,8 @@ export class AppComponent implements OnInit {
       //  this.localStorageService.setItem(CompanyId,'ZRZ3IRd0')
       //  this.localStorageService.setItem(UserId,'ZC==')
 
-      this.localStorageService.setItem(IsCorporateUser, 'false')
-      this.localStorageService.setItem(LastUserType, LastUserTypes.Jobseeker)
+      this.localStorageService.setItem(IsCorporateUser, 'true')
+      this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate)
     }
   }
 }
