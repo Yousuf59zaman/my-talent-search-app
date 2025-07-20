@@ -124,7 +124,7 @@
                       <span class="text-xs">Talent showing</span>
                     }@else{
 
-                      <span class="text-xs">Talent showing</span>
+                      <span class="text-xs">Talents showing</span>
                     }
 
 
@@ -181,5 +181,19 @@
                 }
             </div>
         </div>
+         
     </div>
+    @if(totalCvCount() > 0) {
+      <div class="flex justify-end mt-4">
+        <div class="ml-auto">
+          <app-pagination
+            (pageChange)="onPageChangeEvent($event)"
+            [page]="pageNo()"
+            [id]="'applicant'"
+            [isGoByPageNo]="false"
+            [total]="totalCvCount()">
+          </app-pagination>
+        </div>
+      </div>
+    }
 </div>
