@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate, CanActivateChild  {
 
     const referrer = document.referrer;
     const lastUserType = this.localStorageService.getItem(LastUserType);
-    const isRecruiterRef = referrer && referrer.includes('recruiter.bdjobs.com');
+    const isRecruiterRef = referrer && (referrer.includes('recruiter.bdjobs.com') || referrer.includes('gateway.bdjobs.com'));
     const isJobseekerRef = referrer && (referrer.includes('mybdjobs.bdjobs.com') || referrer.includes('bdjobs.com'));
 
     // 1. Recruiter referrer

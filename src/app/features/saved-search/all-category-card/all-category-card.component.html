@@ -16,8 +16,8 @@
             </div>
         </div>
         @if (isExpand()) {
-            <div>
-                <a (click)="redirectToCVBank('category', categoryData())" class="icon-right-arrow-big text-[#0E73A9]"></a> 
+            <div (click)="redirectToCVBank('category', categoryData())" class="cursor-pointer w-12 flex justify-center">
+                <a class="icon-right-arrow-big text-[#0E73A9]"></a> 
             </div>
         }
         

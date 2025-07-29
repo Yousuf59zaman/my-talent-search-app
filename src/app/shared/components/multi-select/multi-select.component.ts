@@ -123,11 +123,6 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
               isSelected: item.value === selectedValue
             }))
           );
-        } else {
-          const newSuggestionsList = changes['suggestions'].currentValue as SelectItem[];
-          this.suggestions.set(
-            newSuggestionsList.map((item) => ({ ...item, isSelected: false }))
-          );
         }
       }
       if (!changes?.['suggestions'].isFirstChange()) {
@@ -154,18 +149,6 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.showOverLay();
-    const control = this.control();
-    if (control) {
-      control.valueChanges
-        .pipe(takeUntil(this.isDestroyed$))
-        .subscribe((val: SelectItem[] | null) => {
-          if (!val || val.length === 0) {
-            this.suggestions.update((items) =>
-              items.map((item) => ({ ...item, isSelected: false }))
-            );
-          }
-        });
-    }
   }
 
   showOverLay() {
@@ -204,7 +187,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onSearchInputBlur() { }
+  onSearchInputBlur() {}
 
   isSuggestionsAvailable(suggestions: SelectItem[]): boolean {
     return !!suggestions?.length;
@@ -235,8 +218,8 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   toggleSelection(item: SelectItem) {
-    if (this.maxSelection() && this.maxSelection() === this.control().value?.length) {
-      this.showMaxSelectionValidationText()
+    if(this.maxSelection() && this.maxSelection() === this.control().value?.length){
+     this.showMaxSelectionValidationText()
     }
     const isRenderSelectedItem = this.isRenderSelectedItem();
     const multiplSelection = this.multiplSelection();
@@ -247,7 +230,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
       }
       return;
     }
-
+    
     if (this.isRadioAsSelectionType() && !this.multiplSelection()) {
       this.suggestions.update((prev) =>
         prev.map((s) =>
@@ -304,12 +287,11 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  removeChip(id: any) {
+  removeChip(val: any) {
     const control = this.control();
     const selectedItems = [...(control?.value || [])];
     const itemIndex = selectedItems.findIndex(
-      (selectedItem) =>
-        selectedItem.selectId === id || selectedItem.value === id
+      (selectedItem) => selectedItem.value === val
     );
     if (itemIndex > -1) {
       selectedItems.splice(itemIndex, 1);
@@ -327,7 +309,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
     selectedItems[itemIndex] = { ...selectedItem };
     control.setValue(selectedItems);
   }
-  showMaxSelectionValidationText() {
+  showMaxSelectionValidationText(){
     switch (this.placeholderText()) {
       case 'Write skills':
         this.toastr.warning('You can add maximum 7 skills.');
@@ -344,7 +326,7 @@ export class MultiSelectComponent implements OnInit, OnChanges, OnDestroy {
       case 'Select a location':
         this.toastr.warning('You can add maximum 5 locations.');
         break;
-
+    
       default:
         break;
     }

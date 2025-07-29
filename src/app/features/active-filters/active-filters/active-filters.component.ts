@@ -1,5 +1,6 @@
-import { Component, signal, Input, Output, EventEmitter } from '@angular/core';
+import { Component, signal, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FilterStore } from '../../../store/filter.store';
 
 export interface FilterBadge {
   id: string;
@@ -18,7 +19,8 @@ export interface FilterBadge {
 export class ActiveFiltersComponent {
 
   filters = signal<FilterBadge[]>([]);
-
+  filterQueryStore = inject(FilterStore);
+  
   @Input() set activeFilters(value: FilterBadge[]) {
     if (value) {
       this.filters.set(value);
@@ -26,7 +28,7 @@ export class ActiveFiltersComponent {
       this.filters.set([]);
     }
   }
-
+  
   @Output() removeFilterBadge = new EventEmitter<FilterBadge>();
   @Output() clearAllFilters = new EventEmitter<void>();
 
@@ -47,12 +49,23 @@ export class ActiveFiltersComponent {
         (filter) => filter.id === filterbadge.id
       );
     }
+
+    if (filterToRemove && filterToRemove.id === "shortlist") {
+      this.filterQueryStore.setIsShortlist(false);
+      this.filterQueryStore.setShortlistGuidId(null);
+    }
+    if (filterToRemove && filterToRemove.id === "purchaseListId") {
+      this.filterQueryStore.setIsPurchaseList(false);
+    }
     if (filterToRemove) {
       this.removeFilterBadge.emit(filterToRemove);
     }
   }
 
   clearAll() {
+    this.filterQueryStore.setIsShortlist(false);
+    this.filterQueryStore.setIsPurchaseList(false);
+    this.filterQueryStore.setShortlistGuidId(null);
     this.clearAllFilters.emit();
   }
 }

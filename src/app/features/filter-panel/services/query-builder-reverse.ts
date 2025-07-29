@@ -24,7 +24,9 @@ export class QueryBuilderReverse {
 
     const handleLocation = async (loc: string): Promise<SelectItem[] | null> => {
       if (!loc) return null;
-      const response = await firstValueFrom(filterService.getLocationsById({ LocationId: loc }));
+      const locIds = loc.split(',').filter(Boolean);
+      const idsWithD_underscore = locIds.length > 1 ? locIds.join('__') : locIds[0];
+      const response = await firstValueFrom(filterService.getLocationsById({ LocationId: idsWithD_underscore }));
       if (!response?.data) return null;
       const items = response.data
         .map((item: any, i: number) => ({
@@ -94,13 +96,48 @@ export class QueryBuilderReverse {
         })
         .filter((item): item is SelectItem => item !== null) || null;
     }
+    const resolveAgeValue = (
+      query: { qAge?: string; AgeMin?: string; AgeMax?: string }
+    ): string | undefined => {
+      if (query.qAge) return query.qAge;
+
+      const min = Number(query.AgeMin);
+      const max = Number(query.AgeMax);
+
+      if (!isNaN(min) && !isNaN(max)) return `${min}/${max}`;
+      if (!isNaN(min)) return `${MaxAgeRange[0]}/${min}`;
+      if (!isNaN(max)) return `${max}/${MaxAgeRange[1]}`;
+
+      return undefined;
+    };
+    const resolveExpValue = (
+      query: { qExp?: string; ExpTo?: string; ExpFrom?: string }
+    ): string | undefined => {
+      if (query.qExp) return query.qExp;
+
+      const min = Number(query.ExpFrom);
+      const max = Number(query.ExpTo);
+
+      if (!isNaN(min) && !isNaN(max)) return `${min}/${max}`;
+      if (!isNaN(min)) return `${MaxExpRange[0]}/${min}`;
+      if (!isNaN(max)) return `${max}/${MaxExpRange[1]}`;
+
+      return undefined;
+    };
+    const resolveCurrentLocationValue = (
+      query: { qCurLoc?: string; CurrentLocation?: string }
+    ): string => {
+      if (query.qCurLoc) return query.qCurLoc;
+      if (query.CurrentLocation) return query.CurrentLocation.replace(/\|/g, ',');
+      return '';
+    };
 
     return {
       keyword: query.qKeyword || null,
       expectedSalary: parseRange(query.qSalary, MaxSalaryRange),
-      ageRange: parseRange(query.qAge, MaxAgeRange),
-      experience: parseRange(query.qExp, MaxExpRange),
-      category: query.CatId && query.CatName !== 'Select' ? [{ label: decodeURIComponent(query.CatName) || '', value: query.CatId, selectId: `${query.CatId}_0` }] : null,
+      ageRange: parseRange(resolveAgeValue(query) ?? '', MaxAgeRange),
+      experience: parseRange(resolveExpValue(query) ?? '', MaxExpRange),
+      category: query.CatId && query.CatId !== '-1' && query.CatName !== 'Select' ? [{ label: decodeURIComponent(query.CatName) || '', value: query.CatId, selectId: `${query.CatId}_0` }] : null,
       gender: query.qSex ? (query.qSex === 'M' ? 'Male' : query.qSex === 'F' ? 'Female' : 'Other') : null,
       isEntry: (query.qPref || '').includes('Entry'),
       isMid: (query.qPref || '').includes('Mid'),
@@ -108,7 +145,7 @@ export class QueryBuilderReverse {
       immediateAvailable: parseBool(query.immediateAvailable),
       showStarCandidates: !!query.isStarCandidate,
       personsWithDisabilities: parseBool(query.qPWD),
-      location: query.qJobLoc ? await handleLocation(query.qJobLoc) : parseSelectItems(query.qJobLoc),
+      location: query.qJobLoc || query.Job_Loc ? await handleLocation(query.qJobLoc || query.Job_Loc) : parseSelectItems(query.qJobLoc || query.Job_Loc),
       education: query.qEduLevel ? Number(query.qEduLevel) : null,
       skills: await parseSkills(query.qOrgType),
       industries: parseSelectItemsByLabel(query.qBusiness),
@@ -117,7 +154,7 @@ export class QueryBuilderReverse {
       isExperience: parseKeywordCategory(query.qkeywordfiltertype, 'experience'),
       isSkills: parseKeywordCategory(query.qkeywordfiltertype, 'skills'),
       isEducation: parseKeywordCategory(query.qkeywordfiltertype, 'education'),
-      isCurrentLocation: parseBool(query.qCurLoc),
+      isCurrentLocation: parseBool(resolveCurrentLocationValue(query)),
       isPermanentLocation: parseBool(query.qPerLoc),
       isPreferredLocation: parseBool(query.qJobLocName),
       expertise: await parseExpertise(query.qWorkArea),
@@ -130,6 +167,7 @@ export class QueryBuilderReverse {
       lastUpdated: query.qLastUpdated || null,
       purchaseListId: query.WishListId || null,
       isAlreadyPurchased: parseBool(query.AlreadyPurchased),
+      examTitle: query.qEduTitle || null
     };
   }
 }

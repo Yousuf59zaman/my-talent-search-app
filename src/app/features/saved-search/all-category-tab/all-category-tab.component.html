@@ -1,18 +1,24 @@
-<div class="mt-4">
-  @if (allCategory().length > 0) {
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- @let visibleAllCategory = showAllCategories() ? allCategory() : allCategory().slice(0, 9); -->
-      @for (card of allCategory(); track $index) {
-        <app-all-category-card [categoryData]="card"></app-all-category-card>
-      }
-    </div>
-    <!-- @if (allCategory().length > 9) {
-      <div class="text-[#0E73A9] font-medium text-center mt-4">
-        <button (click)="this.showAllCategories.set(!this.showAllCategories())">
-          {{ showAllCategories() ? "Show Less" : "Show All" }} 
-          <span>({{ allCategory().length }})</span>
-        </button>
+@if (isLoading()) {
+  <div class="flex items-center justify-center min-h-[300px] py-10">
+    <div class="loader"></div>
+  </div>
+}@else {
+  <div class="mt-4">
+    @if (allCategory().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- @let visibleAllCategory = showAllCategories() ? allCategory() : allCategory().slice(0, 9); -->
+        @for (card of allCategory(); track $index) {
+          <app-all-category-card [categoryData]="card"></app-all-category-card>
+        }
       </div>
-    } -->
-  }
-</div>
+      <!-- @if (allCategory().length > 9) {
+        <div class="text-[#0E73A9] font-medium text-center mt-4">
+          <button (click)="this.showAllCategories.set(!this.showAllCategories())">
+            {{ showAllCategories() ? "Show Less" : "Show All" }} 
+            <span>({{ allCategory().length }})</span>
+          </button>
+        </div>
+      } -->
+    }
+  </div>
+}

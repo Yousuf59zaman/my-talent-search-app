@@ -7,14 +7,12 @@ export interface ModalConfig {
     isConfirm: boolean
   };
   content?: {
-    title?: string;
-    isIconeClass?: string
+    // title: string;
+    isIconeClass:string
     content: string;
     closeButtonText: string;
     saveButtonText: string;
-    linkText?: string; // Add link text
-    linkUrl?: string;  // Add link URL
-    isIcon: boolean;
+    isIcon:boolean;
     isCloseButtonVisible: boolean;
     isSaveButtonVisible: boolean;
   };
@@ -28,13 +26,11 @@ export class ConfirmationModalService {
   modalConfigSubject = new BehaviorSubject<ModalConfig>({
     isOpen: false,
     content: {
-      title: '',
+      // title: '',
       isIconeClass: '',
       content: '',
       closeButtonText: '',
       saveButtonText: '',
-      linkText: '', // Add link text
-      linkUrl: '',  // Add link URL
       isIcon: true,
       isCloseButtonVisible: true,
       isSaveButtonVisible: true
@@ -53,13 +49,12 @@ export class ConfirmationModalService {
       pipe(
         filter((res) => res.hasOwnProperty('event')),
         take(1),
-        tap(() => this.modalConfigSubject.next({ isOpen: false }))
+        tap(() => this.modalConfigSubject.next({isOpen: false}))
       );
   }
 
   closeModal() {
-    this.modalConfigSubject.next({
-      ...this.modalConfigSubject.value, isOpen: false
+    this.modalConfigSubject.next({...this.modalConfigSubject.value, isOpen: false
     });
   }
 

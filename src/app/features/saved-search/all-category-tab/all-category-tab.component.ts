@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Data } from '../model/allCategory.model';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
 import { CompanyId } from '../../../shared/utils/app.const';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-all-category-tab',
@@ -18,13 +19,17 @@ export class AllCategoryTabComponent {
   private localStorageService = inject(LocalstorageService);
   allCategory = signal<Data[]>([])
   showAllCategories = signal(false)
+  isLoading = signal(true);
   ngOnInit(){
     this.getAllCategories();
   }
   
   getAllCategories(){
     this.AllCategoryService.getAllCategories(this.localStorageService.getItem(CompanyId))
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe({
         next: (data) => {
           const sortData = data.sort((a,b) => a.categoryName.localeCompare(b.categoryName))

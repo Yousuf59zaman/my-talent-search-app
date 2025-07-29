@@ -1,4 +1,5 @@
 import { isDevMode } from '@angular/core';
+import { TabItem } from '../../features/tabs/tabs.component';
 
 export enum Cookies {
   AUTH = 'AUTHTOKEN',
@@ -185,3 +186,14 @@ interface eventData {
   key: string;
   value: string
 }
+export const corporateUserTabs: TabItem[] = [
+  { id: 'cv-search', label: 'Talent Search' },
+  { id: 'saved-filters', label: 'Saved Filters' },
+  { id: 'shortlisted-cvs', label: 'Shortlisted CVs' },
+  { id: 'purchase-list', label: 'Purchase List' },
+];
+export const jobSeekUserTabs: TabItem[] = [
+  { id: 'cv-search', label: 'Expert Search' },
+  { id: 'saved-filters', label: 'Saved Filters' },
+  { id: 'purchase-list', label: 'My Expert' },
+];

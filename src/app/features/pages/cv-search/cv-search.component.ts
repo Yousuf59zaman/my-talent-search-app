@@ -6,7 +6,7 @@ import { ActiveFiltersComponent, FilterBadge } from "../../active-filters/active
 import { CommonModule } from '@angular/common';
 import { QueryService } from '../../filter-panel/services/query.service';
 import { FilterStore } from '../../../store/filter.store';
-import { delay, filter, map, of, skip, tap } from 'rxjs';
+import { delay, filter, map, of, tap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { generateFilterBadges } from '../../filter-panel/utility/functions';
 import { TabsComponent, TabItem } from '../../tabs/tabs.component';
@@ -17,15 +17,19 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { DefaultPageSize } from '../../../shared/utils/app.const';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ApplicantCardService } from '../../applicant/services/applicant-card.service';
-import { PurchaseList } from '../../applicant/models/applicant.model';
-import { ActivatedRoute } from '@angular/router';
-import { IsCorporateUser } from '../../../shared/enums/app.enums';
+import { Applicant, PurchaseList } from '../../applicant/models/applicant.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { corporateUserTabs, IsCorporateUser, jobSeekUserTabs } from '../../../shared/enums/app.enums';
 import { BdJobsAnalyticsService } from '../../bd-jobs-analytics/bd-jobs-analytics.service';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
 import { NavDataService } from '../../../core/services/nav-data.service';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { CompanyVerifyModalComponent } from '../../modal/company-verify-modal/company-verify-modal.component';
+import { SavedFiltersTabComponent } from "../../saved-search/saved-filters-tab/saved-filters-tab.component";
+import { ShortlistedCvTabComponent } from "../../saved-search/shortlisted-cv-tab/shortlisted-cv-tab.component";
+import { PurchasedListTabComponent } from "../../saved-search/purchased-list-tab/purchased-list-tab.component";
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { FilterForm } from '../../filter-panel/models/form.models';
 
 @Component({
   selector: 'app-cv-search',
@@ -41,6 +45,9 @@ import { AuthService } from '../../../core/services/auth/auth.service';
     NumberSuffixPipe,
     PaginationComponent,
     NgxPaginationModule,
+    SavedFiltersTabComponent,
+    ShortlistedCvTabComponent,
+    PurchasedListTabComponent
   ],
   templateUrl: './cv-search.component.html',
   styleUrl: './cv-search.component.scss',
@@ -51,27 +58,25 @@ export class CvSearchComponent implements AfterViewInit {
   private homeQueryStore = inject(HomeQueryStore);
   protected ApplicantCardService = inject(ApplicantCardService);
   private activatedRoute = inject(ActivatedRoute);
-  bdJobsAnalyticsService = inject(BdJobsAnalyticsService);
+  private bdJobsAnalyticsService = inject(BdJobsAnalyticsService);
   private destroyRef = inject(DestroyRef);
-  localStorageService = inject(LocalstorageService);
+  private localStorageService = inject(LocalstorageService);
   private navDataService = inject(NavDataService);
   private modalservice = inject(ModalService);
   private authService = inject(AuthService);
-
+  private router = inject(Router);
   IsCorporateUser = signal(false);
   pageNo = signal(1);
   total = signal(0);
   showButton = signal(false);
   itemsPerPage = signal<number>(DefaultPageSize);
   totalCvCount = computed(() => this.filterStore.totalCvCount() || 0);
-  filterApplied = signal(false);
-  showNoProfile = computed(() => this.totalCvCount() === 0 && this.filterApplied());
   isCorporateUser = computed(
     () => this.localStorageService.getItem(IsCorporateUser) === 'true'
   );
 
   activeFiltersBadges = computed(() =>
-    generateFilterBadges(this.activeFilters())
+    generateFilterBadges(this.activeFilters(), this.homeQueryStore.filter())
   );
   filtersFromDashboard = computed(() => this.homeQueryStore.filter());
   shortlistData = toSignal(
@@ -87,6 +92,23 @@ export class CvSearchComponent implements AfterViewInit {
     ),
     { initialValue: undefined }
   );
+
+  listenOnQueryParams = this.activatedRoute.queryParams.pipe(
+    takeUntilDestroyed(this.destroyRef),
+  ).subscribe((res) => {
+    if (res && res['ref']) {
+      setTimeout(() => {
+        this.changeTab(res['ref'], true);
+        const queryParams = { ...res };
+        delete queryParams['ref'];
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          replaceUrl: true,
+        });
+      }, 500);
+    }
+  })
 
   removedFilter = signal<FilterBadge | null>(null);
   isLoading = toSignal(this.queryService.isQueryLoading, {
@@ -105,48 +127,10 @@ export class CvSearchComponent implements AfterViewInit {
     { initialValue: [] }
   );
 
-  corporateUserTabs = signal<TabItem[]>([
-    { id: 'cv-search', label: 'Talent Search', count: 0 },
-    {
-      id: 'saved-filters',
-      label: 'Saved Filters',
-      count: 3,
-      isExternalLink: true,
-      externalUrl: 'https://corporate3.bdjobs.com/SaveFilter.asp?from=cvbank',
-    },
-    {
-      id: 'shortlisted-cvs',
-      label: 'Shortlisted CVs',
-      count: 3,
-      isExternalLink: true,
-      externalUrl:
-        'https://corporate3.bdjobs.com/ShortlistedCVs.asp?pgtype=wl&from=',
-    },
-    {
-      id: 'purchase-list',
-      label: 'Purchase List',
-      count: 24,
-      isExternalLink: true,
-      externalUrl: 'https://corporate3.bdjobs.com/PurchaseList.asp?from=cvbank',
-    },
-  ]);
-  jobSeekUserTabs = signal<TabItem[]>([
-    { id: 'cv-search', label: 'Expert Search', count: 0 },
-    {
-      id: 'saved-filters',
-      label: 'Saved Filters',
-      count: 3,
-      isExternalLink: true,
-      externalUrl: 'https://corporate3.bdjobs.com/SaveFilter.asp?from=cvbank',
-    },
-    {
-      id: 'Talent Basket',
-      label: 'My Expert',
-      count: 24,
-      isExternalLink: true,
-      externalUrl: 'https://corporate3.bdjobs.com/PurchaseList.asp?from=cvbank',
-    },
-  ]);
+  corporateUserTabs = signal<TabItem[]>(corporateUserTabs);
+
+  jobSeekUserTabs = signal<TabItem[]>(jobSeekUserTabs);
+
   activeTab = signal('cv-search');
 
   activeFilters = toSignal(this.queryService.filterQuery$, {
@@ -159,10 +143,6 @@ export class CvSearchComponent implements AfterViewInit {
     });
     const value = localStorage.getItem(IsCorporateUser);
     this.IsCorporateUser.set(value === 'true');
-
-    this.queryService.filterQuery$
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.filterApplied.set(true));
   }
 
   analytics = of(null)
@@ -197,6 +177,7 @@ export class CvSearchComponent implements AfterViewInit {
     };
   }
 
+  isShortListNotificationShow = signal(false)
   isCartShow = signal(false);
   isCartOpen = signal(false);
   // isCartItemOpen = signal(false);
@@ -219,6 +200,15 @@ export class CvSearchComponent implements AfterViewInit {
   onAddedToPurchasedList($event: any) {
     this.isCartShow.set($event);
     // this.isCartShow.set(true);
+  }
+
+  onAddedToShortList($event: any) {
+    this.isShortListNotificationShow.set($event)
+  }
+
+  shortListNotificationClose() {
+    this.ApplicantCardService.clearShortListToast()
+    this.isShortListNotificationShow.set(false)
   }
 
   purchaseListData = signal<PurchaseList | null>(null);
@@ -245,6 +235,19 @@ export class CvSearchComponent implements AfterViewInit {
     }
 
     this.submitPurchaseForm(resumeIds.join(','), listId);
+  }
+
+  handleUnlockProfile(applicantId: string): void {
+    const dashboardFilter = this.homeQueryStore.filter();
+    const listIdFromStore =
+    dashboardFilter?.filters?.category?.category?.id ?? null;
+    const numericListId = listIdFromStore;
+
+    if (numericListId === null) {
+      return;
+    }
+
+    this.submitPurchaseForm(applicantId, numericListId.toString());
   }
 
   private submitPurchaseForm(resumeIds: string, listId: string): void {
@@ -300,7 +303,20 @@ export class CvSearchComponent implements AfterViewInit {
             }
           },
         });
+      } else {
+        this.authService.isVerified() // if not verified this function will open a modal
       }
     }, 1000);
+  }
+
+  changeTab($event: string, isClearStore = false) {
+    this.activeTab.set($event);
+    this.isShortListNotificationShow.set(false)
+    this.ApplicantCardService.recentlyAddedApplicantsToShortListGroup.set([])
+    if (isClearStore) {
+      this.homeQueryStore.clearFilter();
+      // this.queryService.filterQuery$.next({} as FilterForm);
+      this.updateRemovedBadge({ id: 'clearAll', label: 'clearAll', type: 'clearAll' });
+    }
   }
 }

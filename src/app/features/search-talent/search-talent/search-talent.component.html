@@ -163,7 +163,7 @@
                 <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
                   <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduInstitute')">
                       <span class="icon-school-outline"></span>
-                      <span class="font-medium">Institute</span>
+                      <span class="font-medium">Edu Institute</span>
                       <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
                       </span>
                   </button>
@@ -194,7 +194,7 @@
                       <span (click)="this.togglePopover('eduInstitute');" class="icon-school-outline"></span>
                   @let eduInstitute = controlEduInstitute() && controlEduInstitute().value ? controlEduInstitute().value : [];
                   @let instituteLabel = eduInstitute && eduInstitute.length ? eduInstitute[0].label : 'Institute';
-                      <span (click)="this.togglePopover('eduInstitute');" class="font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Institute'}}</span>
+                      <span (click)="this.togglePopover('eduInstitute');" class="font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Edu Institute'}}</span>
                       @if (triggeredBy().includes('EduInstitute')) {
                         <span (click)="clearSelectedFilter('EduInstitute')" class="w-5 h-5 rounded-full bg-white font-bold text-base flex justify-center items-center  text-red-400">&times;      
                         </span>
@@ -211,7 +211,7 @@
                 <div class="bg-[#E4EFFB] w-fit p-1 rounded-3xl">
                   <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduSubject')">
                     <span class="icon-subject"></span>
-                    <span class="font-medium">Subject</span>
+                    <span class="font-medium">Edu Subject</span>
                     <span class="w-5 h-5 rounded-full bg-white text-xs flex justify-center items-center icon-angle-top">      
                     </span>
                   </button>
@@ -240,7 +240,7 @@
                       <span (click)="this.togglePopover('eduSubject');" class="icon-subject"></span>
                   @let eduSubject = controlEduSubject() && controlEduSubject().value ? controlEduSubject().value : [];
                   @let eduSubjectLabel = eduSubject && eduSubject.length ? eduSubject[0].value : 'Subject';
-                      <span (click)="this.togglePopover('eduSubject');" class="font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Subject'}}</span>
+                      <span (click)="this.togglePopover('eduSubject');" class="font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Edu Subject'}}</span>
                       @if (triggeredBy().includes('EduSubject')) {
                         <span (click)="clearSelectedFilter('EduSubject')" class="w-5 h-5 rounded-full bg-white font-semibold text-base flex justify-center items-center  text-red-400">&times;      
                         </span>
@@ -425,7 +425,7 @@
                   <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
                     <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduInstitute')">
                         <span class="text-xs md:text-base icon-school-outline"></span>
-                        <span class="text-xs md:text-base font-medium">Institute</span>
+                        <span class="text-xs md:text-base font-medium">Edu Institute</span>
                         <span class="text-xs flex justify-center items-center icon-angle-top">      
                         </span>
                     </button>
@@ -456,7 +456,7 @@
                         <span (click)="this.togglePopover('eduInstitute');" class="icon-school-outline"></span>
                     @let eduInstitute = controlEduInstitute() && controlEduInstitute().value ? controlEduInstitute().value : [];
                     @let instituteLabel = eduInstitute && eduInstitute.length ? eduInstitute[0].label : 'Institute';
-                        <span (click)="this.togglePopover('eduInstitute');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Institute'}}</span>
+                        <span (click)="this.togglePopover('eduInstitute');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduInstitute')? (instituteLabel | truncate:10 ) :'Edu Institute'}}</span>
                         @if (triggeredBy().includes('EduInstitute')) {
                           <span (click)="clearSelectedFilter('EduInstitute')" class="font-bold text-base flex justify-center items-center  text-red-400">&times;      
                           </span>
@@ -473,7 +473,7 @@
                   <div class="bg-[#E4EFFB] w-fit px-3 py-1 rounded-3xl">
                     <button class="flex items-center justify-center gap-2 text-[#0F6DDB]" (click)="this.togglePopover('eduSubject')">
                       <span class="text-xs md:text-base icon-subject"></span>
-                      <span class="text-xs md:text-base font-medium">Subject</span>
+                      <span class="text-xs md:text-base font-medium">Edu Subject</span>
                       <span class="text-xs flex justify-center items-center icon-angle-top">      
                       </span>
                     </button>
@@ -502,7 +502,7 @@
                         <span (click)="this.togglePopover('eduSubject');" class="icon-subject"></span>
                     @let eduSubject = controlEduSubject() && controlEduSubject().value ? controlEduSubject().value : [];
                     @let eduSubjectLabel = eduSubject && eduSubject.length ? eduSubject[0].value : 'Subject';
-                        <span (click)="this.togglePopover('eduSubject');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Subject'}}</span>
+                        <span (click)="this.togglePopover('eduSubject');" class="text-xs md:text-base font-medium">{{triggeredBy().includes('EduSubject')? (eduSubjectLabel | truncate:10 ) :'Edu Subject'}}</span>
                         @if (triggeredBy().includes('EduSubject')) {
                           <span (click)="clearSelectedFilter('EduSubject')" class="font-semibold text-base flex justify-center items-center  text-red-400">&times;      
                           </span>
@@ -517,7 +517,7 @@
             </div>
           </div>
             <div class="flex justify-center items-center">
-              <button (click)=" submitForm($event)" class="flex justify-center items-center  bg-[#0E73A9] text-white rounded-full w-[191px] h-[56px] "><span class="font-bold text-lg mr-1">{{ formatDisplayNumber(displayCount()) }}</span>Experts
+              <button (click)=" submitForm($event)" class="flex justify-center items-center  bg-[#0E73A9] text-white rounded-full w-[191px] h-[56px] "><span class="font-bold text-lg mr-1">{{ formatDisplayNumber(displayCount()) }}</span>Experts 
                 @if(isCrunching() !== true){
                 <span class="ml-6 flex justify-center items-center icon-right-arrow-big w-7 h-7 bg-white rounded-full text-[#0E73A9]"></span>
               }

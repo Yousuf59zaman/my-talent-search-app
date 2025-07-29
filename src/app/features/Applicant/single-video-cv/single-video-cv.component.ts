@@ -31,7 +31,7 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
   videoConfig: VideoConfig[] = [];
   private accplicantCardService = inject(ApplicantCardService);
   public destroyRef = inject(DestroyRef);
-  private videoPlayerService = inject(VideoPlayerService)
+  private videoPlayerService= inject(VideoPlayerService)
   private modalService = inject(ModalService);
   private localStorageService = inject(LocalstorageService);
   attributes = ModalAttributes;
@@ -54,26 +54,26 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
   cvDetailsLink: string = '';
   salesPersonData = computed(() => this.navDataService.navData());
   isCorporateUser = computed(() => this.localStorageService.getItem(IsCorporateUser) === 'true');
-
-
+  
+  
   ngOnInit(): void {
     this.getVideoCVDetails();
   }
-
+  
   ngAfterViewInit(): void {
     this.videoPlayerService.getVideoEnded()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((videoEnded) => {
-        if (videoEnded) {
-          this.videoEnded = true;
-          this.selectedVideo.set(null);
-        }
-      });
+    .pipe(
+      takeUntilDestroyed(this.destroyRef)
+    )
+    .subscribe((videoEnded) => {
+      if (videoEnded) {
+        this.videoEnded = true;
+        this.selectedVideo.set(null);
+      }
+    });
   }
 
-  getVideoCVDetails() {
+   getVideoCVDetails() {
 
     this.accplicantCardService
       .getvideoCVDetails(
@@ -93,12 +93,12 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
 
   private playVideo(video: Video) {
     this.videoEnded = false;
-
+    
     if (!video) {
       this.noVideo.set(true);
       return;
     }
-
+    
     video.answerOn = video.answerOn?.split('T')[0];
     const newConfig: VideoConfig = {
       url: `https://storage.googleapis.com/bdjobs/mybdjobs/videos/cv/${video.sourceURL}`,
@@ -111,10 +111,10 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
 
   private genCvDetailsLink() {
     return ApplicantCard.getCVDetailsLink(
-      this.applicant(), this.isCorporateUser(), this.localStorageService
+      this.applicant(),this.isCorporateUser(), this.localStorageService
     );
   }
-
+  
   openVideoCVDetails() {
     const applicant = this.applicant();
     const isPurchasedValue = applicant?.isPurchased || 0;
@@ -124,12 +124,11 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
       attributes: {
         modalWidth: '1200px',
       },
-      inputs: {
+      inputs: {  
         modalTitle: 'Video CV',
         jobId: 0,
         previewUrl: this.cvDetailsLink,
-        isOpenExternal: true,
-        contentType: 'video-cv-details',
+        contentType: 'video-cv-details',  
         applyId: this.applyId,
         applicantName: applicant?.applicantName || '',
         serviceId: serviceId,
@@ -139,7 +138,7 @@ export class SingleVideoCVComponent extends VideoCvView implements OnInit, After
         cvType: applicant?.attachedCV === 1 ? applicant?.resumeType || '' : '',
         mobile: this.mobile(),
         email: this.email(),
-        startFromSecondVideo: true,
+        startFromSecondVideo: true, 
       },
       componentRef: MoveToActivityHeaderComponent,
     });
