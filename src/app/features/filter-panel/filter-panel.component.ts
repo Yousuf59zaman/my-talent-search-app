@@ -107,6 +107,18 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
   private _saveAsNewFilter = signal<boolean>(false);
+  private selectedSavedFilterId = computed(() => {
+    const dashboard = this.filtersFromDashboard();
+    if (
+      dashboard &&
+      dashboard.filters?.category &&
+      dashboard.filters.category.type === 'saved'
+    ) {
+      return dashboard.filters.category.category.id;
+    }
+    return null;
+  });
+  showSaveAsNewFilterOption = computed(() => this.selectedSavedFilterId() !== null);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
@@ -1081,7 +1093,12 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     }
 
     this.filterDataService
-      .saveFilter(this.currentFilterData, filterName, this._saveAsNewFilter())
+      .saveFilter(
+        this.currentFilterData,
+        filterName,
+        this._saveAsNewFilter(),
+        this.selectedSavedFilterId()
+      )
       .subscribe({
         next: (response) => {
           this.closeSaveFilterPopover();
