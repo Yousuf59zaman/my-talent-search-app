@@ -27,7 +27,7 @@
             @if (filterNameInput.errors?.['pattern']) {
             <p class="text-red-600 text-sm mt-1">Please avoid using ', %, <,>, ", &, (, ).</p>
             }
-            @if(false){
+            @if(showSaveAsNewFilterOption()){
               <div class="flex items-center mb-2">
                 <input 
                   type="checkbox" 
