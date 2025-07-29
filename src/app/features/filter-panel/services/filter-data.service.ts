@@ -342,13 +342,28 @@ export class FilterDataService {
       return url.toString();
     }
 
-  saveFilter(filterData: FilterForm, criteriaName: string, isNewFilter: boolean = true): Observable<any> {
+  saveFilter(
+    filterData: FilterForm,
+    criteriaName: string,
+    isNewFilter: boolean = true,
+    id: string | null = null
+  ): Observable<any> {
     const url = environment.apiUrl + "/CvBankInsights/CvBankSavedFilter";
-    const payload = this.buildSaveFilterPayload(filterData, criteriaName, isNewFilter);
+    const payload = this.buildSaveFilterPayload(
+      filterData,
+      criteriaName,
+      isNewFilter,
+      id
+    );
     return this.http.post(url, payload);
   }
 
-  private buildSaveFilterPayload(filterData: FilterForm, criteriaName: string, isNewFilter: boolean): SaveFilterRequest {
+  private buildSaveFilterPayload(
+    filterData: FilterForm,
+    criteriaName: string,
+    isNewFilter: boolean,
+    id: string | null
+  ): SaveFilterRequest {
     const parameters: Record<string, string> = {};
 
     if (filterData.keyword) {
@@ -468,13 +483,19 @@ export class FilterDataService {
     }
     const totalCvCount = this.getTotalCvCount();
 
-    return {
-      isInsert: 1, 
+    const payload: SaveFilterRequest = {
+      isInsert: id && !isNewFilter ? 2 : 1,
       cpId: this.getUserCompanyId(),
       criteriaName: criteriaName,
       parameters: parameters,
-      cvCount: this.getTotalCvCount()
+      cvCount: totalCvCount
     };
+
+    if (id && !isNewFilter) {
+      payload.id = id;
+    }
+
+    return payload;
   }
 
   private getUserCompanyId(): string {

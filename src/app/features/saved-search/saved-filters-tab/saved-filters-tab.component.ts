@@ -73,7 +73,7 @@ export class SavedFiltersTabComponent implements OnInit {
             id: $event.filterId as number,
             value: $event.groupId as number,
             categoryName: $event.title,
-            filters: $event.filters,
+            filters: { ...$event.filters, id: $event.id },
           },
         },
       });
