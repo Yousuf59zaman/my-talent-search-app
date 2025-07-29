@@ -107,6 +107,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
   private _saveAsNewFilter = signal<boolean>(false);
+  private selectedSavedFilterId = signal<string | null>(null);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
@@ -214,6 +215,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isSaveFilterPopoverVisible = computed(() =>
     this._isSaveFilterPopoverVisible()
   );
+
+  isFilterFromSavedFilter = computed(() => this.selectedSavedFilterId() !== null);
 
   saveAsNewFilter = computed(() => this._saveAsNewFilter());
 
@@ -848,6 +851,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   async syncFilterFormWithDashboardFilters() {
     if (this.filtersFromDashboard()) {
       const filter = this.filtersFromDashboard();
+      this.selectedSavedFilterId.set(null);
       if (
         filter?.filters.age &&
         this.isDefaultRange(filter?.filters.age, DefaultAge)
@@ -956,6 +960,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         filter?.filters.category &&
         filter.filters.category.type === 'saved'
       ) {
+        this.selectedSavedFilterId.set(
+          filter.filters.category.category.filters?.['id'] ?? null
+        );
         const form = await QueryBuilderReverse.toFilterForm(
           filter.filters.category.category.filters,
           this.filterDataService
@@ -1081,7 +1088,12 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     }
 
     this.filterDataService
-      .saveFilter(this.currentFilterData, filterName, this._saveAsNewFilter())
+      .saveFilter(
+        this.currentFilterData,
+        filterName,
+        this._saveAsNewFilter(),
+        this.selectedSavedFilterId()
+      )
       .subscribe({
         next: (response) => {
           this.closeSaveFilterPopover();

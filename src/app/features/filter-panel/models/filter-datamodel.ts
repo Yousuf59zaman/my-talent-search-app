@@ -179,7 +179,7 @@ export interface SaveFilterRequest {
   isInsert: number;
   id?: string;
   cpId: string;
-  criteriaId?: number;
+  criteriaId?: string;
   criteriaName: string;
   parameters: Record<string, string>;
   cvCount: number;
