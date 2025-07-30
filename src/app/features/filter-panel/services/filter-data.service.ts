@@ -346,14 +346,16 @@ export class FilterDataService {
     filterData: FilterForm,
     criteriaName: string,
     isNewFilter: boolean = true,
-    criteriaId: string | null = null
+    id: string | null = null,
+    filterId: number | null = null
   ): Observable<any> {
     const url = environment.apiUrl + "/CvBankInsights/CvBankSavedFilter";
     const payload = this.buildSaveFilterPayload(
       filterData,
       criteriaName,
       isNewFilter,
-      criteriaId
+      id,
+      filterId
     );
     return this.http.post(url, payload);
   }
@@ -362,7 +364,8 @@ export class FilterDataService {
     filterData: FilterForm,
     criteriaName: string,
     isNewFilter: boolean,
-    criteriaId: string | null
+    id: string | null,
+    filterId: number | null
   ): SaveFilterRequest {
     const parameters: Record<string, string> = {};
 
@@ -484,15 +487,18 @@ export class FilterDataService {
     const totalCvCount = this.getTotalCvCount();
 
     const payload: SaveFilterRequest = {
-      isInsert: criteriaId && !isNewFilter ? 2 : 1,
+      isInsert: id && !isNewFilter ? 2 : 1,
       cpId: this.getUserCompanyId(),
       criteriaName: criteriaName,
       parameters: parameters,
       cvCount: totalCvCount
     };
 
-    if (criteriaId && !isNewFilter) {
-      payload.criteriaId = criteriaId;
+    if (id && !isNewFilter) {
+      payload.id = id;
+      if (filterId !== null) {
+        payload.filterId = filterId;
+      }
     }
 
     return payload;
