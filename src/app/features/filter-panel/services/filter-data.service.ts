@@ -346,14 +346,16 @@ export class FilterDataService {
     filterData: FilterForm,
     criteriaName: string,
     isNewFilter: boolean = true,
-    id: string | null = null
+    id: string | null = null,
+    filterId: number | null = null
   ): Observable<any> {
     const url = environment.apiUrl + "/CvBankInsights/CvBankSavedFilter";
     const payload = this.buildSaveFilterPayload(
       filterData,
       criteriaName,
       isNewFilter,
-      id
+      id,
+      filterId
     );
     return this.http.post(url, payload);
   }
@@ -362,7 +364,8 @@ export class FilterDataService {
     filterData: FilterForm,
     criteriaName: string,
     isNewFilter: boolean,
-    id: string | null
+    id: string | null,
+    filterId: number | null
   ): SaveFilterRequest {
     const parameters: Record<string, string> = {};
 
@@ -493,6 +496,9 @@ export class FilterDataService {
 
     if (id && !isNewFilter) {
       payload.id = id;
+      if (filterId !== null) {
+        payload.filterId = filterId;
+      }
     }
 
     return payload;

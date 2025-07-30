@@ -108,6 +108,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
   private _saveAsNewFilter = signal<boolean>(false);
   private selectedSavedFilterId = signal<string | null>(null);
+  private selectedFilterId = signal<number | null>(null);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
@@ -852,6 +853,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     if (this.filtersFromDashboard()) {
       const filter = this.filtersFromDashboard();
       this.selectedSavedFilterId.set(null);
+      this.selectedFilterId.set(null);
       if (
         filter?.filters.age &&
         this.isDefaultRange(filter?.filters.age, DefaultAge)
@@ -963,6 +965,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.selectedSavedFilterId.set(
           filter.filters.category.category.filters?.['id'] ?? null
         );
+        this.selectedFilterId.set(filter.filters.category.category.id);
         const form = await QueryBuilderReverse.toFilterForm(
           filter.filters.category.category.filters,
           this.filterDataService
@@ -1092,7 +1095,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.currentFilterData,
         filterName,
         this._saveAsNewFilter(),
-        this.selectedSavedFilterId()
+        this.selectedSavedFilterId(),
+        this.selectedFilterId()
       )
       .subscribe({
         next: (response) => {
