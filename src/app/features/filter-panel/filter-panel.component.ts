@@ -1083,7 +1083,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   saveFilter(): void {
     const filterName = this.filterNameInput.value || '';
     if (filterName.trim() === '') {
-      this.toastr.warning('Please enter a Save Filter name', 'Warning');
+      this.toastr.warning('Please enter an Update Filter name', 'Warning');
       return;
     }
 
