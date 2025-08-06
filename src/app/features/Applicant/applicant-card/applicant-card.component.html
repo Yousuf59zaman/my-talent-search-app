@@ -241,7 +241,7 @@
             @if(this.applicant().experienceFrom!=='N/A'){
                 @for(exp of parseExperiences(); track $index) {
                   <div class="mb-1 lg:mb-0.5">
-                    <div class="font-semibold">{{ exp.company }}</div>
+                    <div class="truncate max-w-[70ch] font-semibold" [title]="exp.company.length > 30 ? exp.company : ''">{{ exp.company }}</div>
                     <div class="truncate max-w-[70ch]" [title]="exp.position.length > 20 ? exp.position : ''">{{ exp.position }}</div>
                   </div>
                 }
@@ -279,9 +279,8 @@
                       &times;
                     </button>
                   </div>
-
-                  <div class="panel-body mt-[10px] lg:mt-[8px] mb-2 lg:mb-1 px-4 lg:px-3">
-                    @if(skillsLoading()) {
+                <div class="panel-body mt-[10px] lg:mt-[8px] mb-2 lg:mb-1 px-4 lg:px-3 max-h-80 lg:max-h-72 overflow-y-auto">
+                  @if(skillsLoading()) {
                     <div class="flex justify-center items-center py-4 lg:py-3"></div>
                     <div class="animate-spin rounded-full h-6 w-6 lg:h-5 lg:w-5 border-b-2 border-[#2F64A3]"></div>
 
@@ -715,4 +714,15 @@
       </div>
     </div>
   </div>
+  @if(isCorporateUser() && applicant().isPurchased) {
+    <div class="absolute bottom-6 right-5 flex flex-col items-center text-gray-600 text-xs lg:text-xs">
+      <span class="text-gray-900">Expired date</span>
+      <div class="flex items-center mt-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ formateDateTime(applicant().expiredDate).formattedDate }}</span>
+      </div>
+    </div>
+  }
 </div>

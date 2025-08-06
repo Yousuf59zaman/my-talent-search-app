@@ -93,6 +93,7 @@ export interface Applicant {
   mobiles: (Mobile | null)[];
   emails: Email[];
   address: Address[];
+  expiredDate: string;
 }
 
 export interface Video {
@@ -133,7 +134,7 @@ export interface PurchaseList {
   purchaseListName: string;
   purchaseListDescription: string;
   purchaseCVs: PurchaseCV[];
-  userId?: string; 
+  userId?: string;
 }
 
 export interface PurchaseCV {

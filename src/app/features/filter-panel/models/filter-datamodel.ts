@@ -178,6 +178,7 @@ export const DegreeLevel = [
 export interface SaveFilterRequest {
   isInsert: number;
   id?: string;
+    filterId?: number;
   cpId: string;
   criteriaName: string;
   parameters: Record<string, string>;

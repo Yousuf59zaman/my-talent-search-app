@@ -44,7 +44,7 @@
             [disabled]="filterNameInput.invalid || (filterNameInput.value?.length || 0) > 45 "       
             (click)="saveFilter()"
             >
-            Save Filter
+            {{ saveFilterButtonText() }}
           </button>
 
         </div>
@@ -112,9 +112,8 @@
           </button>
         </div>
   
-        @if(isQuickFiltersOpen()) {
-          <div @expandCollapse class="px-3 pb-3 pt-1 bg-white border-b border-gray-200 rounded-b-md"> 
-            <div class="mb-3">
+         <div [@expandCollapse]="isQuickFiltersOpen() ? 'open' : 'closed'" class="px-3 pt-1 bg-white border-b border-gray-200 rounded-b-md">
+           <div class="mb-3">
               <app-select
                 [label]="'Last updated within'"
                 [control]="lastUpdatedControl()"
@@ -170,7 +169,7 @@
             </div>
              <div class="flex justify-between items-center pb-1 flex-wrap sm:flex-nowrap gap-2">
               <div class="flex items-center">
-                <span class="text-sm text-gray-900">Immediate Available</span>
+                <span class="text-sm text-gray-900">Immediately Available</span>
                 <span class="text-xs text-gray-900 ml-1"></span>
               </div>
               <label class="relative cursor-pointer">
@@ -185,7 +184,7 @@
               </label>
             </div>
           </div>
-        }
+        
       </div>
     }
 
@@ -477,18 +476,21 @@
             <app-checkbox 
               [label]="'Current'" 
               [control]="isCurrentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'currentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Permanent'" 
               [control]="isPermanentLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'permanentLocation'">
             </app-checkbox>
             <app-checkbox 
               [label]="'Preferred'" 
               [control]="isPreferredLocationControl()"
+              [allowLabelClick]="isLocationSelected()"
               [labelCss]="'!text-[11px]'"
               [name]="'preferredLocation'">
             </app-checkbox>

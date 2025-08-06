@@ -14,7 +14,7 @@ import { ApplicantCardService } from '../services/applicant-card.service';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { filter, finalize } from 'rxjs/operators';
 import { CompanyIdLocalStorage } from '../../../shared/enums/app.enums';
-import { downloadCustomizedCV } from '../../../shared/utils/functions';
+import { downloadCustomizedCV, formateDateTime } from '../../../shared/utils/functions';
 import { IFrameLoaderComponent } from '../../../shared/components/iFrame-loader/iFrame-loader.component';
 import { NavDataService } from '../../../core/services/nav-data.service';
 import { ToastrService } from 'ngx-toastr';
@@ -24,6 +24,7 @@ import { FilterStore } from '../../../store/filter.store';
 import { TruncatePipe } from '../../../shared/pipes/truncate.pipe';
 import { QueryService } from '../../filter-panel/services/query.service';
 import { HomeQueryStore } from '../../../store/home-query.store';
+import { ConfirmationModalService } from '../../../core/services/confirmationModal/confirmation-modal.service';
 
 @Component({
   selector: 'app-applicant-card',
@@ -55,13 +56,14 @@ export class ApplicantCardComponent {
   isVisible = computed(() => this.visible());
   immediatelyAvailable = signal(1);
   CustomizedResume = signal(1);
+  private confirmationModal = inject(ConfirmationModalService);
   CvBankSearchAccess = computed(() => this.salesPersonData()?.cvSearchAccess === true);
   photoBlurAmount: string = '5px';
   textBlurAmount: string = '3px';
   cvDetailsLink: string = '';
   pageType = PageType;
   sType = SType;
-
+  formateDateTime = formateDateTime;
   rankPointStars = computed(() => {
     const rankPoint = this.applicant().rankPoint || 0;
 
@@ -265,11 +267,28 @@ export class ApplicantCardComponent {
   }
 
   onClickCustomizedCV() {
-    // Check for CV bank search access first
     if (this.cvsDisabled()) {
-      this.toastr.warning('Please purchase CVs to view customized resume', 'Access Restricted');
-      return;
+      if (!this.isCorporateUser()) {
+        this.toastr.warning('Please purchase CVs to view customized resume', 'Access Restricted');
+        return;
+      } else {
+        this.confirmationModal.openModal({
+          content: {
+            title: 'Resume Details',
+            content: "To view/access the candidate's resume, you have to purchase it first.",
+            linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
+            linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
+            closeButtonText: 'Okay',
+            saveButtonText: '',
+            isIcon: false,
+            isCloseButtonVisible: true,
+            isSaveButtonVisible: false
+          }
+        })
+        return;
+      }
     }
+
     const payload: DownloadCVRequest = {
       hFileName: this.applicant()?.applicantName as string,
       hID: this.applicant()?.EncrpID as string,
@@ -294,9 +313,20 @@ export class ApplicantCardComponent {
 
 
   openVideoCVDetails() {
-    // Check for CV bank search access first
     if (this.cvsDisabled()) {
-      this.toastr.warning('Please purchase CVs to view Video resume', 'Access Restricted');
+      this.confirmationModal.openModal({
+        content: {
+          title: 'Video Resume Details',
+          content: "To view/access the candidate's video resume, you have to purchase it first.",
+          linkText: this.isCorporateUser() ? 'Learn more about CV Bank Access' : '',
+          linkUrl: this.isCorporateUser() ? 'https://corporate3.bdjobs.com/services.asp?from=recruiter' : '',
+          closeButtonText: 'Okay',
+          saveButtonText: '',
+          isIcon: false,
+          isCloseButtonVisible: true,
+          isSaveButtonVisible: false
+        }
+      })
       return;
     }
     this.cvDetailsLink = this.genCvDetailsLink();
@@ -312,6 +342,7 @@ export class ApplicantCardComponent {
         modalTitle: 'Video CV',
         jobId: 0,
         previewUrl: this.cvDetailsLink,
+        isOpenExternal: true,
         contentType: 'video-cv-details',
         applyId: applicantId,
         applicantName: applicant.applicantName || '',

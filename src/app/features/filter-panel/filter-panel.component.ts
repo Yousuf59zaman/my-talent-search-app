@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, OnInit, input, OnChanges, SimpleChanges } from '@angular/core';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl, Validators } from '@angular/forms';
 import { RangeSliderComponent } from '../../shared/components/range-slider/range-slider.component';
 import { CheckboxComponent } from '../../shared/components/checkbox/checkbox.component';
@@ -42,6 +42,15 @@ import { ExamOptions } from './utility/functions';
   styleUrl: './filter-panel.component.scss',
   animations: [
     trigger('expandCollapse', [
+       state(
+        'open',
+        style({ height: '*', opacity: 1, overflow: 'hidden' })
+      ),
+      state(
+        'closed',
+        style({ height: '0px', opacity: 0, overflow: 'hidden' })
+      ),
+      transition('open <=> closed', animate('300ms ease-in-out')),
       transition(':enter', [
         style({ height: 0, opacity: 0, overflow: 'hidden' }),
         animate('300ms ease-out', style({ height: '*', opacity: 1 })),
@@ -108,6 +117,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
   private _saveAsNewFilter = signal<boolean>(false);
   private selectedSavedFilterId = signal<string | null>(null);
+   private selectedFilterId = signal<number | null>(null);
+  // Add a signal to store the title of the selected saved filter
+  private selectedSavedFilterTitle = signal<string | null>(null);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
@@ -182,6 +194,10 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isPreferredLocationControl = computed(
     () => this.filterForm.get('isPreferredLocation') as FormControl<boolean>
   );
+  isLocationSelected = computed(() => {
+    const value = this.locationControl().value as SelectItem[] | null;
+    return !!value && value.length > 0;
+  });
   expertiseInputControl = computed(
     () => this.filterForm.get('expertise') as FormControl<SelectItem[] | null>
   );
@@ -219,6 +235,11 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isFilterFromSavedFilter = computed(() => this.selectedSavedFilterId() !== null);
 
   saveAsNewFilter = computed(() => this._saveAsNewFilter());
+
+  // Add a computed property for the save button text
+  saveFilterButtonText = computed(() => 
+    this.selectedSavedFilterId() && !this._saveAsNewFilter() ? 'Update Filter' : 'Save Filter'
+  );
 
   isQuickFiltersOpen = computed(
     () => this.activeFilterSection() === 'quickFilters'
@@ -570,29 +591,34 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     const isPreferredLocationControl = this.filterForm.get(
       'isPreferredLocation'
     ) as FormControl<boolean>;
-
+    // disable checkboxes initially if no location is selected
+    if (!locationControl.value || locationControl.value.length === 0) {
+      isCurrentLocationControl.disable({ emitEvent: false });
+      isPermanentLocationControl.disable({ emitEvent: false });
+      isPreferredLocationControl.disable({ emitEvent: false });
+    }
     locationControl.valueChanges.subscribe((locationValue) => {
       if (locationValue && locationValue.length > 0) {
-        if (!isCurrentLocationControl.value) {
-          isCurrentLocationControl.setValue(true);
-        }
-      } else {
-        isCurrentLocationControl.setValue(false, { emitEvent: false });
-        isPermanentLocationControl.setValue(false, { emitEvent: false });
-        isPreferredLocationControl.setValue(false, { emitEvent: false });
-      }
+        isCurrentLocationControl.enable({ emitEvent: false });
+        isPermanentLocationControl.enable({ emitEvent: false });
+        isPreferredLocationControl.enable({ emitEvent: false });
 
-      if (locationValue && locationValue.length > 0) {
         const atLeastOneChecked =
           isCurrentLocationControl.value ||
           isPermanentLocationControl.value ||
           isPreferredLocationControl.value;
         if (!atLeastOneChecked) {
-          isCurrentLocationControl.setValue(true, { emitEvent: false });
+          isCurrentLocationControl.setValue(true);
         }
+      } else {
+        isCurrentLocationControl.setValue(false);
+        isCurrentLocationControl.disable({ emitEvent: false });
+        isPermanentLocationControl.setValue(false);
+        isPermanentLocationControl.disable({ emitEvent: false });
+        isPreferredLocationControl.setValue(false);
+        isPreferredLocationControl.disable({ emitEvent: false });
       }
     });
-
     [
       isCurrentLocationControl,
       isPermanentLocationControl,
@@ -626,8 +652,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   getLocationsObservable(event: MultiSelectQueryEvent): Observable<any> {
     return event?.query?.trim()
       ? this.filterDataService.getLocationsByQuery({
-          SearchState: event?.query,
-        })
+        SearchState: event?.query,
+      })
       : of(null);
   }
 
@@ -675,7 +701,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   prepareSuggestions(
     objects: any[],
-    callback: (selectItems: SelectItem[]) => void = () => {}
+    callback: (selectItems: SelectItem[]) => void = () => { }
   ) {
     const filteredSuggestions: SelectItem[] = [];
 
@@ -852,6 +878,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     if (this.filtersFromDashboard()) {
       const filter = this.filtersFromDashboard();
       this.selectedSavedFilterId.set(null);
+      this.selectedFilterId.set(null);
+      this.selectedSavedFilterTitle.set(null);
       if (
         filter?.filters.age &&
         this.isDefaultRange(filter?.filters.age, DefaultAge)
@@ -963,6 +991,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.selectedSavedFilterId.set(
           filter.filters.category.category.filters?.['id'] ?? null
         );
+          this.selectedFilterId.set(filter.filters.category.category.id);
+        // Set the title of the saved filter
+        this.selectedSavedFilterTitle.set(filter.filters.category.category.categoryName);
         const form = await QueryBuilderReverse.toFilterForm(
           filter.filters.category.category.filters,
           this.filterDataService
@@ -1025,6 +1056,11 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.experienceControl().setValue(MaxExpRange);
         this.salaryControl().setValue(MaxSalaryRange);
         this.ageControl().setValue(MaxAgeRange);
+        // Reset saved filter related signals
+        this.selectedSavedFilterId.set(null);
+        this.selectedFilterId.set(null);
+        this.selectedSavedFilterTitle.set(null);
+        this.filterNameInput.setValue('');
         return;
       }
       const filterKey = removedFilter.id as keyof FilterFormControls;
@@ -1049,10 +1085,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           Array.isArray(currentValue) &&
           typeof currentValue[0] !== 'number'
         ) {
-          const updatedValue = currentValue.filter(
-            (item: any) => item.selectId !== removedFilter.value.selectId
-          ) as SelectItem[];
-          control.setValue(updatedValue.length > 0 ? updatedValue : null);
+          // For multi-select values, removing the badge clears all selections
+          control.setValue(null);
         } else {
           control.setValue(null);
         }
@@ -1078,6 +1112,10 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   }
   saveFilterpopup(): void {
     this._isSaveFilterPopoverVisible.set(true);
+    // If there is a saved filter title and the input is empty, set it
+    if (this.selectedSavedFilterTitle() && !this.filterNameInput.value) {
+      this.filterNameInput.setValue(this.selectedSavedFilterTitle());
+    }
   }
   public toastr = inject(ToastrService);
   saveFilter(): void {
@@ -1092,7 +1130,8 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.currentFilterData,
         filterName,
         this._saveAsNewFilter(),
-        this.selectedSavedFilterId()
+        this.selectedSavedFilterId(),
+        this.selectedFilterId()
       )
       .subscribe({
         next: (response) => {

@@ -17,7 +17,7 @@ import { TruncatePipe } from "../../../shared/pipes/truncate.pipe";
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [NgClass, DatePipe, TruncatePipe],
+  imports: [NgClass, DatePipe, TruncatePipe, RouterLink],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

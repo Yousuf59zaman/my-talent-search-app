@@ -28,7 +28,7 @@ export class ActiveFiltersComponent {
       this.filters.set([]);
     }
   }
-  
+
   @Output() removeFilterBadge = new EventEmitter<FilterBadge>();
   @Output() clearAllFilters = new EventEmitter<void>();
 

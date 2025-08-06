@@ -33,11 +33,26 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
   const handleArray = (
     idPrefix: string,
     labelPrefix: string,
-    items: SelectItem[] | null
+    items: SelectItem[] | null,
+    joinWithComma: boolean = false
   ) => {
-    items?.forEach((item) => {
-      addBadge(`${idPrefix}`, `${labelPrefix}: ${item.label} ${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`, idPrefix, item);
-    });
+    if (!items || items.length === 0) return;
+
+    if (joinWithComma) {
+      const labels = items
+        .map((item) => `${item.label}${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`)
+        .join(', ');
+      addBadge(`${idPrefix}`, `${labelPrefix}: ${labels}`, idPrefix, items);
+    } else {
+      items.forEach((item) => {
+        addBadge(
+          `${idPrefix}`,
+          `${labelPrefix}: ${item.label} ${item.extraParam ? ' (' + item.extraParam + 'years)' : ''}`,
+          idPrefix,
+          item
+        );
+      });
+    }
   };
 
   const handleBoolean = (id: string, label: string, value: boolean | undefined) => {
@@ -45,7 +60,7 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
       addBadge(id, label, id, true);
     }
   };
-  
+
   if (filters.shortlist) {
     addBadge("shortlist", `Shortlist: ${filters.shortlist.name}`, "shortlist", filters.shortlist.name)
   }
@@ -88,9 +103,13 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
       .filter(Boolean)
       .join(", ");
     const locationTypeText = locationTypes ? ` (${locationTypes})` : "";
-    filters.location.forEach((loc) => {
-      addBadge(`location`, `Location: ${loc.label}${locationTypeText}`, "location", loc);
-    });
+    const locationLabels = filters.location.map((loc) => loc.label).join(', ');
+    addBadge(
+      `location`,
+      `Location: ${locationLabels}${locationTypeText}`,
+      "location",
+      filters.location
+    );
   }
 
   if (filters.education) {
@@ -108,12 +127,12 @@ export function generateFilterBadges(filters: FilterForm | null, homeStore: IHom
   }
 
   handleArray("courses", "Course", filters.courses);
-  handleArray("institutes", "Institute", filters.institutes);
-  handleArray("skills", "Skill", filters.skills);
-  handleArray("industries", "Industry", filters.industries);
+  handleArray("institutes", "Institute", filters.institutes, true);
+  handleArray("skills", "Skill", filters.skills, true);
+  handleArray("industries", "Industry", filters.industries, true);
   handleArray("industryType", "Industry Type", filters.industryType);
   handleArray("category", "Category", filters.category);
-  handleArray("expertise", "Expertise", filters.expertise);
+  handleArray("expertise", "Expertise", filters.expertise, true);
 
   handleBoolean("isEntry", "Entry Level", filters.isEntry);
   handleBoolean("isMid", "Mid Level", filters.isMid);
