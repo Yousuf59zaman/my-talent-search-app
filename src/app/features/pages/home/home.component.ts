@@ -2,7 +2,7 @@ import { NavDataService } from './../../../core/services/nav-data.service';
 import { AfterViewInit, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { SavedSearchComponent } from "../../saved-search/saved-search/saved-search.component";
 import { SearchTalentComponent } from '../../search-talent/search-talent/search-talent.component';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { IsCorporateUser } from '../../../shared/enums/app.enums';
 import { NgClass } from '@angular/common';
 import { BdJobsAnalyticsService } from '../../bd-jobs-analytics/bd-jobs-analytics.service';
@@ -28,7 +28,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   IsCorporateUser = signal(false)
   showButton = signal(false);
   navDataService=inject(NavDataService);
-  private router = inject(Router);
   bdJobsAnalyticsService = inject (BdJobsAnalyticsService)
   private destroyRef = inject(DestroyRef);
   private modalService = inject(ModalService);
@@ -58,9 +57,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   salesPersonData = computed(() => this.navDataService.navData());
   CvBankSearchAccess = computed(() => this.salesPersonData()?.cvSearchAccess === true);
 
-  // redirectTo(type: string) {
-  //   location.href = type === 'puchase-list' ? '' : 'moveToSavedFiltersList()';
-  // }
+  redirectTo(type: string) {
+    location.href = type === 'puchase-list' ? 'https://corporate3.bdjobs.com/PurchaseList.asp?from=cvbank' : 'https://corporate3.bdjobs.com/SaveFilter.asp?from=cvbank';
+  }
 
   sendUserActivity(){
     const activityType = 'Dashboard'
@@ -95,16 +94,5 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     }, 2000);
   }
-
-  moveToSavedFiltersList() {
-    this.router.navigate(['/cv-search'], {
-      queryParams: { ref: 'saved-filters' },
-    });
-  }
    
-  moveToPurchaseList() {
-    this.router.navigate(['/cv-search'], {
-      queryParams: { ref: 'purchase-list' },
-    });
-  }
 }

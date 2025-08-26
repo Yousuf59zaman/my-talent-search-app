@@ -1,61 +1,22 @@
-@if (isLoading()) {
-  <div class="flex items-center justify-center min-h-[300px] py-10">
-    <div class="loader"></div>
-  </div>
-}@else {
-  @if(IsCorporateUser()){
-    <div class="mt-6">
-      @if ( purchasedListData && purchasedListData.length > 0) {
+<div class="mt-6">
+    @if (  purchasedListData && purchasedListData.length > 0) {
       <div class="grid grid-cols-2 gap-4 mb-4">
-        @let visiblePurchasedListData = showAllListData ? purchasedListData : purchasedListData.slice(0, 10);
+        @let visiblePurchasedListData = purchasedListData.slice(0, 6);
         @for (card of visiblePurchasedListData; track $index) {
-        <app-purchased-list-card [card]="card" (purchasedListUpdated)="onPurchasedListUpdated()"
-          (purchasedListDeleted)="onPurchasedListDeleted()"
-          (changeActiveTab)="changeActiveTab.emit('cv-search')"></app-purchased-list-card>
+           <app-purchased-list-card [card]="card"
+           (purchasedListUpdated)="onPurchasedListUpdated()"
+           (purchasedListDeleted)="onPurchasedListDeleted()"
+           ></app-purchased-list-card>
         }
       </div>
-      @if (!showAllListData && purchasedListData.length > 10) {
       <div class="text-[#0E73A9] font-medium text-center">
-        <a class="cursor-pointer" (click)="moveToPurchaseList()">Show all
-          <span>({{purchasedListData.length}})</span></a>
+        <a href="https://corporate3.bdjobs.com/PurchaseList.asp?from=">Show all <span>({{purchasedListData.length}})</span></a>
       </div>
-      }
-      }
-      @else {
-      <div class="flex flex-col items-center">
-        <img src="images/saved-search-image.svg" alt="No saved search" class="w-28 h-28 mx-auto" />
-        <p class="text-[#212121] mt-2 text-center"><span class="font-bold">No filters saved yet.</span> <br> YYou can create
-          lists for purchased profiles from the Talent Search portal</p>
-      </div>
-      }
-      @if (showAllListData && showButton()) {
-      <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
-        <span class="icon-angle-top pr-2"></span>Back to Top
-      </button>
-      }
-    </div>
-  }@else {
-    <div class="flex justify-between items-center pt-4">
-      <div class="max-w-[525px]">
-        <p class="text-[#344054] text-2xl font-semibold mb-2">My Experts</p>
-        <p class="text-[#344054] text-sm font-normal">Access the profiles of experts you have purchased from our platform.<br> Keep track of your connected experts and revisit any time.</p>
-      </div>
-      <div class="text-center"> 
-        <p class="mb-2">Total Connected Experts:</p>
-        @if(purchasedCV.purchased !== 0){
-        <a (click)="onClickMyExpert(true)"
-          class="text-[#0E73A9] text-3xl font-semibold hover:underline hover:cursor-pointer">{{purchasedCV.purchased}}</a>
-        }@else {
-        <a class="text-[#0E73A9] text-3xl font-semibold">{{purchasedCV.purchased}}</a>
         }
-      </div>
-      <div>
-        @if (purchasedCV.purchased !== 0) {
-          <button (click)="onClickMyExpert(true)" class="bg-[#0E73A9] px-5 py-3 text-base font-semibold text-white rounded-lg">View My Experts<span class="icon-right-arrow-big ml-2"></span></button>
-        }@else {
-          <button class="bg-[#0E73A9] px-5 py-3 text-base font-semibold text-white rounded-lg inline-block opacity-50 cursor-not-allowed">View My Experts<span class="icon-right-arrow-big ml-2"></span></button>
-        }
-      </div>
+    @else {
+    <div class="flex flex-col items-center">
+      <img src="images/saved-search-image.svg" alt="No saved search" class="w-28 h-28 mx-auto" />
+      <p class="text-[#212121] mt-2">Saved search will appear after your first saved search</p>
     </div>
-  }
-}
+    } 
+</div>

@@ -9,32 +9,29 @@ import { FilterForm } from '../models/form.models';
 import { CompanyIdLocalStorage } from '../../../shared/enums/app.enums';
 import { FilterStore } from '../../../store/filter.store';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
-import { MaxAgeRange, MaxExpRange, MaxSalaryRange } from '../../search-talent/search-talent/search-talent.component';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FilterDataService {
 
   constructor(
     private http: HttpClient,
     private localStorageService: LocalstorageService
   ) { }
-  private filterStore = inject(FilterStore);
+ private filterStore=inject(FilterStore); 
   getIndustries(queryParams: any) {
     const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetIndustryTypeByName";
     return this.http.get<ApiResponse<IndustryTypeResponse[]>>(url, { params: queryParams });
   }
-
+  
   getExpertise(queryParams: any) {
     const url = 'https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetSkills';
-    return this.http.get<ApiResponse<IndustryOrExpertiseResponse[]>>(url, { params: queryParams });
+    return this.http.get<ApiResponse<IndustryOrExpertiseResponse[]>>(url, { params: queryParams});
   }
-
+  
   getInstitutes(queryParams: any) {
     const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetInstitute";
-    return this.http.get<ApiResponse<InstituteResponse[]>>(url, { params: queryParams });
+    return this.http.get<ApiResponse<InstituteResponse[]>>(url, { params: queryParams});
   }
 
   getMajorSubject() {
@@ -42,13 +39,8 @@ export class FilterDataService {
     return this.http.get<ApiResponse<MajorSubRes[]>>(url);
   }
   getLocationsByQuery(queryParams: any): Observable<any> {
-    const url = "https://gateway.bdjobs.com/cvbanksupport/api/LeftPanel/GetLocations"
-    return this.http.get(url, { params: queryParams });
-  }
-
-  getLocationsById(queryParams: any) {
-    const url = "https://gateway.bdjobs.com/cvbanksupport/api/LeftPanel/GetLocations"
-    return this.http.get<ApiResponse<Location[]>>(url, { params: queryParams });
+    const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetLocations"
+    return this.http.get(url, { params: queryParams});
   }
 
   getSkills(queryParams: { CategoryId: number, searchTxt: string }) {
@@ -56,13 +48,8 @@ export class FilterDataService {
     return this.http.get<ApiResponse<SkillResponse[]>>(url, { params: queryParams });
   }
 
-  getSkillsByIds(queryParams: { searchTxt: string }) {
-    const url = "https://testmongo.bdjobs.com/CVBankSupport/api/LeftPanel/GetSkillsData";
-    return this.http.get<ApiResponse<SkillResponse[]>>(url, { params: queryParams });
-  }
-
   getSearchCount(params?: any): Observable<SearchCountObject> {
-    const url = "https://gateway.bdjobs.com/cvbank/api/CVBank/SearchCount";
+    const url = "https://gateway.bdjobs.com/cvbankv3/api/CVBank/SearchCount";
     const defaultParams = {
       CompanyId: 'ZxU0PRC=',
       CatId: '',
@@ -117,7 +104,7 @@ export class FilterDataService {
           return {
             categories: this.mapCategories(response.catIds),
             eduLevels: this.mapEduLevels(response.eduLevels),
-            courses: this.mapCourses(response.majosSubject),
+            courses: this.mapCourses(response.majorSubjects),
             industries: this.mapIndustries(response.industries),
           }
         })
@@ -140,239 +127,221 @@ export class FilterDataService {
   }
 
 
-  mapEduLevels(eduLevelsObj: Record<string, number>): SelectItem[] {
-    if (!eduLevelsObj) {
-      return [];
+    mapEduLevels(eduLevelsObj: Record<string, number>): SelectItem[] {
+      if (!eduLevelsObj) {
+        return [];
+      }
+      
+      return Object.entries(eduLevelsObj)
+        .map(([id, count]) => {
+          const matchingLevel = DegreeLevel.find(level => level.value === parseInt(id));
+          return {
+            value: parseInt(id),
+            label: matchingLevel?.label || `Education Level ${id}`, 
+            count: count
+          };
+        })
+        .filter(eduLevel => eduLevel.label !== undefined); 
     }
 
-    return Object.entries(eduLevelsObj)
-      .map(([id, count]) => {
-        const matchingLevel = DegreeLevel.find(level => level.value === parseInt(id));
-        return {
-          value: parseInt(id),
-          label: matchingLevel?.label || `Education Level ${id}`,
-          count: count
-        };
-      })
-      .filter(eduLevel => eduLevel.label !== undefined);
-  }
-
-  mapCourses(coursesObj: Record<string, number>): SelectItem[] {
-    if (!coursesObj) {
-      return [];
+    mapCourses(coursesObj: Record<string, number>): SelectItem[] {
+      if (!coursesObj) {
+        return [];
+      }
+      
+      return Object.entries(coursesObj)
+        .map(([key, count]) => {
+          return {
+            value: key,
+            label: key, 
+            count: count
+          };
+        }).sort((a, b) => a.label.localeCompare(b.label));
     }
 
-    return Object.entries(coursesObj)
-      .map(([key, count]) => {
-        return {
-          value: key,
-          label: key,
-          count: count
-        };
-      }).sort((a, b) => a.label.localeCompare(b.label));
-  }
-
-  mapIndustries(industriesObj: Record<string, number>): SelectItem[] {
-    if (!industriesObj) {
-      return [];
+    mapIndustries(industriesObj: Record<string, number>): SelectItem[] {
+      if (!industriesObj) {
+        return [];
+      }
+      
+      return Object.entries(industriesObj)
+        .map(([key, count]) => {
+          return {
+            value: key,
+            label: key, 
+            count: count
+          };
+        }) .sort((a, b) => a.label.localeCompare(b.label));
     }
 
-    return Object.entries(industriesObj)
-      .map(([key, count]) => {
-        return {
-          value: key,
-          label: key,
-          count: count
-        };
-      }).sort((a, b) => a.label.localeCompare(b.label));
-  }
-
-  generateSaveCvFilterUrl(filterData: FilterForm): string {
-    const baseUrl = "https://corporate3.bdjobs.com/Save_Cv_Filter.asp";
-
-    const paramNames: string[] = [];
-    const paramValues: string[] = [];
-
-    if (filterData.category && filterData.category.length) {
-      paramNames.push('CatId');
-      paramValues.push(filterData.category[0].value.toString());
-    }
-
-    if (filterData.ageRange && filterData.ageRange.length === 2) {
-      paramNames.push('qAge');
-      paramValues.push(filterData.ageRange.join('/'));
-    }
-
-    if (filterData.gender) {
-      paramNames.push('qSex');
-      paramValues.push(getGenderQueryValue(filterData.gender));
-    }
-
-    if (filterData.location && filterData.location.length) {
-      paramNames.push('qJobLoc');
-      paramValues.push(filterData.location.map(loc => loc.value).join(','));
-
-      if (filterData.isCurrentLocation) {
-        paramNames.push('qCurLoc');
+    generateSaveCvFilterUrl(filterData: FilterForm): string {
+      const baseUrl = "https://corporate3.bdjobs.com/Save_Cv_Filter.asp";
+      
+      const paramNames: string[] = [];
+      const paramValues: string[] = [];
+      
+      if (filterData.category && filterData.category.length) {
+        paramNames.push('CatId');
+        paramValues.push(filterData.category[0].value.toString());
+      }
+      
+      if (filterData.ageRange && filterData.ageRange.length === 2) {
+        paramNames.push('qAge');
+        paramValues.push(filterData.ageRange.join('/'));
+      }
+      
+      if (filterData.gender) {
+        paramNames.push('qSex');
+        paramValues.push(getGenderQueryValue(filterData.gender));
+      }
+      
+      if (filterData.location && filterData.location.length) {
+        paramNames.push('qJobLoc');
         paramValues.push(filterData.location.map(loc => loc.value).join(','));
+        
+        if (filterData.isCurrentLocation) {
+          paramNames.push('qCurLoc');
+          paramValues.push(filterData.location.map(loc => loc.value).join(','));
+        }
+        
+        if (filterData.isPermanentLocation) {
+          paramNames.push('qPerLoc');
+          paramValues.push(filterData.location.map(loc => loc.value).join(','));
+        }
+        
+        if (filterData.isPreferredLocation) {
+          paramNames.push('qJobLocName');
+          paramValues.push(filterData.location.map(loc => loc.value).join(','));
+        }
       }
-
-      if (filterData.isPermanentLocation) {
-        paramNames.push('qPerLoc');
-        paramValues.push(filterData.location.map(loc => loc.value).join(','));
+      
+      if (filterData.experience && filterData.experience.length === 2) {
+        paramNames.push('qExp');
+        paramValues.push(filterData.experience.join('/'));
       }
-
-      if (filterData.isPreferredLocation) {
-        paramNames.push('qJobLocName');
-        paramValues.push(filterData.location.map(loc => loc.value).join(','));
+      
+      if (filterData.expectedSalary && filterData.expectedSalary.length === 2) {
+        paramNames.push('qSalary');
+        paramValues.push(filterData.expectedSalary.join('/'));
       }
-    }
-
-    if (filterData.experience && filterData.experience.length === 2) {
-      paramNames.push('qExp');
-      paramValues.push(filterData.experience.join('/'));
-    }
-
-    if (filterData.expectedSalary && filterData.expectedSalary.length === 2) {
-      paramNames.push('qSalary');
-      paramValues.push(filterData.expectedSalary.join('/'));
-    }
-
-    if (filterData.keyword) {
-      paramNames.push('qKeyword');
-      paramValues.push(filterData.keyword);
-
-      const keywordFilters: number[] = [];
-      if (filterData.isEducation) keywordFilters.push(2);
-      if (filterData.isExperience) keywordFilters.push(3);
-      if (filterData.isSkills) keywordFilters.push(4);
-
-      if (keywordFilters.length) {
-        paramNames.push('qkeywordfiltertype');
-        paramValues.push(keywordFilters.join(','));
+      
+      if (filterData.keyword) {
+        paramNames.push('qKeyword');
+        paramValues.push(filterData.keyword);
+        
+        const keywordFilters: number[] = [];
+        if (filterData.isEducation) keywordFilters.push(2);
+        if (filterData.isExperience) keywordFilters.push(3);
+        if (filterData.isSkills) keywordFilters.push(4);
+        
+        if (keywordFilters.length) {
+          paramNames.push('qkeywordfiltertype');
+          paramValues.push(keywordFilters.join(','));
+        }
       }
-    }
-
-    const jobLevels: string[] = [];
-    if (filterData.isEntry) jobLevels.push('Entry');
-    if (filterData.isMid) jobLevels.push('Mid');
-    if (filterData.isTop) jobLevels.push('Top');
-
-    if (jobLevels.length) {
-      paramNames.push('qPref');
-      paramValues.push(jobLevels.join(','));
-    }
-
-    if (filterData.education) {
-      paramNames.push('qEduLevel');
-      paramValues.push(filterData.education.toString());
-
-      if (filterData.isHighestDegree) {
-        paramNames.push('qHighestDegree');
+      
+      const jobLevels: string[] = [];
+      if (filterData.isEntry) jobLevels.push('Entry');
+      if (filterData.isMid) jobLevels.push('Mid');
+      if (filterData.isTop) jobLevels.push('Top');
+      
+      if (jobLevels.length) {
+        paramNames.push('qPref');
+        paramValues.push(jobLevels.join(','));
+      }
+      
+      if (filterData.education) {
+        paramNames.push('qEduLevel');
+        paramValues.push(filterData.education.toString());
+        
+        if (filterData.isHighestDegree) {
+          paramNames.push('qHighestDegree');
+          paramValues.push('1');
+        }
+      }
+      
+      if (filterData.courses && filterData.courses.length) {
+        paramNames.push('qDegree');
+        paramValues.push(filterData.courses.map(c => c.label).join(','));
+      }
+      
+      if (filterData.skills && filterData.skills.length) {
+        paramNames.push('qOrgType');
+        paramValues.push(filterData.skills.map(s => s.value).join(','));
+      }
+      
+      if (filterData.expertise && filterData.expertise.length) {
+        paramNames.push('qWorkArea');
+        paramValues.push(filterData.expertise.map(ex => 
+          `${ex.value}_${ex.extraParam ? ex.extraParam : 0}`).join(','));
+      }
+      
+      if (filterData.industries && filterData.industries.length) {
+        paramNames.push('qBusiness');
+        paramValues.push(filterData.industries.map(ind => ind.label).join(','));
+      }
+      
+      if (filterData.industryType && filterData.industryType.length) {
+        if (paramNames.includes('qBusiness')) {
+          const businessIndex = paramNames.indexOf('qBusiness');
+          paramValues[businessIndex] += `,${filterData.industryType[0].value}`;
+        } else {
+          paramNames.push('qBusiness');
+          paramValues.push(filterData.industryType[0].value);
+        }
+      }
+      
+      if (filterData.institutes && filterData.institutes.length) {
+        paramNames.push('InsName');
+        paramValues.push(filterData.institutes.map(inst => inst.label).join(','));
+      }
+      
+      if (filterData.isRetiredArmy) {
+        paramNames.push('qArmyPerson');
         paramValues.push('1');
       }
-    }
-
-    if (filterData.courses && filterData.courses.length) {
-      paramNames.push('qDegree');
-      paramValues.push(filterData.courses.map(c => c.label).join(','));
-    }
-
-    if (filterData.skills && filterData.skills.length) {
-      paramNames.push('qOrgType');
-      paramValues.push(filterData.skills.map(s => s.value).join(','));
-    }
-
-    if (filterData.expertise && filterData.expertise.length) {
-      paramNames.push('qWorkArea');
-      paramValues.push(filterData.expertise.map(ex =>
-        `${ex.value}_${ex.extraParam ? ex.extraParam : 0}`).join(','));
-    }
-
-    if (filterData.industries && filterData.industries.length) {
-      paramNames.push('qBusiness');
-      paramValues.push(filterData.industries.map(ind => ind.label).join(','));
-    }
-
-    if (filterData.industryType && filterData.industryType.length) {
-      if (paramNames.includes('qBusiness')) {
-        const businessIndex = paramNames.indexOf('qBusiness');
-        paramValues[businessIndex] += `,${filterData.industryType[0].value}`;
-      } else {
-        paramNames.push('qBusiness');
-        paramValues.push(filterData.industryType[0].value);
+      
+      if (filterData.personsWithDisabilities) {
+        paramNames.push('qPWD');
+        paramValues.push('1');
       }
+      
+      if (filterData.immediateAvailable) {
+        paramNames.push('immediateAvailable');
+        paramValues.push('1');
+      }
+      
+      if (filterData.showStarCandidates) {
+        paramNames.push('qstar');
+        paramValues.push('1');
+      }
+      
+      const url = new URL(baseUrl);
+      
+      if (paramNames.length > 0) {
+        url.searchParams.append('n', paramNames.join('|^'));
+        url.searchParams.append('v', paramValues.join('|^'));
+      }
+      
+      
+      url.searchParams.append('domain', 'test');
+      
+      return url.toString();
     }
 
-    if (filterData.institutes && filterData.institutes.length) {
-      paramNames.push('InsName');
-      paramValues.push(filterData.institutes.map(inst => inst.label).join(','));
-    }
-
-    if (filterData.isRetiredArmy) {
-      paramNames.push('qArmyPerson');
-      paramValues.push('1');
-    }
-
-    if (filterData.personsWithDisabilities) {
-      paramNames.push('qPWD');
-      paramValues.push('1');
-    }
-
-    if (filterData.immediateAvailable) {
-      paramNames.push('immediateAvailable');
-      paramValues.push('1');
-    }
-
-    if (filterData.showStarCandidates) {
-      paramNames.push('qstar');
-      paramValues.push('1');
-    }
-
-    const url = new URL(baseUrl);
-
-    if (paramNames.length > 0) {
-      url.searchParams.append('n', paramNames.join('|^'));
-      url.searchParams.append('v', paramValues.join('|^'));
-    }
-
-
-    url.searchParams.append('domain', 'test');
-
-    return url.toString();
-  }
-
-  saveFilter(
-    filterData: FilterForm,
-    criteriaName: string,
-    isNewFilter: boolean = true,
-    id: string | null = null,
-    filterId: number | null = null
-  ): Observable<any> {
+  saveFilter(filterData: FilterForm, criteriaName: string, isNewFilter: boolean = true): Observable<any> {
     const url = environment.apiUrl + "/CvBankInsights/CvBankSavedFilter";
-    const payload = this.buildSaveFilterPayload(
-      filterData,
-      criteriaName,
-      isNewFilter,
-      id,
-      filterId
-    );
+    const payload = this.buildSaveFilterPayload(filterData, criteriaName, isNewFilter);
     return this.http.post(url, payload);
   }
 
-  private buildSaveFilterPayload(
-    filterData: FilterForm,
-    criteriaName: string,
-    isNewFilter: boolean,
-    id: string | null,
-    filterId: number | null
-  ): SaveFilterRequest {
+  private buildSaveFilterPayload(filterData: FilterForm, criteriaName: string, isNewFilter: boolean): SaveFilterRequest {
     const parameters: Record<string, string> = {};
 
     if (filterData.keyword) {
       parameters['qKeyword'] = filterData.keyword;
 
-      const keywordFilters: string[] = [];
+     const keywordFilters: string[] = [];
       if (filterData.isEducation) keywordFilters.push('2');
       if (filterData.isExperience) keywordFilters.push('3');
       if (filterData.isSkills) keywordFilters.push('4');
@@ -382,15 +351,15 @@ export class FilterDataService {
       }
     }
 
-    if (filterData.ageRange?.length === 2 && !(filterData.ageRange[0] === MaxAgeRange[0] && filterData.ageRange[1] === MaxAgeRange[1])) {
+   if (filterData.ageRange?.length === 2) {
       parameters['qAge'] = filterData.ageRange.join('/');
     }
 
-    if (filterData.experience?.length === 2 && !(filterData.experience[0] === MaxExpRange[0] && filterData.experience[1] === MaxExpRange[1])) {
+    if (filterData.experience?.length === 2) {
       parameters['qExp'] = filterData.experience.join('/');
     }
 
-    if (filterData.expectedSalary?.length === 2 && !(filterData.expectedSalary[0] === MaxSalaryRange[0] && filterData.expectedSalary[1] === MaxSalaryRange[1])) {
+    if (filterData.expectedSalary?.length === 2) {
       parameters['qSalary'] = filterData.expectedSalary.join('/');
     }
 
@@ -470,7 +439,7 @@ export class FilterDataService {
     }
 
     if (filterData.institutes?.length) {
-      parameters['InsName'] = filterData.institutes.map(inst => inst.label).join('__');
+      parameters['InsName'] = filterData.institutes.map(inst => inst.label).join(',');
     }
 
     if (filterData.shortlist) {
@@ -481,26 +450,15 @@ export class FilterDataService {
       parameters['qLastUpdated'] = filterData.lastUpdated;
     }
 
-    if (filterData.examTitle) {
-      parameters['qEduTitle'] = filterData.examTitle;
-    }
     const totalCvCount = this.getTotalCvCount();
 
-    const payload: SaveFilterRequest = {
-      isInsert: id && !isNewFilter ? 2 : 1,
+    return {
+      isInsert: 1, 
       cpId: this.getUserCompanyId(),
       criteriaName: criteriaName,
       parameters: parameters,
-      cvCount: totalCvCount
+      cvCount: this.getTotalCvCount()
     };
-
-    if (id && !isNewFilter) {
-      payload.id = id;
-      if (filterId !== null) {
-        payload.filterId = filterId;
-      }}
-
-    return payload;
   }
 
   private getUserCompanyId(): string {
@@ -508,7 +466,7 @@ export class FilterDataService {
   }
 
   private getTotalCvCount(): number {
-    return this.filterStore.totalCvCount() || 0;
+     return this.filterStore.totalCvCount() || 0;
   }
 
 }
@@ -520,12 +478,4 @@ function getGenderQueryValue(gender: string): string {
     case 'Other': return 'O';
     default: return '';
   }
-}
-
-export interface Location {
-  display: null | string;
-  locId: number;
-  locName: string;
-  prId: number;
-  regionalId: number;
 }

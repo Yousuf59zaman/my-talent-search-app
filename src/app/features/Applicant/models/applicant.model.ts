@@ -72,7 +72,6 @@ export interface Applicant {
   expectedSalary: string;
   removeFromShortList: string;
   shortList: number;
-  groupName:string
   skillCount: string;
   workAreaCount: string;
   isInWishList: number;
@@ -165,41 +164,4 @@ export interface PurchaseListItem {
   purchased: number;
   wishlist: number;
   createdOn: string; // ISO date string
-}
-
-export interface ShortListData {
-  id: string,
-  companyId: string,
-  groupId: number,
-  groupName: string,
-  groupDescription: string,
-  numberOfCVs: number,
-  createdOn: string
-}
-
-export interface ShortListPayload {
-  isInsert: number;
-  id: string;
-  cpId: string;
-  categoryId: number;
-  categoryName: string;
-  categoryDescription: string;
-  encodedApplicantID: string,
-  candidateCvs: string[];
-}
-
-export interface ShortListedCvDeleteReqBody{
-  cpId: string,
-  id: string,
-  groupId: number,
-  encodedCandidateId: string,
-  candidateId: number | null
-}
-
-export interface PurchaseListCvDeleteReqbody{
-  id: string,
-  listID: number,
-  candidateIds: [],
-  encCandId: string,
-  companyId: string
 }

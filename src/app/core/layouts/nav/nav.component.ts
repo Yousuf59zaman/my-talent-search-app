@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, EventEmitter, HostListener, inject, Output, signal, ViewChild } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { NavbarService } from './services/navbar.service';
 import { LocalstorageService } from '../../services/essentials/localstorage.service';
 import { CompanyIdLocalStorage, IsAdminUser, LastUserType, LastUserTypes, UserId } from '../../../shared/enums/app.enums';
@@ -11,13 +11,11 @@ import { NavDataService } from '../../services/nav-data.service';
 import { NavDataStore } from './services/nav-data.store';
 import { AuthService } from '../../services/auth/auth.service';
 import { filter, interval, map, take } from 'rxjs';
-import { FilterStore } from '../../../store/filter.store';
-import { TruncatePipe } from "../../../shared/pipes/truncate.pipe";
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [NgClass, DatePipe, TruncatePipe, RouterLink],
+  imports: [NgClass, DatePipe, RouterLink],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +27,6 @@ export class NavComponent implements AfterViewInit {
   private navDataService = inject(NavDataService);
   private navStore = inject(NavDataStore);
   private authService = inject(AuthService);
-  public filterStore = inject(FilterStore);
-  private router = inject(Router);
 
   @Output() navbarDataLoaded = new EventEmitter<SalesPersonData>();
 
@@ -54,6 +50,7 @@ export class NavComponent implements AfterViewInit {
   jobPostingAccessPercentage: number = 0;
   companyName = computed(() => this.navStore.companyName());
   companyLogoURL = computed(() => this.navStore.companyLogoURL());
+  // isAdminUser: boolean = window.localStorage.getItem(IsAdminUser) === 'true';
   isMenuOpen = signal(false);
   isCorporeteMenuOpen = signal (false)
   isCorporetProfileDropdownOpen = signal(false)
@@ -69,7 +66,6 @@ export class NavComponent implements AfterViewInit {
   IsCorporateUser = signal(
     this.localStorageService.getItem(LastUserType) === LastUserTypes.Corporate
   );
-  
 
   isAdminUser = signal(
     this.localStorageService.getItem(IsAdminUser) === 'true'
@@ -254,13 +250,6 @@ export class NavComponent implements AfterViewInit {
         (remainingJobsSum / maxJobsSum) * 100
       );
     }
-  }
-
-  navigateToHome() {
-    this.router.navigate(['/']);
-    this.filterStore.setIsShortlist(false);
-    this.filterStore.setIsPurchaseList(false);
-    this.filterStore.setShortlistGuidId(null);
   }
 }
 

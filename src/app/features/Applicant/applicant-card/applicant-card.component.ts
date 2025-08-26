@@ -1,10 +1,11 @@
 import { IsCorporateUser, PageType, ResponseCode, SType, UserId } from './../../../shared/enums/app.enums';
-import { Component, computed, input, inject, signal, isDevMode, Output, EventEmitter, DestroyRef } from '@angular/core';
+import { Component, computed, input, inject, signal, isDevMode, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Applicant, PurchaseList, PurchaseListCvDeleteReqbody, PurchaseListItem, ShortListData, ShortListedCvDeleteReqBody, ShortListPayload } from '../models/applicant.model';
+import { Applicant, PurchaseList, PurchaseListItem } from '../models/applicant.model';
 import { ApplicantDataPipe } from '../pipe/applicant-data.pipe';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { DownloadCVRequest } from '../class/card-query-builder';
+import { CustomCvDownloadResponse } from '../../../shared/models/response';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
 import { MoveToActivityHeaderComponent } from '../../../shared/components/move-to-activity-header/move-to-activity-header.component';
 import { JobNoLocalStorage } from '../../../shared/enums/app.enums';
@@ -19,33 +20,16 @@ import { IFrameLoaderComponent } from '../../../shared/components/iFrame-loader/
 import { NavDataService } from '../../../core/services/nav-data.service';
 import { ToastrService } from 'ngx-toastr';
 import { InputComponent } from '../../../shared/components/input/input.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FilterStore } from '../../../store/filter.store';
-import { TruncatePipe } from '../../../shared/pipes/truncate.pipe';
-import { QueryService } from '../../filter-panel/services/query.service';
-import { HomeQueryStore } from '../../../store/home-query.store';
 import { ConfirmationModalService } from '../../../core/services/confirmationModal/confirmation-modal.service';
 
 @Component({
   selector: 'app-applicant-card',
   standalone: true,
-  imports: [CommonModule, ApplicantDataPipe, ReactiveFormsModule, InputComponent, TruncatePipe],
+  imports: [CommonModule, ApplicantDataPipe, ReactiveFormsModule, InputComponent],
   templateUrl: './applicant-card.component.html',
   styleUrl: './applicant-card.component.scss'
 })
 export class ApplicantCardComponent {
-  private modalService = inject(ModalService);
-  public applicantCardService = inject(ApplicantCardService);
-  private localStorageService = inject(LocalstorageService);
-  private navDataService = inject(NavDataService);
-  private toastr = inject(ToastrService);
-  private destroyRef = inject(DestroyRef);
-  public filterStore = inject(FilterStore);
-  private queryService = inject(QueryService);
-  private homeStore = inject(HomeQueryStore);
-
-  isShortListState = computed(() => this.filterStore.isShortlist());
-  isPurchaseListState = computed(() => this.filterStore.isPurchaseList())
   isDevMode = signal(isDevMode());
   applicant = input.required<Applicant>();
   readonly stars = [1, 2, 3, 4, 5];
@@ -56,6 +40,11 @@ export class ApplicantCardComponent {
   isVisible = computed(() => this.visible());
   immediatelyAvailable = signal(1);
   CustomizedResume = signal(1);
+  private modalService = inject(ModalService);
+  public applicantCardService = inject(ApplicantCardService);
+  private localStorageService = inject(LocalstorageService);
+  private navDataService = inject(NavDataService);
+  private toastr = inject(ToastrService);
   private confirmationModal = inject(ConfirmationModalService);
   CvBankSearchAccess = computed(() => this.salesPersonData()?.cvSearchAccess === true);
   photoBlurAmount: string = '5px';
@@ -234,33 +223,21 @@ export class ApplicantCardComponent {
 
 
   purchasePopoverVisible = signal(false);
-  shortListPopoverVisible = signal(false)
   groupName = signal('');
   creatingGroup = signal(false);
   isCreatePurchaseList = signal(false);
-  isCreateShortlistedGroup = signal(false)
   selectedListName = signal<string | null>(null);
   selectedList = signal<PurchaseListItem>({} as PurchaseListItem);
-  selectedShortList = signal<ShortListData>({} as ShortListData)
   PurchaseListId = signal('');
   PurchaseListName = signal('');
-  PurchaseListDescription = signal('');
   isPurchasedBtnFade = signal(false);
-  ShortListGroupId = signal('')
-  ShortListGroupName = signal('')
-  ShortListGroupDescription = signal('')
-  ShortListGroupCategoryId = signal<number | null>(null)
+
   newPurchaseListName = new FormControl('', Validators.required);
-  newPurchaseListDescription =  new FormControl('', [Validators.maxLength(250), Validators.pattern(/^[^'%"<>&()]*$/)])
-  newShortListName = new FormControl('', Validators.required)
-  newShortListDescription = new FormControl('', [Validators.maxLength(250), Validators.pattern(/^[^'%"<>&()]*$/)])
   purchasedlistData: any[] = [];
-  shortListData: ShortListData[] = []
+
 
   @Output() addedToPurchasedList = new EventEmitter<boolean>();
   @Output() purchaseListData = new EventEmitter<PurchaseList>();
-  @Output() addedToShortList = new EventEmitter<boolean>()
-  @Output() unlockProfileClicked = new EventEmitter<string>();
 
   isContentAccessible(): boolean {
     return this.CvBankSearchAccess() === true;
@@ -299,8 +276,7 @@ export class ApplicantCardComponent {
     this.applicantCardService
       .downloadCV(payload)
       .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
+    )
       .subscribe({
         next: (res) => {
           if (res.status === 0) {
@@ -310,7 +286,6 @@ export class ApplicantCardComponent {
         },
       });
   }
-
 
   openVideoCVDetails() {
     if (this.cvsDisabled()) {
@@ -445,8 +420,7 @@ export class ApplicantCardComponent {
         companyID: companyID
       })
         .pipe(
-          finalize(() => this.skillsLoading.set(false)),
-          takeUntilDestroyed(this.destroyRef)
+          finalize(() => this.skillsLoading.set(false))
         )
         .subscribe({
           next: (response) => {
@@ -491,9 +465,7 @@ export class ApplicantCardComponent {
     this.purchasePopoverVisible.set(false);
     this.applicantCardService.purchaseListId.set('');
     this.applicantCardService.selectedListName.set('');
-    this.applicantCardService.selectedListDescription.set('')
-    this.newPurchaseListName.reset();
-    this.newPurchaseListDescription.reset()
+
   }
 
   closePurchasePopover() {
@@ -514,7 +486,6 @@ export class ApplicantCardComponent {
     }
 
     this.applicantCardService.addCvToListFromJobSeeker(resumeId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           if (response && response.listid) {
@@ -523,9 +494,7 @@ export class ApplicantCardComponent {
             this.submitPurchaseForm(resumeId, listId);
 
             this.applicantCardService.addApplicantToSelection(resumeId);
-            this.toastr.success('CV added to purchase list', 'Success');
           } else {
-            this.toastr.error('Failed to add CV to purchase list', 'Error');
           }
         },
         error: (error) => {
@@ -685,17 +654,15 @@ export class ApplicantCardComponent {
         return;
       }
 
-      this.applicantCardService.getPurchaseList()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (res) => {
-            this.purchasePopoverVisible.set(true);
-            this.purchasedlistData = res.data;
-          },
-          error: (error) => {
-            // console.error('Error fetching purchase list:', error);
-          }
-        });
+      this.applicantCardService.getPurchaseList().subscribe({
+        next: (res) => {
+          this.purchasePopoverVisible.set(true);
+          this.purchasedlistData = res.data;
+        },
+        error: (error) => {
+          // console.error('Error fetching purchase list:', error);
+        }
+      });
     }
   }
 
@@ -712,7 +679,7 @@ export class ApplicantCardComponent {
       this.toastr.warning('Please enter a purchase list name', 'Warning');
       return;
     }
-    if (this.newPurchaseListName.valid && this.newPurchaseListDescription.valid) {
+    if (this.newPurchaseListName.valid) {
       if (this.applicantCardService.purchaseListId() === '') {
         this.addedToPurchasedList.emit(true);
         this.purchasePopoverVisible.set(false);
@@ -723,7 +690,7 @@ export class ApplicantCardComponent {
           cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
           purchaseListId: 0,
           purchaseListName: this.newPurchaseListName.value || '',
-          purchaseListDescription: this.newPurchaseListDescription.value || '',
+          purchaseListDescription: '',
           purchaseCVs: [{
             EncCandId: applicantId,
             candidateId: 0,
@@ -736,42 +703,39 @@ export class ApplicantCardComponent {
         this.purchaseListData.emit(newPurchaseList);
         this.purchasePopoverVisible.set(false);
         this.PurchaseListName.set(newPurchaseList.purchaseListName);
-        this.PurchaseListDescription.set(newPurchaseList.purchaseListDescription)
-        this.applicantCardService.createNewPurchase(newPurchaseList)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: (res) => {
-              this.applicantCardService.wishlistCv.set(0);
-              this.applicantCardService.currentCv.set(1);
 
-              let numericListId = 0;
-              if (res.data && res.data.length > 0) {
-                numericListId = res.data[0].listId;
-              }
+        this.applicantCardService.createNewPurchase(newPurchaseList).subscribe({
+          next: (res) => {
+            this.applicantCardService.wishlistCv.set(0);
+            this.applicantCardService.currentCv.set(1);
 
-              this.applicantCardService.setSelectedPurchaseList(
-                res.id,
-                numericListId,
-                newPurchaseList.purchaseListName,
-                newPurchaseList.purchaseListDescription
-              );
-
-              this.PurchaseListName.set(newPurchaseList.purchaseListName);
-              this.isPurchasedBtnFade.set(true);
-
-              this.applicantCardService.addApplicantToSelection(applicantId);
-
-              if (this.isPurchasedBtnFade()) {
-                this.applicantCardService.isAlreadyAssigned.set(true);
-              }
-
-              this.applicantCardService.purchaseListId.set(res.id);
-              this.toastr.success('New list created and CV added', 'Success');
-            },
-            error: (err) => {
-              this.toastr.error('Error creating list', err.message);
+            let numericListId = 0;
+            if (res.data && res.data.length > 0) {
+              numericListId = res.data[0].listId;
             }
-          });
+
+            this.applicantCardService.setSelectedPurchaseList(
+              res.id,
+              numericListId,
+              newPurchaseList.purchaseListName
+            );
+
+            this.PurchaseListName.set(newPurchaseList.purchaseListName);
+            this.isPurchasedBtnFade.set(true);
+
+            this.applicantCardService.addApplicantToSelection(applicantId);
+
+            if (this.isPurchasedBtnFade()) {
+              this.applicantCardService.isAlreadyAssigned.set(true);
+            }
+
+            this.applicantCardService.purchaseListId.set(res.id);
+            this.toastr.success('New list created and CV added', 'Success');
+          },
+          error: (err) => {
+            this.toastr.error('Error creating list', err.message);
+          }
+        });
       }
     }
   }
@@ -781,9 +745,8 @@ export class ApplicantCardComponent {
   selectedPurchaseList($event: PurchaseListItem): void {
     this.selectedList.set($event);
     this.PurchaseListName.set($event.listName);
-    this.PurchaseListDescription.set($event.listDescription)
     this.PurchaseListId.set($event.id);
-    this.applicantCardService.setSelectedPurchaseList($event.id, $event.listId, $event.listName , $event.listDescription);
+    this.applicantCardService.setSelectedPurchaseList($event.id, $event.listId, $event.listName);
     this.applicantCardService.wishlistCv.set($event.wishlist);
   }
 
@@ -800,7 +763,7 @@ export class ApplicantCardComponent {
       cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
       purchaseListId: 0,
       purchaseListName: this.PurchaseListName(),
-      purchaseListDescription: this.PurchaseListDescription(),
+      purchaseListDescription: "",
       purchaseCVs: [{
         EncCandId: applicantId,
         candidateId: 0,
@@ -813,13 +776,11 @@ export class ApplicantCardComponent {
     this.applicantCardService.addApplictionToPurchaseList(purchaseList)
       .pipe(
         filter(response => response.responseCode === ResponseCode.success),
-        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (response) => {
           this.applicantCardService.purchaseListId.set(this.PurchaseListId());
           this.applicantCardService.selectedListName.set(purchaseList.purchaseListName);
-          this.applicantCardService.selectedListDescription.set(purchaseList.purchaseListDescription)
           this.applicantCardService.currentCv.update(c => c + 1);
           this.applicantCardService.addApplicantToSelection(applicantId);
 
@@ -830,7 +791,7 @@ export class ApplicantCardComponent {
           this.addedToPurchasedList.emit(true);
         },
         error: (err) => {
-          this.applicantCardService.setSelectedPurchaseList('', 0, '', '');
+          this.applicantCardService.setSelectedPurchaseList('', 0, '');
         }
       });
   }
@@ -838,7 +799,7 @@ export class ApplicantCardComponent {
   addCv(): void {
     const selectedListId = this.applicantCardService.purchaseListId();
     const selectedListName = this.applicantCardService.selectedListName();
-    const selectedListDescription = this.applicantCardService.selectedListDescription()
+
     if (!selectedListId || !selectedListName) {
       this.toastr.warning('Please select purchase list first', 'Warning');
       return;
@@ -850,7 +811,7 @@ export class ApplicantCardComponent {
       cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
       purchaseListId: 0,
       purchaseListName: selectedListName,
-      purchaseListDescription: selectedListDescription,
+      purchaseListDescription: "",
       purchaseCVs: [{
         EncCandId: applicantId,
         candidateId: 0,
@@ -861,243 +822,19 @@ export class ApplicantCardComponent {
     };
     this.purchaseListData.emit(purchaseList);
 
-    this.applicantCardService.addApplictionToPurchaseList(purchaseList)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.applicantCardService.purchaseListId.set(selectedListId);
-          this.applicantCardService.selectedListName.set(selectedListName);
-          this.applicantCardService.selectedListDescription.set(selectedListDescription);
-          this.applicantCardService.currentCv.update(c => c + 1);
-          this.applicantCardService.addApplicantToSelection(applicantId);
-          this.toastr.success('CV added successfully', 'Success');
-          this.isPurchasedBtnFade.set(true);
-          this.purchasePopoverVisible.set(false);
-        },
-        error: (err) => this.toastr.error('Error adding CV to list')
-      });
+    this.applicantCardService.addApplictionToPurchaseList(purchaseList).subscribe({
+      next: (response) => {
+        this.applicantCardService.purchaseListId.set(selectedListId);
+        this.applicantCardService.selectedListName.set(selectedListName);
+        this.applicantCardService.currentCv.update(c => c + 1);
+        this.applicantCardService.addApplicantToSelection(applicantId);
+
+        this.toastr.success('CV added successfully', 'Success');
+        this.isPurchasedBtnFade.set(true);
+        this.purchasePopoverVisible.set(false);
+      },
+      error: (err) => this.toastr.error('Error adding CV to list')
+    });
   }
 
-  getShortList() {
-    if (this.applicantCardService.isAlreadyAssignedToShortList()) {
-      this.addCvToShortList()
-    } else {
-      if (this.shortListData && this.shortListData.length > 0) {
-        this.shortListPopoverVisible.set(true)
-        return
-      }
-      this.applicantCardService.getShortList()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (res) => {
-            this.shortListPopoverVisible.set(true)
-            this.shortListData = res ?? [];
-            console.log(this.shortListData);
-
-          }
-        })
-    }
-  }
-
-  selectedShortListGroup($event: ShortListData): void {
-    this.selectedShortList.set($event);
-    this.ShortListGroupName.set($event.groupName);
-    this.ShortListGroupId.set($event.id);
-    this.ShortListGroupDescription.set($event.groupDescription)
-    this.ShortListGroupCategoryId.set($event.groupId)
-    this.applicantCardService.setSelectedShortList($event.id, $event.groupName, $event.groupDescription, $event.groupId);
-  }
-
-  addCvToShortListGroup() {
-    if (!this.selectedShortList() || !this.ShortListGroupId()) {
-      this.toastr.warning('Please Select Shortlisting Group first', 'Warning')
-      return
-    }
-
-    this.shortListPopoverVisible.set(false)
-    const shortList: ShortListPayload = {
-      isInsert: 1,
-      id: this.ShortListGroupId(),
-      cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
-      categoryId: this.selectedShortList().groupId,
-      categoryName: this.selectedShortList().groupName,
-      categoryDescription: this.selectedShortList().groupDescription,
-      encodedApplicantID: this.applicant().applicantId,
-      candidateCvs: []
-    }
-    console.log(shortList);
-
-    this.applicantCardService.addApplicantToShortList(shortList)
-      .pipe(
-        filter(response => response.responseCode === ResponseCode.success),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
-        next: (res) => {
-          this.applicantCardService.shortListId.set(this.ShortListGroupId());
-          this.applicantCardService.selectedShortListName.set(this.ShortListGroupName());
-          this.applicantCardService.selectedShortListDescription.set(this.ShortListGroupDescription())
-          this.applicantCardService.selectedShortListCategoryId.set(this.ShortListGroupCategoryId())
-          const shortListCvCount = this.selectedShortList().numberOfCVs + 1
-          this.applicantCardService.shortListCvCount.set(shortListCvCount)
-          this.toastr.success('Cv added to shortlisting group successfully', 'success')
-          this.applicantCardService.addApplicatToShortListGroupSelection(this.applicant().applicantId)
-          this.applicantCardService.showShortListToast(
-            this.ShortListGroupName(),
-            shortListCvCount
-          )
-          this.applicantCardService.isAlreadyAssignedToShortList.set(true)
-          this.shortListPopoverVisible.set(false)
-          this.addedToShortList.emit(true)
-        },
-        error: (err) => {
-          this.toastr.error('Failed to add shortlisting group.', 'Error')
-          this.applicantCardService.setSelectedShortList('', '', '', null)
-        }
-      })
-  }
-
-  addCvToShortList() {
-    const selectedShortListId = this.applicantCardService.shortListId()
-    const selectedShortListName = this.applicantCardService.selectedShortListName();
-    const selectedShortListDescription = this.applicantCardService.selectedShortListDescription();
-    const selectedShortListCategoryId = this.applicantCardService.selectedShortListCategoryId();
-    if (!selectedShortListId || !selectedShortListName) {
-      this.toastr.warning('Please select Shortlisting Group first', 'Warning');
-      return;
-    }
-
-    const shortList: ShortListPayload = {
-      isInsert: 1,
-      id: selectedShortListId,
-      cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
-      categoryId: selectedShortListCategoryId ?? 0,
-      categoryName: selectedShortListName,
-      categoryDescription: selectedShortListDescription,
-      encodedApplicantID: this.applicant().applicantId,
-      candidateCvs: []
-    }
-    this.applicantCardService.addApplicantToShortList(shortList)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (res) => {
-          this.applicantCardService.shortListId.set(selectedShortListId);
-          this.applicantCardService.selectedShortListName.set(selectedShortListName);
-          this.applicantCardService.selectedShortListDescription.set(selectedShortListDescription)
-          this.applicantCardService.selectedShortListCategoryId.set(selectedShortListCategoryId)
-          this.toastr.success('Cv added to shortlisting group successfully', 'success')
-          this.applicantCardService.addApplicatToShortListGroupSelection(this.applicant().applicantId)
-          this.addedToShortList.emit(true)
-          const shortListCvCount = this.applicantCardService.shortListCvCount() + 1;
-          this.applicantCardService.shortListCvCount.set(shortListCvCount);
-          this.applicantCardService.showShortListToast(
-            selectedShortListName,
-            shortListCvCount
-          )
-          this.shortListPopoverVisible.set(false)
-        }
-      })
-
-  }
-
-  createShortListingGroup() {
-    if (this.newShortListName.value?.trim() === '') {
-      this.toastr.warning('Please enter a short list group name', 'Warning');
-      return;
-    }
-    if (this.newShortListName.valid && this.newShortListDescription.valid) {
-      const payload = {
-        isInsert: 1,
-        id: null,
-        cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
-        categoryId: null,
-        categoryName: this.newShortListName.value,
-        categoryDescription: this.newShortListDescription.value,
-        candidateCvs: []
-      }
-      this.applicantCardService.addApplicantToShortList(payload)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (res) => {
-            this.isCreateShortlistedGroup.set(false)
-            this.newShortListName.setValue('')
-            this.newShortListDescription.setValue('')
-            this.toastr.success('Shortlisting group created successfully', 'Success');
-            this.applicantCardService.getShortList()
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-                next: (res) => {
-                  this.shortListPopoverVisible.set(true)
-                  this.shortListData = res ?? [];
-                }
-              })
-          },
-          error: (err) => {
-            this.toastr.error('Error creating shortlisting group', 'Error');
-          }
-        });
-    }
-
-  }
-
-  shortListPopoverClose() {
-    this.applicantCardService.setSelectedShortList('', '', '', null)
-    this.shortListPopoverVisible.set(false);
-    this.isCreateShortlistedGroup.set(false)
-    this.newShortListName.reset()
-    this.newShortListDescription.reset()
-  }
-
-  removeCvFromShortListedGroup() {
-    const reqBody: ShortListedCvDeleteReqBody = {
-      cpId: this.localStorageService.getItem(CompanyIdLocalStorage),
-      id: this.filterStore.shortlistGuidId() as string,
-      groupId: this.applicant().shortList,
-      encodedCandidateId: this.applicant().applicantId,
-      candidateId: null,
-    }
-
-    this.applicantCardService.removeFromShortListGroup(reqBody)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.queryService.isRefreshQuery.next(true);
-          this.toastr.success('This cv is successfully deleted from this shortlisted group', 'Success');
-        },
-        error: (res) => {
-          this.toastr.error('Error occurred when try to delete this cv  from this shortlisted group', 'Error');
-        }
-      })
-  }
-
-  removeCvFromPurchaseList() {
-    const id = this.homeStore.filter()?.filters.category?.category.filters?.['id']
-    const listId = this.homeStore.filter()?.filters.category?.category.filters?.['listId']
-
-    const reqBody: PurchaseListCvDeleteReqbody = {
-      id: id,
-      listID: listId,
-      candidateIds: [],
-      encCandId: this.applicant().applicantId,
-      companyId: this.localStorageService.getItem(CompanyIdLocalStorage)
-    }
-    
-    this.applicantCardService.removeFromPurchaseList(reqBody)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.queryService.isRefreshQuery.next(true);
-          this.toastr.success('This cv is successfully deleted from this purchase list', 'Success');
-        },
-        error: (res) => {
-          this.toastr.error('Error occurred when try to delete this cv  from this purchase list', 'Error');
-        }
-      })
-  }
-  onUnlockProfileClick(): void {
-    const resumeId = this.applicant().applicantId;
-    if (resumeId) {
-      this.unlockProfileClicked.emit(resumeId);
-    }
-  }
 }

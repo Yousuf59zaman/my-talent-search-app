@@ -27,7 +27,7 @@ export class PurchasedListService {
         return this.http.post<ApiResponse<any>>(editInputUrl,reqBody);
       }
 
-  deletePurchasedList(query:{id: string , ListID:number}) {
+  deletePurchasedList(query:{id: string}) {
     const deleteUrl = `${environment.apiUrl}/CvBankInsights/CvBankPurchaseListDelete`;
     return this.http.post<ApiResponse<any>>(deleteUrl,query);
   }

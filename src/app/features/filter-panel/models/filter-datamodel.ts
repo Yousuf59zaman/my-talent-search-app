@@ -8,7 +8,7 @@ export interface SearchCountResponse {
     Top: number;
   };
   industries: { [key: string]: number };
-  majosSubject: { [key: string]: number };
+  majorSubjects: { [key: string]: number };
   eduLevels: { [key: string]: number };
   StarCandidate: {
     StarCandidate: number;
@@ -178,8 +178,8 @@ export const DegreeLevel = [
 export interface SaveFilterRequest {
   isInsert: number;
   id?: string;
-    filterId?: number;
   cpId: string;
+  criteriaId?: number;
   criteriaName: string;
   parameters: Record<string, string>;
   cvCount: number;

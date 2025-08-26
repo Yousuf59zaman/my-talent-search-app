@@ -12,11 +12,10 @@
 }
 
 :host:hover ::-webkit-scrollbar {
-  height: 6px;
+  height: 10px;
 }
 
 :host:hover ::-webkit-scrollbar-thumb {
   background: #6b98b1;
   border-radius: 10px;
-  cursor: pointer;
 }

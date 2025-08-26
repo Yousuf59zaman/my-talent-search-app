@@ -20,14 +20,10 @@
             type="text" 
             placeholder="Write Filter name" 
             class="w-full border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            [formControl]="filterNameInput">
-            @if (filterNameInput.errors?.['maxlength']) {
-            <p class="text-red-600 text-sm mt-1">Name must not exceed 45 characters.</p>
-            }
-            @if (filterNameInput.errors?.['pattern']) {
-            <p class="text-red-600 text-sm mt-1">Please avoid using ', %, <,>, ", &, (, ).</p>
-            }
-            @if(isFilterFromSavedFilter()){
+            (input)="updateFilterName($event)"
+            [value]="filterNameInput()">
+          
+            @if(false){
               <div class="flex items-center mb-2">
                 <input 
                   type="checkbox" 
@@ -40,11 +36,10 @@
             }
           
           <button 
-            class="w-full bg-[#0E73A9] hover:bg-[#0A5980] text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            [disabled]="filterNameInput.invalid || (filterNameInput.value?.length || 0) > 45 "       
+            class="w-full bg-[#0E73A9] hover:bg-[#0A5980] text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             (click)="saveFilter()"
             >
-            {{ saveFilterButtonText() }}
+            Save Filter
           </button>
 
         </div>
@@ -277,8 +272,7 @@
       <div class="flex items-center mb-1">
         <img src="images/industry.svg" alt="" class="w-5 h-5 mr-1">
         <label class="text-base font-bold text-[#0E73A9]">Industry/Organization</label>
-      </div>
-      <app-multi-select
+      </div><app-multi-select
         [overLayVisibleOnlyOnFocus]="false"
         [isBindSelectedItemsOnly]="true"
         [isShowSelectedItemsAsChip]="true"
@@ -388,8 +382,7 @@
           @for (eduLevel of suggestionsWithCounts()?.eduLevels; track eduLevel.value) {
             <div class="flex items-center justify-between text-sm">
               <div class="flex items-center">
-                <input
-                  (change)="selectedEduLevel.set(eduLevel.value)"
+                <input 
                   [id]="'edu-' + eduLevel.value" 
                   name="education-level" 
                   type="radio" 
@@ -412,16 +405,6 @@
               [control]="isHighestDegreeControl()" 
               [name]="'highest-degree'">
             </app-checkbox>
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-gray-700">Exam/Degree Title</label>
-          <div class="mb-3">
-            <app-select 
-              [control]="examTitleControl()" 
-              [options]="filteredExamOptions()" 
-              [falseOption]="true">
-            </app-select>
           </div>
         </div>
     </div>

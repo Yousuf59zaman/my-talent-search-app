@@ -44,8 +44,8 @@ export class AppComponent implements OnInit {
 
     if (isDevMode()) {
       //sadman_test
-      this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
-      this.localStorageService.setItem(UserId, 'ZRYxPRG7')
+      // this.localStorageService.setItem(CompanyId, 'ZRLzZRdx')
+      // this.localStorageService.setItem(UserId, 'ZRYxPRG7')
       //bunny test
       // this.localStorageService.setItem(CompanyId, 'ZRS1PEUu')
       // this.localStorageService.setItem(UserId, 'ZRg3ZxG1')
@@ -71,10 +71,6 @@ export class AppComponent implements OnInit {
       //test
       //  this.localStorageService.setItem(CompanyId,'ZRZ3IRd0')
       //  this.localStorageService.setItem(UserId,'ZC==')
-
-      // JobeekerTest
-      //  this.localStorageService.setItem(CompanyId,'ZRS1ZEGw')
-      //  this.localStorageService.setItem(UserId,'ZRg3ZEg0')
 
       this.localStorageService.setItem(IsCorporateUser, 'true')
       this.localStorageService.setItem(LastUserType, LastUserTypes.Corporate)

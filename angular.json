@@ -19,7 +19,7 @@
           "options": {
             "outputPath": "dist/cv-bank",
             "outputHashing": "all",
-            "baseHref": "/cv-bank-dashboard/",
+            "baseHref": "/talent-search-dashboard/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [

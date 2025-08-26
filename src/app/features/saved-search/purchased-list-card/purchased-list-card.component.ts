@@ -1,41 +1,31 @@
-import { Component, computed, DestroyRef, ElementRef, EventEmitter, HostListener, inject, Output, signal, ViewChild, input, output } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, EventEmitter, HostListener, inject, Output, signal, ViewChild, input } from '@angular/core';
 import { EditPurchasedListInputRequestBody, PurchasedList } from '../model/purchased-list.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, mergeMap } from 'rxjs';
 import { ConfirmationModalService } from '../../../core/services/confirmationModal/confirmation-modal.service';
 import { PurchasedListService } from '../services/purchased-list.service';
-import { AbstractControl, FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { ResponseCode } from '../../../shared/enums/app.enums';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../../core/services/auth/auth.service';
-import { HomeQueryStore } from '../../../store/home-query.store';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-purchased-list-card',
-  imports: [InputComponent, ReactiveFormsModule],
+  imports: [InputComponent],
   templateUrl: './purchased-list-card.component.html',
   styleUrl: './purchased-list-card.component.scss'
 })
 export class PurchasedListCardComponent {
+  readonly card = input.required<PurchasedList>();
   protected confirm =inject(ConfirmationModalService)
   protected destroyRef = inject(DestroyRef) 
   protected purchasedListService = inject(PurchasedListService)
-  private toastr = inject(ToastrService);
-  private authService = inject(AuthService);
-  private homeStore = inject(HomeQueryStore);
-  private router = inject(Router);
-  IsCorporateUser = signal(false)
-  readonly card = input.required<PurchasedList>();
-  changeActiveTab = output<string>();
   @Output() purchasedListUpdated = new EventEmitter<void>(); 
   @Output() purchasedListDeleted = new EventEmitter<void>();
   isPurchasedListEdit = signal(false)
   @ViewChild('editInput', { static: false }) editInput!: ElementRef;
 
   purchasedTitleControl = new FormControl('',[Validators.required, this.noLeadingOrOnlyWhitespaceValidator()]);
-  purchasedDetailsControl = new FormControl('', [Validators.maxLength(250),Validators.pattern(/^[^'%"<>&()]*$/)])
+  purchasedDetailsControl = new FormControl('');
 
   noLeadingOrOnlyWhitespaceValidator(): ValidatorFn {
     return (control: AbstractControl) => {
@@ -82,26 +72,19 @@ export class PurchasedListCardComponent {
     }
 
   editPurchasedListSubmit(){
-    this.toggleShortlistedCvEditButton()
     const trimmedValue = this.purchasedTitleControl.value?.trim() || '';
     this.purchasedTitleControl.setValue(trimmedValue);
-     const name = this.purchasedTitleControl.value || '';
-    const description = this.purchasedDetailsControl.value || '';
-    if (name.length > 45 || description.length > 250) {
-      this.purchasedTitleControl.setErrors({ maxlength: true });
-      this.purchasedDetailsControl.setErrors({ maxlength: true });
-      return;
-    }
-    if (this.purchasedTitleControl.invalid && this.purchasedDetailsControl.invalid) {
+
+    if (this.purchasedTitleControl.invalid) {
       this.purchasedTitleControl.markAsTouched();
       return;
     }
 
     const reqBody: EditPurchasedListInputRequestBody = {
-      cpId: this.card().companyId,
-      purchaseListName: name,
-      purchaseListDescription: description,
-      purchaseListId:this.card().listId
+      id: this.card().id,
+      CpId: this.card().companyId,
+      PurchaseListName: this.purchasedTitleControl.value || '',
+      PurchaseListDescription: this.purchasedDetailsControl.value || ''
     }
     this.purchasedListService
       .submitPurchasedListEdit(reqBody)
@@ -114,7 +97,6 @@ export class PurchasedListCardComponent {
         }
       })
   }
-
   protected purchasedListCvDelete(): void {
     this.confirm.openModal({
       isOpen: true,
@@ -131,18 +113,13 @@ export class PurchasedListCardComponent {
       takeUntilDestroyed(this.destroyRef), 
       filter((response) => response?.event?.isConfirm === true),
       mergeMap(() => {
-        return this.purchasedListService.deletePurchasedList({ 
-          id: this.card().id,
-          ListID:this.card().listId 
-        });
+        return this.purchasedListService.deletePurchasedList({ id: this.card().id });
       })
     ).subscribe({
       next: () => {
         this.purchasedListDeleted.emit()
-        this.toastr.success('Purchased List delete successfuly', 'Success');
       },
       error: (error) => {
-        this.toastr.error('error while deleting the Purchased List', 'Error');
         console.log('error while deleting the shortlisted cv', error);
         
       }
@@ -172,32 +149,6 @@ export class PurchasedListCardComponent {
   
     document.body.appendChild(form);
     form.submit();
-  }
-
-  onClickPurchased(isAlreadyPurchased: boolean) {
-    if (this.authService.isVerified()) {
-      this.homeStore.setFilter({
-        category: {
-          type: 'purchased',
-          category: {
-        id: this.card().listId as number,
-        value: this.card().listId as number,
-        categoryName: this.card().listName,
-        filters: {
-          ...this.card(),
-          isAlreadyPurchased: isAlreadyPurchased,
-        },
-          },
-        },
-      });
-      if (this.router.url === '/cv-search') {
-        this.changeActiveTab.emit('cv-search');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        this.router.navigate(['/cv-search']);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
   }
   
 }
