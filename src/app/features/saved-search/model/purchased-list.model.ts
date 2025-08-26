@@ -9,8 +9,8 @@ export interface PurchasedList {
     createdOn:string
 }
 export interface EditPurchasedListInputRequestBody {
-    id: string
-    PurchaseListName : string
-    PurchaseListDescription : string
-    CpId:string
+    cpId: string,
+    purchaseListId: number,
+    purchaseListName: string,
+    purchaseListDescription: string,
 }

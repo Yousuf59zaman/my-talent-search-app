@@ -19,7 +19,7 @@ export abstract class ApplicantCard {
       frmjobseeker: isCorporate ? '0' : '1',
     }));
 
-    return `https://recruiter.bdjobs.com/cvdetails/details-view?Idn=${applicant.applicantId
+    return `https://gateway.bdjobs.com/cvdetails/details-view?Idn=${applicant.applicantId
       }&key=&keytype=&purchasedCV=${applicant.isPurchased
       }&blueCollarCV=${applicant.isBlueCollarCat
       }&frmjobseeker=${isCorporate ? '0' : '1'

@@ -1,7 +1,9 @@
-import { filter } from 'rxjs';
 import { SelectItem } from '../../../shared/models/models';
 import { MaxAgeRange, MaxExpRange, MaxSalaryRange } from '../../search-talent/search-talent/search-talent.component';
 import { FilterForm } from '../models/form.models';
+import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
+import { CompanyId } from '../../../shared/utils/app.const';
+import { LastUserType } from '../../../shared/enums/app.enums';
 
 export class QueryBuilder {
   CompanyId: string;
@@ -48,9 +50,13 @@ export class QueryBuilder {
   reqCount = '0';
   immediateAvailable = '';
   isStarCandidate = false;
+  WishListId = '';
+  AlreadyPurchased= '0';
+  CorporateUser:number 
 
-  constructor(filterData: FilterForm, compamyId: string, pageNo: number = 1) {
-    this.CompanyId = compamyId || '';
+  constructor(filterData: FilterForm, localStorageService:LocalstorageService, pageNo: number = 1) {
+    this.CorporateUser = +(localStorageService.getItem(LastUserType))
+    this.CompanyId = localStorageService.getItem(CompanyId) || '';
     this.qPgNo = pageNo.toString();
     this.CatId =
       filterData.category && filterData.category.length
@@ -100,6 +106,9 @@ export class QueryBuilder {
     this.immediateAvailable = filterData.immediateAvailable ? '1' : '0';
     this.qwatchlist = filterData.shortlist ? filterData.shortlist.id : '';
     this.qLastUpdated = filterData.lastUpdated ? filterData.lastUpdated : '';
+    this.WishListId = filterData.purchaseListId || '';
+    this.AlreadyPurchased = filterData.isAlreadyPurchased ? '1' : '0';
+    this.qEduTitle = filterData.examTitle ? filterData.examTitle : ''
   }
 
   private getRangeQuery(experience: number[], maxRange: number[]): string {

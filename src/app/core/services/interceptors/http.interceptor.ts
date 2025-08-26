@@ -29,7 +29,14 @@ export class HTTPInterceptor implements HttpInterceptor {
             setHeaders: {
               'Content-Type': `application/x-www-form-urlencoded`,
             },
-            params: request.params.set('domain', this.getCurrentUrl().includes('recruiter.bdjobs.com') ? 'recruiter' : 'test'),
+            params: request.params.set(
+              'domain',
+              this.getCurrentUrl().includes('recruiter.bdjobs.com')
+                ? 'recruiter'
+                : this.getCurrentUrl().includes('gateway.bdjobs.com')
+                ? 'gateway'
+                : 'test'
+            )         
           });
         }
 

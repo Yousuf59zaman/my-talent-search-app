@@ -31,8 +31,8 @@
             href="https://recruiter.bdjobs.com/dashboard" aria-current="page">
             Job Dashboard
           </a>
-          <div class="relative w-32 h-8">
-            <img [routerLink]="['/']" class="w-full h-full" src="images/Talent Search Logo-02.svg" alt="">
+          <div class="relative w-32 h-8 cursor-pointer">
+            <img class="w-full h-full" (click)="navigateToHome()" src="images/Talent Search Logo-02.svg" alt="">
             <div class="absolute top-[41.5px] w-32 h-0.5 bg-[#0E73A9]"></div>
           </div>
     
@@ -55,7 +55,7 @@
             </button>
           </div>
         </div>
-        <div class="hidden md:flex flex-row items-center gap-4">
+        <div class="hidden md:flex flex-row items-center gap-2">
           @if(!loadingJobPostingService()){
           <!-- Job posting Access -->
           <div #jobPostingDropdown class="relative">
@@ -273,7 +273,7 @@
           }
           @if(!loadingCreditSystem()){
           <!-- credit system dropdown -->
-          <div #creditDropdown class="h-[38px] flex items-center border-l-2 border-[#0e73a9] ps-4 relative">
+          <div #creditDropdown class="h-[38px] flex items-center border-l-2 border-[#0e73a9] ps-2 relative">
             <button (click)="this.isCorporetCreditDropdownOpen.set(!this.isCorporetCreditDropdownOpen())"
               class="flex items-center w-full h-full text-gray-600 font-medium">
               <img src="https://recruiter.bdjobs.com/assets/images/credit-system.svg" alt="" class="h-[26px]" />
@@ -331,7 +331,7 @@
           </div>
           }
           <!-- profile dropdown -->
-          <div #profileDropdown class="border-l-2 border-[#0e73a9] ps-4 relative">
+          <div #profileDropdown class="border-l-2 border-[#0e73a9] ps-2 relative">
             <button (click)="this.isCorporetProfileDropdownOpen.set(!this.isCorporetProfileDropdownOpen())"
               class="flex items-center w-full text-gray-600  font-medium">
               <img class="inline-block w-[38px] h-[38px] border-2 border-[#DDF2FD] rounded-full" [src]="companyLogoURL()"
@@ -343,7 +343,7 @@
               </div>
             </button>
             @if(isCorporetProfileDropdownOpen()){
-            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-[51px] border">
+            <div class="w-48 z-10 bg-white shadow-md rounded-lg p-2 absolute top-[51px] -left-14 border">
               <a href="https://Corporate3.bdjobs.com/Billings.asp"
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-taka itaka"></span>
@@ -363,7 +363,7 @@
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-com"></span>
                 <span class="icolor">Communication</span></a>
-              <a href="https://Corporate3.bdjobs.com/support.asp"
+              <a href="https://recruiter.bdjobs.com/RecruiterAccount/faq"
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-help"></span>
                 <span class="icolor">Support </span></a>
@@ -709,7 +709,7 @@
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-com"></span>
                 <span class="icolor">Communication</span></a>
-              <a href="https://Corporate3.bdjobs.com/support.asp"
+              <a href="https://recruiter.bdjobs.com/RecruiterAccount/faq"
                 class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800  focus:ring-2 focus:ring-blue-500"><span
                   class="icon-help"></span>
                 <span class="icolor">Support </span></a>
@@ -776,7 +776,7 @@
         <div>
           <a href="https://mybdjobs.bdjobs.com/mybdjobs/masterview.asp" class="hidden md:flex items-center gap-2">
             <img class="w-10 h-10 rounded-full" [src]="companyLogoURL()" alt="">
-            <p class="text-[#101828] hover:text-[#0E73A9] text-base font-medium">{{companyName()}}</p>
+            <p class="text-[#101828] hover:text-[#0E73A9] text-base font-medium">{{companyName() | truncate: 30}}</p>
           </a>
         </div>
       </div>
@@ -795,7 +795,7 @@
         <div>
           <a class="flex items-center gap-2" href="https://mybdjobs.bdjobs.com/mybdjobs/masterview.asp">
             <img class="w-6 h-6 rounded-full" [src]="companyLogoURL()" alt="">
-            <p class="text-[#101828] text-sm font-normal">{{companyName()}}</p>
+            <p class="text-[#101828] text-sm font-normal">{{companyName() | truncate: 30}}</p>
           </a>
         </div>
       </div>

@@ -46,7 +46,59 @@ export class SavedSearchCard{
         this.description = data.type === ShortlistedCv ? data.groupDescription :undefined;
         this.numberOfCVs = data.numberOfCVs
         this.createdOn = data.createdOn
-        this.filters = data.type === SavedFilter ? data.filters : undefined;
+        this.filters = data.type === SavedFilter ? this.genFiltersFromOldObject(data.filters) : undefined;
+    }
+
+    private genFiltersFromOldObject(filters: Record<string, string>): Record<string, string> {
+        if (filters['AgeMax'] && filters['AgeMin']) {
+            filters['qAge'] = `${filters['AgeMin']}/${filters['AgeMax']}`;
+            delete filters['AgeMax'];
+            delete filters['AgeMin'];
+        }
+        if(filters['ExpFrom'] && filters['ExpTo']){
+            filters['qExp'] = `${filters['ExpFrom']}/${filters['ExpTo']}`
+            delete filters['ExpFrom'];
+            delete filters['ExpTo']
+        }
+        if(filters['catID']){
+            filters['CatId'] = filters['catID']
+            delete filters['catID']
+        }
+        if(filters['eduLevel']){
+            filters['qEduLevel'] = filters['eduLevel']
+            delete filters['eduLevel']
+        }
+        if(filters['Major']){
+            filters['qDegree'] = filters['Major']
+            delete filters['Major']
+        }
+        if(filters['Institute']){
+            filters['InsName'] = filters['Institute']
+            delete filters['Institute']
+        }
+        if(filters['Skill']){
+            filters['qOrgType'] = filters['Skill']
+            delete filters['Skill']
+        }
+        if(filters['keyword']){
+            filters['qKeyword'] = filters['keyword']
+            delete filters['keyword']
+        }
+        if(filters['keywordFilterType']){
+            filters['qkeywordfiltertype'] = filters['keywordFilterType']
+            delete filters['keywordFilterType']
+        }
+        if(filters['PerferedLevel']){
+            filters['qPref'] = filters['PerferedLevel']
+            delete filters['PerferedLevel']
+        }
+        if(filters['Gender']){
+            if(filters['Gender'] === 'M'|| filters['Gender'] === 'F'|| filters['Gender'] === 'O'){
+                filters['qSex'] = filters['Gender']
+            }
+            delete filters['Gender']
+        }
+        return filters;
     }
 }
 

@@ -1,12 +1,12 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiResponse, CustomCvDownloadResponse } from '../../../shared/models/response';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { LocalstorageService } from '../../../core/services/essentials/localstorage.service';
 import { CompanyIdLocalStorage, UserId } from '../../../shared/enums/app.enums';
 import { environment } from '../../../../environments/environment';
 import { DownloadCVRequest } from '../class/card-query-builder';
-import { VideoResponse, SkillExperienceResponse, GetPurchaseListResponse, PurchaseList } from '../models/applicant.model';
+import { VideoResponse, SkillExperienceResponse, GetPurchaseListResponse, PurchaseList, ShortListData, ShortListedCvDeleteReqBody, PurchaseListCvDeleteReqbody } from '../models/applicant.model';
 import { CompanyId } from '../../../shared/utils/app.const';
 
 @Injectable({
@@ -14,16 +14,25 @@ import { CompanyId } from '../../../shared/utils/app.const';
 })
 export class ApplicantCardService {
   isAlreadyAssigned = signal(false);
+  isAlreadyAssignedToShortList = signal(false)
   purchaseListId = signal('');
   purchaseListNumericId = signal<number | null>(null);
   private recentlyAddedApplicants = signal<string[]>([]);
+  public recentlyAddedApplicantsToShortListGroup = signal<string[]>([])
+  shortListId = signal('')
 
   selectedListName = signal('');
+  selectedListDescription = signal ('')
   selectedApplicantIds = signal<string[]>([]);
+  selectedShortListName = signal('')
+  selectedShortListDescription = signal('')
+  selectedShortListCategoryId = signal<number | null>(null);
 
   currentCv = signal(0);
   wishlistCv = signal(0);
   totalCv = computed(() => this.currentCv() + this.wishlistCv());
+  shortListCvCount = signal(0)
+  shortListToastData = signal<{ name: string; count: number } | null>(null);
 
   currentTk = computed(() => {
     const cv = this.currentCv();
@@ -45,11 +54,27 @@ export class ApplicantCardService {
     this.wishlistCv.set(0);
   }
 
-  setSelectedPurchaseList(id: string, numericListId: number, name: string) {
+  setSelectedPurchaseList(id: string, numericListId: number, name: string, description:string,) {
     this.purchaseListId.set(id);
     this.purchaseListNumericId.set(numericListId);
     this.selectedListName.set(name);
+    this.selectedListDescription.set(description)
   }
+  setSelectedShortList(id: string, name: string , description: string, categoryId:number | null = null) {
+    this.shortListId.set(id);
+    this.selectedShortListName.set(name);
+    this.selectedShortListDescription.set(description)
+    this.selectedShortListCategoryId.set(categoryId)
+  }
+
+  addApplicatToShortListGroupSelection(applicantId:string){
+    this.recentlyAddedApplicantsToShortListGroup.update(ids => [...ids, applicantId]);
+  }
+
+  isInSelectedShortListId(applicantId: string): boolean {
+    return this.recentlyAddedApplicantsToShortListGroup().includes(applicantId);
+  }
+
   addApplicantToSelection(applicantId: string): void {
     this.recentlyAddedApplicants.update(ids => [...ids, applicantId]);
 
@@ -145,5 +170,36 @@ export class ApplicantCardService {
   }
   isInSelectedList(applicantId: string): boolean {
     return this.recentlyAddedApplicants().includes(applicantId);
+  }
+
+  getShortList(){
+    const baseUrl = environment.apiUrl + '/CvBankInsights/GetCvBankShortlist';
+    const params = new HttpParams()
+      .set('CompanyID', this.localStorageService.getItem(CompanyId));
+    return this.http.get<ApiResponse<ShortListData[]>>(baseUrl, { params })
+    .pipe( map((res)=>res.data) )
+  }
+
+  addApplicantToShortList(reqBody: any){
+    const baseUrl = environment.apiUrl + '/CvBankInsights/CvBankShortlist';
+    return this.http.post<ApiResponse<any>>(baseUrl, reqBody);
+  }
+
+  showShortListToast(name: string, count: number) {
+    this.shortListToastData.set({ name, count });
+  }
+
+  clearShortListToast() {
+    this.shortListToastData.set(null);
+  }
+
+  removeFromShortListGroup(reqBody:ShortListedCvDeleteReqBody){
+    const url = environment.apiUrl + '/CvBankInsights/ShortListedCVDelete'
+    return this.http.post<ApiResponse<any>>(url, reqBody)
+  }
+
+  removeFromPurchaseList(reqBody:PurchaseListCvDeleteReqbody){
+    const url = environment.apiUrl + '/CvBankInsights/PurchasedCVDelete'
+    return this.http.post<ApiResponse<any>>(url, reqBody)
   }
 }

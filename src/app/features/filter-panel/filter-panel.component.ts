@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, OnInit, input, OnChanges, SimpleChanges } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl, Validators } from '@angular/forms';
 import { RangeSliderComponent } from '../../shared/components/range-slider/range-slider.component';
 import { CheckboxComponent } from '../../shared/components/checkbox/checkbox.component';
 import { InputWithSearchComponent } from '../../shared/components/input-with-search/input-with-search.component';
@@ -8,21 +8,23 @@ import { MultiSelectComponent } from '../../shared/components/multi-select/multi
 import { RadioComponent } from '../../shared/components/radio/radio.component';
 import { MultiSelectQueryEvent, SelectItem } from '../../shared/models/models';
 import { AgeRangeConfig, DefaultPageSize, ExpRangeConfig, SalaryRangeConfig } from '../../shared/utils/app.const';
-import { combineLatest, debounceTime, distinctUntilChanged, Observable, of, skip, skipWhile, startWith, Subject, switchMap, map, tap } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, Observable, of, skip, skipWhile, startWith, Subject, switchMap, map, tap, filter } from 'rxjs';
 import { FilterDataService } from './services/filter-data.service';
 import { CommonModule } from '@angular/common';
 import { IndustryTypeResponse, InstituteResponse, SearchCountObject, SkillResponse } from './models/filter-datamodel';
-import { HomeFilterForm, HomeQueryStore, IHomeQueryStore } from '../../store/home-query.store';
+import { HomeFilterForm, IHomeQueryStore } from '../../store/home-query.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FilterForm, FilterFormControls } from './models/form.models';
 import { DefaultAge, DefaultExpRange, DefaultSalary, MaxAgeRange, MaxExpRange, MaxSalaryRange } from '../search-talent/search-talent/search-talent.component';
 import { QueryService } from './services/query.service';
 import { FilterBadge } from '../active-filters/active-filters/active-filters.component';
-import { ModalService } from '../../core/services/modal/modal.service';
 import { LocalstorageService } from '../../core/services/essentials/localstorage.service';
 import { IsCorporateUser } from '../../shared/enums/app.enums';
 import { SelectComponent } from '../../shared/components/select/select.component';
 import { ToastrService } from 'ngx-toastr';
+import { QueryBuilderReverse } from './services/query-builder-reverse';
+import { FilterStore } from '../../store/filter.store';
+import { ExamOptions } from './utility/functions';
 
 @Component({
   selector: 'app-filter-panel',
@@ -36,7 +38,6 @@ import { ToastrService } from 'ngx-toastr';
     InputWithSearchComponent,
     SelectComponent,
   ],
-  providers: [FilterDataService],
   templateUrl: './filter-panel.component.html',
   styleUrl: './filter-panel.component.scss',
   animations: [
@@ -103,6 +104,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     videoCV: new FormControl<boolean>(false),
     shortlist: new FormControl<{ id: string; name: string } | null>(null),
     lastUpdated: new FormControl<string | null>(null),
+    purchaseListId: new FormControl<string | null>(null),
+    isAlreadyPurchased: new FormControl<boolean | null>(false),
+    examTitle: new FormControl<string | null>(null)
   });
 
   ageRangeConfig = AgeRangeConfig;
@@ -111,12 +115,19 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   multiSelectType = MultiSelectType;
 
   private _isSaveFilterPopoverVisible = signal<boolean>(false);
-  private _filterNameInput = signal<string>('');
   private _saveAsNewFilter = signal<boolean>(false);
+  private selectedSavedFilterId = signal<string | null>(null);
+   private selectedFilterId = signal<number | null>(null);
+  // Add a signal to store the title of the selected saved filter
+  private selectedSavedFilterTitle = signal<string | null>(null);
   suggestionsWithCounts = signal<SearchCountObject | null>(null);
   private activeFilterTypeSignal = signal<string>('category');
   private activeFilterSection = signal<string>('quickFilters');
 
+  filterNameInput = new FormControl('', [Validators.required,
+    Validators.maxLength(45),
+    Validators.pattern(/^[^'%"<>&()]*$/),
+  ]);
   salaryControl = computed(
     () => this.filterForm.get('expectedSalary') as FormControl<number[]>
   );
@@ -220,8 +231,15 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isSaveFilterPopoverVisible = computed(() =>
     this._isSaveFilterPopoverVisible()
   );
-  filterNameInput = computed(() => this._filterNameInput());
+
+  isFilterFromSavedFilter = computed(() => this.selectedSavedFilterId() !== null);
+
   saveAsNewFilter = computed(() => this._saveAsNewFilter());
+
+  // Add a computed property for the save button text
+  saveFilterButtonText = computed(() => 
+    this.selectedSavedFilterId() && !this._saveAsNewFilter() ? 'Update Filter' : 'Save Filter'
+  );
 
   isQuickFiltersOpen = computed(
     () => this.activeFilterSection() === 'quickFilters'
@@ -235,14 +253,15 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   isOthersFiltersOpen = computed(
     () => this.activeFilterSection() === 'othersFilters'
   );
-
+  examTitleControl = computed(
+    () => this.filterForm.get('examTitle') as FormControl<string | null>
+  );
   private currentFilterData: FilterForm = {} as FilterForm;
 
   private filterDataService = inject(FilterDataService);
-  private homeQueryStore = inject(HomeQueryStore);
+  private filterStore = inject(FilterStore);
   private destroyRef = inject(DestroyRef);
   private queryService = inject(QueryService);
-  private modalService = inject(ModalService);
   private storageService = inject(LocalstorageService);
 
   filteredLocationSuggestions = signal<SelectItem[]>([]);
@@ -253,6 +272,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   filteredCategorySuggestions = signal<SelectItem[]>([]);
   filteredCoursesSuggestions = signal<SelectItem[]>([]);
   filteredIndustryTypeSuggestions = signal<SelectItem[]>([]);
+  selectedEduLevel = signal<string | null>(null);
 
   genders = [
     { label: 'Male', id: 'Male', name: 'gender' },
@@ -268,6 +288,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     { label: '2 Years', value: '730' },
   ];
 
+  examOptions:SelectItem[] = ExamOptions
+  readonly filteredExamOptions = computed(() =>
+  this.examOptions.filter(opt => opt.selectId == String(this.selectedEduLevel())))
   isCorporateUser = computed(
     () => this.storageService.getItem(IsCorporateUser) === 'true'
   );
@@ -364,6 +387,15 @@ export class FilterPanelComponent implements OnInit, OnChanges {
       this.setIndustrySuggestions(industrySelectItems);
     });
 
+  private listenOnRefreshQuery = this.queryService.isRefreshQuery$
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+      filter((isRefresh) => isRefresh)
+    )
+    .subscribe({
+      next: () => this.queryService.filterQuery$.next(this.currentFilterData),
+    });
+
   filterQuery$!: Observable<FilterForm>;
   isTouchedAgeControl = signal(false);
   isTouchedExpControl = signal(false);
@@ -448,6 +480,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         startWith(this.shortlist() ? this.shortlist() : null)
       ),
       controls.lastUpdated.valueChanges.pipe(startWith(null)),
+      controls.purchaseListId.valueChanges.pipe(startWith(null)),
+      controls.isAlreadyPurchased.valueChanges.pipe(startWith(null)),
+      controls.examTitle.valueChanges.pipe(startWith(null))
     ];
 
     this.filterQuery$ = combineLatest(formControlsObs$).pipe(
@@ -496,6 +531,9 @@ export class FilterPanelComponent implements OnInit, OnChanges {
           videoCV: controls && controls.length ? controls[29] : null,
           shortlist: controls && controls.length ? controls[30] : null,
           lastUpdated: controls && controls.length ? controls[31] : null,
+          purchaseListId: controls && controls.length ? controls[32] : null,
+          isAlreadyPurchased: controls && controls.length ? controls[33] : null,
+          examTitle: controls && controls.length ? controls[34] : null
         };
 
         return formGroupObj;
@@ -745,8 +783,6 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   }
 
   getUpdatedItem($event: SelectItem[], label: string) {
-    console.log($event);
-    console.log(this.filterForm.value);
   }
 
   private getTimeBasedIdForSelect(value: number) {
@@ -767,13 +803,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
 
   closeSaveFilterPopover(): void {
     this._isSaveFilterPopoverVisible.set(false);
-    this._filterNameInput.set('');
     this._saveAsNewFilter.set(false);
-  }
-
-  updateFilterName(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this._filterNameInput.set(target.value);
   }
 
   toggleSaveAsNew(): void {
@@ -802,6 +832,7 @@ export class FilterPanelComponent implements OnInit, OnChanges {
       changes['filtersFromDashboard'] &&
       changes['filtersFromDashboard'].currentValue
     ) {
+      this.queryService.isQueryLoading.next(true);
       this.syncFilterFormWithDashboardFilters();
     }
     if (changes['shortlist'] && changes['shortlist'].currentValue) {
@@ -843,9 +874,12 @@ export class FilterPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  syncFilterFormWithDashboardFilters() {
+  async syncFilterFormWithDashboardFilters() {
     if (this.filtersFromDashboard()) {
       const filter = this.filtersFromDashboard();
+      this.selectedSavedFilterId.set(null);
+      this.selectedFilterId.set(null);
+      this.selectedSavedFilterTitle.set(null);
       if (
         filter?.filters.age &&
         this.isDefaultRange(filter?.filters.age, DefaultAge)
@@ -932,6 +966,55 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.updateCategoryFilter(filter);
         this.filterForm.get('showStarCandidates')?.setValue(true);
       }
+      if (
+        filter?.filters.category &&
+        filter.filters.category.type === 'shortlisted'
+      ) {
+        this.filterForm.get('shortlist')?.setValue({
+          id: filter.filters.category.category.id.toString(),
+          name: filter.filters.category.category.categoryName,
+        });
+        this.filterStore.setIsShortlist(true);
+        if (
+          filter?.filters.category.category.filters &&
+          filter.filters.category.category.filters['id'] !== undefined
+        ) {
+          this.filterStore.setShortlistGuidId(
+            filter.filters.category.category.filters['id']
+          );
+        }
+      }
+      if (
+        filter?.filters.category &&
+        filter.filters.category.type === 'saved'
+      ) {
+        this.selectedSavedFilterId.set(
+          filter.filters.category.category.filters?.['id'] ?? null
+        );
+          this.selectedFilterId.set(filter.filters.category.category.id);
+        // Set the title of the saved filter
+        this.selectedSavedFilterTitle.set(filter.filters.category.category.categoryName);
+        const form = await QueryBuilderReverse.toFilterForm(
+          filter.filters.category.category.filters,
+          this.filterDataService
+        );
+        if(filter.filters.category.category.filters?.['qEduLevel']){
+          this.selectedEduLevel.set(filter.filters.category.category.filters?.['qEduLevel'])
+        }
+        this.filterForm.patchValue(form);
+      }
+      if (filter?.filters.category && filter.filters.category.type === 'purchased') {
+        this.filterForm.get('purchaseListId')?.setValue(
+          filter.filters.category.category.id.toString()
+        );
+        this.filterForm.get('isAlreadyPurchased')?.setValue(
+          filter?.filters.category.category.filters &&
+          filter.filters.category.category.filters['isAlreadyPurchased'] !== undefined
+            ? filter.filters.category.category.filters['isAlreadyPurchased']
+            : null
+        );
+        this.filterStore.setIsPurchaseList(true);
+      }
       return;
     }
     this.triggerDefaultFilterQuery();
@@ -973,12 +1056,21 @@ export class FilterPanelComponent implements OnInit, OnChanges {
         this.experienceControl().setValue(MaxExpRange);
         this.salaryControl().setValue(MaxSalaryRange);
         this.ageControl().setValue(MaxAgeRange);
+        // Reset saved filter related signals
+        this.selectedSavedFilterId.set(null);
+        this.selectedFilterId.set(null);
+        this.selectedSavedFilterTitle.set(null);
+        this.filterNameInput.setValue('');
         return;
       }
       const filterKey = removedFilter.id as keyof FilterFormControls;
       const control = this.filterForm.get(filterKey);
       if (control) {
         const currentValue = control.value;
+        if (filterKey === 'isAlreadyPurchased' && !this.isCorporateUser()) {
+          this.filterForm.get('purchaseListId')?.setValue(null);
+          this.filterStore.setIsPurchaseList(false);
+        }
         if (
           Array.isArray(currentValue) &&
           currentValue.length === 2 && // a range control
@@ -1020,17 +1112,27 @@ export class FilterPanelComponent implements OnInit, OnChanges {
   }
   saveFilterpopup(): void {
     this._isSaveFilterPopoverVisible.set(true);
+    // If there is a saved filter title and the input is empty, set it
+    if (this.selectedSavedFilterTitle() && !this.filterNameInput.value) {
+      this.filterNameInput.setValue(this.selectedSavedFilterTitle());
+    }
   }
   public toastr = inject(ToastrService);
   saveFilter(): void {
-    const filterName = this.filterNameInput();
-    if (!filterName.trim()) {
-      this.toastr.warning('Please enter a filter name!', 'Error');
+    const filterName = this.filterNameInput.value || '';
+    if (filterName.trim() === '') {
+      this.toastr.warning('Please enter a Save Filter name', 'Warning');
       return;
     }
 
     this.filterDataService
-      .saveFilter(this.currentFilterData, filterName, this._saveAsNewFilter())
+      .saveFilter(
+        this.currentFilterData,
+        filterName,
+        this._saveAsNewFilter(),
+        this.selectedSavedFilterId(),
+        this.selectedFilterId()
+      )
       .subscribe({
         next: (response) => {
           this.closeSaveFilterPopover();

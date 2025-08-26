@@ -24,17 +24,17 @@ export class SavedSearchComponent {
   companyId = this.LocalStorageService.getItem(CompanyId)
 
   tabs = [
-    { name: 'All Category', component: AllCategoryTabComponent },
     { name: 'Saved Filters', component: SavedFiltersTabComponent },
     { name: 'Shortlisted CVs', component: ShortlistedCvTabComponent },
     { name: 'Purchase List', component: PurchasedListTabComponent },
+    { name: 'All Category', component: AllCategoryTabComponent },
     
   ];
   activeTab = signal(this.tabs[0]); 
 
-  // ngOnInit(){
-  //   this.getSavedFilterData()
-  // }
+  ngOnInit(){
+    this.getSavedFilterData()
+  }
   
   getSavedFilterData(){
     this.savedFilterService.getCVBankSavedFilter(this.companyId)
@@ -52,25 +52,5 @@ export class SavedSearchComponent {
         console.log('Error featching data', err)
       }
     })
-  } 
-  setActiveTab(tab: { name: string; component: any }) {
-    switch (tab.name) {
-      case 'Saved Filters':
-        window.location.href = 'https://corporate3.bdjobs.com/SaveFilter.asp?from=';
-        break;
-      
-      case 'Shortlisted CVs':
-        window.location.href = 'https://corporate3.bdjobs.com/ShortlistedCVs.asp?pgtype=wl&from=';
-        break;
-      
-      case 'Purchase List':
-        window.location.href = 'https://corporate3.bdjobs.com/PurchaseList.asp?from=recruiter';
-        break;
-      
-      default:
-        this.activeTab.set(tab);
-        break;
-    }
-    
   }
 }

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FilterStore } from '../../store/filter.store';
 
 export interface TabItem {
   id: string;
@@ -17,6 +18,7 @@ export interface TabItem {
   styleUrl: './tabs.component.scss'
 })
 export class TabsComponent {
+  filterQueryStore = inject(FilterStore);
   @Input() tabs: TabItem[] = [];
   @Input({ required: true }) set activeTabId(id: string) {
     this._activeTabId.set(id);
@@ -26,6 +28,9 @@ export class TabsComponent {
   _activeTabId = signal<string>('');
   
   selectTab(tab: TabItem): void {
+    this.filterQueryStore.setIsShortlist(false);
+    this.filterQueryStore.setShortlistGuidId(null);
+    this.filterQueryStore.setIsPurchaseList(false);
     if (tab.isExternalLink && tab.externalUrl) {
       // Open external link in a new tab
       window.open(tab.externalUrl, '_blank');

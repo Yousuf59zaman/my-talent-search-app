@@ -1,5 +1,5 @@
 @if(isCartShow()){
-  <div class="fixed top-1/2 right-0 bg-[#0E73A9] rounded-l-md z-10" (click)="clickCart()">
+  <div class="fixed top-1/2 right-0 bg-[#0E73A9] rounded-l-md z-10 cursor-pointer" (click)="clickCart()">
     <div class="absolute -top-4 -left-4 bg-[#EF4A23] rounded-xl h-6 w-6 flex items-center justify-center text-sm   text-white py-2 px-4">{{ApplicantCardService.currentCv()}}+</div>
    <div class="flex flex-col justify-center items-center py-2 px-4">
     <span class="icon-purchase text-white text-2xl"></span>
@@ -7,7 +7,7 @@
    </div>
   </div>
 }
-@if (!isCorporateUser()) {
+@if (!isCorporateUser() && activeTab() === 'cv-search') {
   <div class="fixed top-1/2 -translate-y-1/2 right-0 bg-[#0E73A9] text-white py-2 pr-4 pl-3 rounded-l-md z-10 shadow-md flex items-center gap-2">
     <img src="images/money-bag.svg" class="text-2xl">
     <div class="flex flex-col">
@@ -89,31 +89,47 @@
    </div>
   </div>
 }
+@if(isShortListNotificationShow()){
+  <div
+    class="fixed bottom-[5%] left-[40%] z-50 flex items-center gap-2 px-4 py-4 border border-[#0E73A9] bg-[#FFFFFF] shadow-md rounded-md text-lg text-[#333]">
+    <span class="text-[#0E73A9] font-semibold">{{ApplicantCardService.shortListToastData()?.count}} Cvs</span>
+    <span>Shortlisted in</span>
+    <span class="text-[#0E73A9] font-semibold">{{ApplicantCardService.shortListToastData()?.name}}</span>
+    <button class="ml-2 text-gray-400 hover:text-black" (click)="shortListNotificationClose()">
+      &times;
+    </button>
+  </div>
+}
 <div
     class="max-w-5xl lg:max-w-6xl xl:max-w-[1420px] 2xl:max-w-[1330px] xl:ml-[46px] xl:mr-[60px] 2xl:ps-6 2xl:mx-auto 2xl:pe-6 mt-6 mb-20">
     
-    <app-tabs [tabs]="IsCorporateUser() ? corporateUserTabs() : jobSeekUserTabs()" [activeTabId]="activeTab()" (tabChange)="activeTab.set($event)"></app-tabs>
-      <div class="flex flex-col md:flex-row gap-6 mt-4">
-        <div class="w-full md:w-1/4 mb-4 md:mb-0">
-            <app-filter-panel
-              [shortlist]="shortlistData()"
-              [filtersFromDashboard]="filtersFromDashboard()"
-              [removedFilter]="removedFilter()">
-            </app-filter-panel>
-        </div>
-         <div class="w-full md:w-3/4">
-            @if (activeFiltersBadges() && activeFiltersBadges().length) {
-                <div>
-                    <app-active-filters 
-                        [activeFilters]="activeFiltersBadges()"
-                        (clearAllFilters)="updateRemovedBadge({id: 'clearAll', label: 'clearAll', type: 'clearAll'})"
-                        (removeFilterBadge)="updateRemovedBadge($event)">
-                    </app-active-filters>
-                </div>
-            }
-             <div class="flex items-center justify-between flex-wrap md:flex-nowrap mb-4">
-              
-                @if(totalCvCount() > 0) {
+    <app-tabs 
+      [tabs]="IsCorporateUser() ? corporateUserTabs() : jobSeekUserTabs()" 
+      [activeTabId]="activeTab()" 
+      (tabChange)="changeTab($event, true)">
+    </app-tabs>
+    @switch (activeTab()) {
+      @case ('cv-search') {
+          <div class="flex flex-col md:flex-row gap-6 mt-4">
+          <div class="w-full md:w-1/4 mb-4 md:mb-0">
+              <app-filter-panel
+                [shortlist]="shortlistData()"
+                [filtersFromDashboard]="filtersFromDashboard()"
+                [removedFilter]="removedFilter()">
+              </app-filter-panel>
+          </div>
+           <div class="w-full md:w-3/4">
+              @if (activeFiltersBadges() && activeFiltersBadges().length) {
+                  <div>
+                      <app-active-filters 
+                          [activeFilters]="activeFiltersBadges()"
+                          (clearAllFilters)="updateRemovedBadge({id: 'clearAll', label: 'clearAll', type: 'clearAll'})"
+                          (removeFilterBadge)="updateRemovedBadge($event)">
+                      </app-active-filters>
+                  </div>
+              }
+               <div class="flex items-center justify-between flex-wrap md:flex-nowrap mb-4">
+                  @if(totalCvCount() > 0) {
                    <div class="flex items-center gap-2">
                     <h3 class="text-[#0E73A9] text-3xl font-semibold">
                       {{totalCvCount() | numberSuffix}}{{totalCvCount() >= 1000 ? '+' : ''}}
@@ -157,43 +173,48 @@
                     </div>
                   </div>
                 }
-            </div>
-            <div #stickyTargetDown class="space-y-6">
-                @if (isLoading()) {
-                    <card-skeleton-loader></card-skeleton-loader>
-                    <card-skeleton-loader></card-skeleton-loader>
-                    <card-skeleton-loader></card-skeleton-loader>
-                } @else {
-                    @for (applicant of (applicants() | paginate: { id: 'applicant', itemsPerPage: itemsPerPage(), currentPage: pageNo(), totalItems: totalCvCount() }); track $index) {
-                      <div #stickyTargetUp>
-                        <app-applicant-card 
-                        [applicant]="applicant"
-                        (addedToPurchasedList)="onAddedToPurchasedList($event)"
-                        (purchaseListData)="getPurchaseListDataFromApplicantCard($event)">
-                        </app-applicant-card>
-                      </div>
-                    }
-                    @if (showButton()) {
-                      <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
-                      <span class="icon-angle-top pr-2"></span>Back to Top
-                    </button>
-                    }
-                }
-            </div>
+              </div>
+              <div #stickyTargetDown class="space-y-6">
+                  @if (isLoading()) {
+                      <card-skeleton-loader></card-skeleton-loader>
+                      <card-skeleton-loader></card-skeleton-loader>
+                      <card-skeleton-loader></card-skeleton-loader>
+                  } @else {
+                      @for (applicant of (applicants() | paginate: { id: 'applicant', itemsPerPage: itemsPerPage(), currentPage: pageNo(), totalItems: totalCvCount() }); track $index) {
+                        <div #stickyTargetUp>
+                          <app-applicant-card 
+                          [applicant]="applicant"
+                          (addedToPurchasedList)="onAddedToPurchasedList($event)"
+                           (addedToShortList)="onAddedToShortList($event)"
+                          (purchaseListData)="getPurchaseListDataFromApplicantCard($event)"
+                          (unlockProfileClicked)="handleUnlockProfile($event)">
+                         </app-applicant-card>
+                        </div>
+                      }
+                      @if (showButton()) {
+                        <button (click)="scrollToTop()" class="fixed bottom-7 right-0 bg-gray-600 text-white p-2 shadow-md rounded-lg">
+                        <span class="icon-angle-top pr-2"></span>Back to Top
+                      </button>
+                      }
+                  }
+              </div>
+          </div>
         </div>
-         
-    </div>
-    @if(totalCvCount() > 0) {
-      <div class="flex justify-end mt-4">
-        <div class="ml-auto">
-          <app-pagination
-            (pageChange)="onPageChangeEvent($event)"
-            [page]="pageNo()"
-            [id]="'applicant'"
-            [isGoByPageNo]="false"
-            [total]="totalCvCount()">
-          </app-pagination>
+      } 
+      @case ('saved-filters') {
+        <div class="bg-[#FFFFFF] border border-[#DAE5EC] rounded-lg mt-4 px-4 pb-4">
+          <app-saved-filters-tab [showAllListData]="true" (changeActiveTab)="changeTab($event)"></app-saved-filters-tab>
+        </div> 
+      }
+      @case ('shortlisted-cvs') {
+        <div class="bg-[#FFFFFF] border border-[#DAE5EC] rounded-lg mt-4  px-4 pb-4">
+          <app-shortlisted-cv-tab [showAllListData]="true" (changeActiveTab)="changeTab($event)"></app-shortlisted-cv-tab>
         </div>
-      </div>
+      }
+      @case ('purchase-list') {
+        <div [ngClass]="isCorporateUser() ? 'mb-0' : 'mb-80'" class="bg-[#FFFFFF] border border-[#DAE5EC] rounded-lg mt-4  px-4 pb-4">
+          <app-purchased-list-tab [showAllListData]="true" (changeActiveTab)="changeTab($event)"></app-purchased-list-tab>
+        </div>
+      }
     }
 </div>
